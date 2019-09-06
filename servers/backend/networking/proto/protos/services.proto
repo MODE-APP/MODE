@@ -20,8 +20,6 @@ message Message {
 	repeated string MessageDestination = 2;
 }
 
-
-
 service Heartbeating {
 	rpc TradeHeartbeat(Beat) returns (Status) {}
 }
@@ -32,14 +30,14 @@ message Beat {
 
 service PictureUploading {
 	rpc UploadPicture(stream Chunk) returns (Status);
-	rpc SendChecksum(Checksum) returns (Status);
 }
 
 message Chunk {
-	oneof content {
+	oneof ChunkContent {
 	bytes Content = 1;
 	string Location = 2;
 	string TextPost = 3;
+	int64 Checksum = 4;
 	}
 }
 
@@ -52,10 +50,6 @@ enum StatusCode {
 message Status {
 	string Message = 1;
 	StatusCode Code = 2;
-}
-
-message Checksum {
-	int64 ChecksumValue = 1;
 }
 
 service PictureDownloading {
