@@ -14,6 +14,11 @@
 		861F75E02322E54F000C0C0C /* SF-Pro-Display-Light.otf in Resources */ = {isa = PBXBuildFile; fileRef = 861F75DE2322E54F000C0C0C /* SF-Pro-Display-Light.otf */; };
 		861F75E12322E54F000C0C0C /* SF-Pro-Display-Medium.otf in Resources */ = {isa = PBXBuildFile; fileRef = 861F75DF2322E54F000C0C0C /* SF-Pro-Display-Medium.otf */; };
 		861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F75E42322F3E8000C0C0C /* LoginViewController.swift */; };
+		861F75E723230AED000C0C0C /* MainTabBar.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75E623230AED000C0C0C /* MainTabBar.storyboard */; };
+		861F75E923230B4B000C0C0C /* Profile.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75E823230B4B000C0C0C /* Profile.storyboard */; };
+		861F75EB23230C19000C0C0C /* Feed.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EA23230C19000C0C0C /* Feed.storyboard */; };
+		861F75ED23230C22000C0C0C /* Explore.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EC23230C22000C0C0C /* Explore.storyboard */; };
+		861F75EF23230C2E000C0C0C /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EE23230C2E000C0C0C /* Notifications.storyboard */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +31,11 @@
 		861F75DE2322E54F000C0C0C /* SF-Pro-Display-Light.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Light.otf"; sourceTree = "<group>"; };
 		861F75DF2322E54F000C0C0C /* SF-Pro-Display-Medium.otf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SF-Pro-Display-Medium.otf"; sourceTree = "<group>"; };
 		861F75E42322F3E8000C0C0C /* LoginViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginViewController.swift; sourceTree = "<group>"; };
+		861F75E623230AED000C0C0C /* MainTabBar.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = MainTabBar.storyboard; sourceTree = "<group>"; };
+		861F75E823230B4B000C0C0C /* Profile.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Profile.storyboard; sourceTree = "<group>"; };
+		861F75EA23230C19000C0C0C /* Feed.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Feed.storyboard; sourceTree = "<group>"; };
+		861F75EC23230C22000C0C0C /* Explore.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Explore.storyboard; sourceTree = "<group>"; };
+		861F75EE23230C2E000C0C0C /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +116,11 @@
 			children = (
 				861F75CB2322E42F000C0C0C /* Main.storyboard */,
 				861F75D02322E42F000C0C0C /* LaunchScreen.storyboard */,
+				861F75E623230AED000C0C0C /* MainTabBar.storyboard */,
+				861F75E823230B4B000C0C0C /* Profile.storyboard */,
+				861F75EA23230C19000C0C0C /* Feed.storyboard */,
+				861F75EC23230C22000C0C0C /* Explore.storyboard */,
+				861F75EE23230C2E000C0C0C /* Notifications.storyboard */,
 			);
 			path = Storyboards;
 			sourceTree = "<group>";
@@ -185,9 +200,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				861F75D22322E42F000C0C0C /* LaunchScreen.storyboard in Resources */,
+				861F75EF23230C2E000C0C0C /* Notifications.storyboard in Resources */,
 				861F75CF2322E42F000C0C0C /* Assets.xcassets in Resources */,
+				861F75EB23230C19000C0C0C /* Feed.storyboard in Resources */,
 				861F75E02322E54F000C0C0C /* SF-Pro-Display-Light.otf in Resources */,
+				861F75ED23230C22000C0C0C /* Explore.storyboard in Resources */,
+				861F75E723230AED000C0C0C /* MainTabBar.storyboard in Resources */,
 				861F75CD2322E42F000C0C0C /* Main.storyboard in Resources */,
+				861F75E923230B4B000C0C0C /* Profile.storyboard in Resources */,
 				861F75E12322E54F000C0C0C /* SF-Pro-Display-Medium.otf in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

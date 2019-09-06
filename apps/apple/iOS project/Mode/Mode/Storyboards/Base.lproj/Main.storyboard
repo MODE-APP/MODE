@@ -93,6 +93,7 @@
                                         </state>
                                         <connections>
                                             <action selector="logingButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3e1-sK-JdJ"/>
+                                            <segue destination="0Hq-pd-KFS" kind="show" id="TKQ-mV-G77"/>
                                         </connections>
                                     </button>
                                 </subviews>
@@ -170,6 +171,14 @@
                 </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="40.799999999999997" y="20.689655172413794"/>
+        </scene>
+        <!--MainTabBar-->
+        <scene sceneID="Ixd-q1-gK3">
+            <objects>
+                <viewControllerPlaceholder storyboardName="MainTabBar" id="0Hq-pd-KFS" sceneMemberID="viewController"/>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="z4I-Ly-vDT" userLabel="First Responder" sceneMemberID="firstResponder"/>
+            </objects>
+            <point key="canvasLocation" x="590" y="21"/>
         </scene>
     </scenes>
     <resources>
