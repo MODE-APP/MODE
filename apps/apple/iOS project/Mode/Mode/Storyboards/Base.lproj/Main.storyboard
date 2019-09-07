@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="14490.70" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+    <device id="retina5_9" orientation="portrait">
+        <adaptation id="fullscreen"/>
+    </device>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="14490.49"/>
+        <capability name="Named colors" minToolsVersion="9.0"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <customFonts key="customFonts">
+        <array key="SF-Pro-Display-Light.otf">
+            <string>SFProDisplay-Light</string>
+        </array>
+        <array key="SF-Pro-Display-Medium.otf">
+            <string>SFProDisplay-Medium</string>
+        </array>
+    </customFonts>
+    <scenes>
+        <!--Login View Controller-->
+        <scene sceneID="tne-QT-ifu">
+            <objects>
+                <viewController id="BYZ-38-t0r" customClass="LoginViewController" customModule="Mode" customModuleProvider="target" sceneMemberID="viewController">
+                    <view key="view" contentMode="scaleToFill" id="8bC-Xf-vdC">
+                        <rect key="frame" x="0.0" y="0.0" width="375" height="812"/>
+                        <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
+                        <subviews>
+                            <imageView clipsSubviews="YES" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="LoginBackground " translatesAutoresizingMaskIntoConstraints="NO" id="eGl-AK-CpX">
+                                <rect key="frame" x="0.0" y="-15.333333333333314" width="375" height="852.66666666666652"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="oWK-zK-jF9" appends="YES" id="OEr-VL-ZH0"/>
+                                </connections>
+                            </imageView>
+                            <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="16" translatesAutoresizingMaskIntoConstraints="NO" id="UZ5-Wj-xUi">
+                                <rect key="frame" x="56.333333333333343" y="235.33333333333337" width="262.33333333333326" height="131"/>
+                                <subviews>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="AV2-q6-E32">
+                                        <rect key="frame" x="0.0" y="0.0" width="262.33333333333331" height="33"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" restorationIdentifier="username" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Username" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="3Fm-rE-vrW">
+                                                <rect key="frame" x="7.9999999999999858" y="0.0" width="254.33333333333331" height="33"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="33" id="J3i-XT-zgY"/>
+                                                </constraints>
+                                                <color key="textColor" name="ModePurple"/>
+                                                <fontDescription key="fontDescription" name="SFProDisplay-Light" family="SF Pro Display" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="next"/>
+                                            </textField>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="3Fm-rE-vrW" firstAttribute="top" secondItem="AV2-q6-E32" secondAttribute="top" id="ENN-zp-unc"/>
+                                            <constraint firstItem="3Fm-rE-vrW" firstAttribute="leading" secondItem="AV2-q6-E32" secondAttribute="leading" constant="8" id="pwk-1g-HAx"/>
+                                            <constraint firstAttribute="trailing" secondItem="3Fm-rE-vrW" secondAttribute="trailing" id="tGh-q5-v2M"/>
+                                            <constraint firstAttribute="bottom" secondItem="3Fm-rE-vrW" secondAttribute="bottom" id="u6v-dA-uKW"/>
+                                        </constraints>
+                                    </view>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="IVx-gs-Uyh">
+                                        <rect key="frame" x="0.0" y="48.999999999999972" width="262.33333333333331" height="33"/>
+                                        <subviews>
+                                            <textField opaque="NO" contentMode="scaleToFill" restorationIdentifier="password" contentHorizontalAlignment="left" contentVerticalAlignment="center" placeholder="Password" textAlignment="natural" minimumFontSize="17" translatesAutoresizingMaskIntoConstraints="NO" id="vhY-gy-pK3">
+                                                <rect key="frame" x="7.9999999999999858" y="0.0" width="254.33333333333331" height="33"/>
+                                                <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="33" id="va8-hW-UJo"/>
+                                                </constraints>
+                                                <color key="textColor" name="ModePurple"/>
+                                                <fontDescription key="fontDescription" name="SFProDisplay-Light" family="SF Pro Display" pointSize="14"/>
+                                                <textInputTraits key="textInputTraits" returnKeyType="done" secureTextEntry="YES"/>
+                                            </textField>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="vhY-gy-pK3" firstAttribute="top" secondItem="IVx-gs-Uyh" secondAttribute="top" id="II9-yZ-NDW"/>
+                                            <constraint firstAttribute="bottom" secondItem="vhY-gy-pK3" secondAttribute="bottom" id="UrS-nZ-D5f"/>
+                                            <constraint firstItem="vhY-gy-pK3" firstAttribute="leading" secondItem="IVx-gs-Uyh" secondAttribute="leading" constant="8" id="oCB-PA-L0P"/>
+                                            <constraint firstAttribute="trailing" secondItem="vhY-gy-pK3" secondAttribute="trailing" id="zyF-vF-u27"/>
+                                        </constraints>
+                                    </view>
+                                    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yxM-hJ-joz">
+                                        <rect key="frame" x="0.0" y="97.999999999999972" width="262.33333333333331" height="33"/>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstAttribute="height" constant="33" id="NkI-Hd-cot"/>
+                                        </constraints>
+                                        <fontDescription key="fontDescription" name="SFProDisplay-Light" family="SF Pro Display" pointSize="14"/>
+                                        <state key="normal" title="Login">
+                                            <color key="titleColor" name="ModePurple"/>
+                                        </state>
+                                        <connections>
+                                            <action selector="logingButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3e1-sK-JdJ"/>
+                                        </connections>
+                                    </button>
+                                </subviews>
+                            </stackView>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="MODE" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="0dx-R8-3mq">
+                                <rect key="frame" x="0.0" y="111.99999999999999" width="375" height="63.333333333333329"/>
+                                <fontDescription key="fontDescription" name="SFProDisplay-Medium" family="SF Pro Display" pointSize="53"/>
+                                <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <stackView opaque="NO" contentMode="scaleToFill" spacing="8" translatesAutoresizingMaskIntoConstraints="NO" id="Y7x-tZ-U2y">
+                                <rect key="frame" x="68" y="733" width="239" height="33"/>
+                                <subviews>
+                                    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Don't have an account?" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="fdd-Tb-utJ">
+                                        <rect key="frame" x="0.0" y="0.0" width="141" height="33"/>
+                                        <fontDescription key="fontDescription" name="SFProDisplay-Medium" family="SF Pro Display" pointSize="14"/>
+                                        <color key="textColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <nil key="highlightedColor"/>
+                                    </label>
+                                    <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="haa-Tb-xdm">
+                                        <rect key="frame" x="149" y="0.0" width="90" height="33"/>
+                                        <subviews>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="8pD-4f-c9k">
+                                                <rect key="frame" x="0.0" y="0.0" width="90" height="33"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="33" id="h3s-6T-tzP"/>
+                                                </constraints>
+                                                <fontDescription key="fontDescription" name="SFProDisplay-Medium" family="SF Pro Display" pointSize="14"/>
+                                                <state key="normal" title="Signup">
+                                                    <color key="titleColor" name="ModePurple"/>
+                                                </state>
+                                            </button>
+                                        </subviews>
+                                        <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                                        <constraints>
+                                            <constraint firstItem="8pD-4f-c9k" firstAttribute="centerX" secondItem="haa-Tb-xdm" secondAttribute="centerX" id="2eA-gb-HPC"/>
+                                            <constraint firstItem="8pD-4f-c9k" firstAttribute="centerY" secondItem="haa-Tb-xdm" secondAttribute="centerY" id="9Hb-z5-uxm"/>
+                                            <constraint firstItem="8pD-4f-c9k" firstAttribute="width" secondItem="haa-Tb-xdm" secondAttribute="width" id="B4H-MU-zgK"/>
+                                            <constraint firstAttribute="width" constant="90" id="IGV-2i-lIr"/>
+                                            <constraint firstItem="8pD-4f-c9k" firstAttribute="height" secondItem="haa-Tb-xdm" secondAttribute="height" id="nVx-Tc-hCR"/>
+                                        </constraints>
+                                    </view>
+                                </subviews>
+                            </stackView>
+                        </subviews>
+                        <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                        <constraints>
+                            <constraint firstItem="UZ5-Wj-xUi" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" multiplier="0.7" id="CXw-0T-MdF"/>
+                            <constraint firstItem="UZ5-Wj-xUi" firstAttribute="top" secondItem="0dx-R8-3mq" secondAttribute="bottom" constant="60" id="Fhl-8R-DpB"/>
+                            <constraint firstItem="eGl-AK-CpX" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="GuK-Po-0wa"/>
+                            <constraint firstItem="0dx-R8-3mq" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="Myb-Mp-iic"/>
+                            <constraint firstItem="6Tk-OE-BBY" firstAttribute="bottom" secondItem="Y7x-tZ-U2y" secondAttribute="bottom" constant="12" id="Nfx-MA-6eB"/>
+                            <constraint firstItem="UZ5-Wj-xUi" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="SF9-Ag-z8P"/>
+                            <constraint firstItem="eGl-AK-CpX" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="ZdG-30-Kag"/>
+                            <constraint firstItem="eGl-AK-CpX" firstAttribute="height" secondItem="8bC-Xf-vdC" secondAttribute="height" multiplier="1.05" id="ciz-me-7K1"/>
+                            <constraint firstItem="0dx-R8-3mq" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="68" id="dy5-IC-Ydv"/>
+                            <constraint firstItem="0dx-R8-3mq" firstAttribute="width" secondItem="8bC-Xf-vdC" secondAttribute="width" id="kb4-0I-Xob"/>
+                            <constraint firstItem="eGl-AK-CpX" firstAttribute="centerY" secondItem="6Tk-OE-BBY" secondAttribute="centerY" id="qqL-W3-xSp"/>
+                            <constraint firstItem="Y7x-tZ-U2y" firstAttribute="centerX" secondItem="6Tk-OE-BBY" secondAttribute="centerX" id="z4a-6p-81p"/>
+                        </constraints>
+                        <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
+                    </view>
+                    <connections>
+                        <outlet property="loginButton" destination="yxM-hJ-joz" id="Iq1-OZ-DUg"/>
+                        <outlet property="passwordTextField" destination="vhY-gy-pK3" id="irZ-aE-nFb"/>
+                        <outlet property="signupButtonView" destination="haa-Tb-xdm" id="fFQ-i5-b1b"/>
+                        <outlet property="usernameTextField" destination="3Fm-rE-vrW" id="lmX-nN-S7n"/>
+                    </connections>
+                </viewController>
+                <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer id="oWK-zK-jF9">
+                    <connections>
+                        <action selector="viewTapped:" destination="BYZ-38-t0r" id="6jh-zT-IRX"/>
+                    </connections>
+                </tapGestureRecognizer>
+            </objects>
+            <point key="canvasLocation" x="40.799999999999997" y="20.689655172413794"/>
+        </scene>
+    </scenes>
+    <resources>
+        <image name="LoginBackground " width="375" height="812"/>
+        <namedColor name="ModePurple">
+            <color red="0.51372549019607838" green="0.35686274509803922" blue="0.63921568627450975" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+        </namedColor>
+    </resources>
+</document>
