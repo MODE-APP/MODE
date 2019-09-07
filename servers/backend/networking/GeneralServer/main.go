@@ -27,7 +27,7 @@ type picture struct {
 var Serv grpc.Server
 
 func main() {
-	lis, err := net.Listen("tcp", ":4040")
+	lis, err := net.Listen("tcp", ":3218")
 	eCheck(err)
 
 	Serv := grpc.NewServer()
@@ -70,7 +70,9 @@ func (s *server) UploadPicture(stream pb.PictureUploading_UploadPictureServer) e
 
 		}
 		if err != nil {
-			panic(err)
+			log.Println("Connection dropped, stopping upload")
+			stream.SendAndClose(&pb.Status{Code: returningStatusCode})
+			return errors.New("Connection Dropped")
 		}
 		switch chunkType := chunk.ChunkContent.(type) {
 		case *pb.Chunk_Checksum:
