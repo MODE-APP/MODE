@@ -2,28 +2,48 @@ package main
 
 import (
 	pb "MODE/servers/backend/networking/proto/generated"
+	"context"
 	"io"
 	"log"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 )
 
 type server struct{}
+type picture struct {
+	file     *os.File
+	location string
+	textpost string
+	checksum int64
+}
 
-const BUFFER_SIZE int = 2048
+const BUFFER_SIZE int = 4096
 
-type client struct {
+type Client struct {
 	pb.HeartbeatingClient
 	pb.MessagingClient
 	pb.PictureUploadingClient
 }
 
 func main() {
-	conn, err := grpc.Dial("localhost:4040", grpc.WithInsecure())
+	conn, err := grpc.Dial("73.83.1.188:3218", grpc.WithInsecure())
 	eCheck(err)
 	defer conn.Close()
+	client := NewClient(conn)
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
 
+	file, err := os.Open("/home/arline/Downloads/testy.jpg")
+	if err != nil {
+		panic(err)
+	}
+	pic := picture{file, "C:/Users/chase/Pictures/testPic.jpg", "posty test", simpleChecksum(file)}
+	startTime := time.Now()
+	client.sendPicture(ctx, pic)
+	endTime := time.Since(startTime)
+	log.Printf("Time elapsed: %v", endTime)
 }
 
 func eCheck(err error) {
@@ -32,37 +52,35 @@ func eCheck(err error) {
 	}
 }
 
-func NewHeartbeatMessenger(conn *grpc.ClientConn) client {
-	return client{pb.NewHeartbeatingClient(conn), pb.NewMessagingClient(conn), pb.NewPictureUploadingClient(conn)}
+func NewClient(conn *grpc.ClientConn) Client {
+	return Client{pb.NewHeartbeatingClient(conn), pb.NewMessagingClient(conn), pb.NewPictureUploadingClient(conn)}
 }
 
-func sendPicture(uploader pb.PictureUploading_UploadPictureClient, file *os.File, location string, textpost string) {
-	buf := make([]byte, 4096)
-	for {
-		if n, err := file.Read(buf); err != io.EOF {
-			if n > 0 {
-				uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Content{buf[0:n]}})
-				log.Printf("last 10 bytes")
-			} else {
-				log.Printf("READING 0")
-			}
-		} else {
-			log.Printf("out of file to read")
-			fileStat, err := file.Stat()
-			if err != nil {
-				panic(err)
-			}
-			uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Location{location}})
-			uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_TextPost{textpost}})
-			uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Checksum{fileStat.Size()}})
-
-			status, err := uploader.CloseAndRecv()
-			if err != nil {
-				panic(err)
-			}
-			log.Printf("Picture upload status message: %v     Code: %v", status.GetMessage(), status.GetCode())
-		}
-
+func (client *Client) sendPicture(ctx context.Context, Picture picture) {
+	buf := make([]byte, BUFFER_SIZE)
+	uploader, err := client.UploadPicture(ctx)
+	if err != nil {
+		panic(err)
 	}
+	for n, err := Picture.file.Read(buf); err != io.EOF; n, err = Picture.file.Read(buf) {
+		uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Content{buf[0:n]}})
+	}
+	log.Printf("out of file to read")
+	uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Location{Picture.location}})
+	uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_TextPost{Picture.textpost}})
+	uploader.Send(&pb.Chunk{ChunkContent: &pb.Chunk_Checksum{Picture.checksum}})
 
+	status, err := uploader.CloseAndRecv()
+	if err != nil && err != io.EOF {
+		panic(err)
+	}
+	log.Printf("Picture upload status message: %v     Code: %v", status.GetMessage(), status.GetCode())
+}
+
+func simpleChecksum(file *os.File) int64 {
+	fileStat, err := file.Stat()
+	if err != nil {
+		panic(err)
+	}
+	return fileStat.Size()
 }
