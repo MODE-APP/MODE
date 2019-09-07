@@ -1,7 +1,7 @@
 package main
 
 import (
-	pb "MODETEST/proto"
+	pb "MODE/servers/backend/networking/proto/generated"
 	"bytes"
 	"context"
 	"errors"
