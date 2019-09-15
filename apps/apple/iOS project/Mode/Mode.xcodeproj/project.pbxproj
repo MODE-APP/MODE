@@ -27,6 +27,7 @@
 		86395E26232E9E8800A956D2 /* profileTwo.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E21232E9E8800A956D2 /* profileTwo.png */; };
 		86395E27232E9E8800A956D2 /* profileOne.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E22232E9E8800A956D2 /* profileOne.png */; };
 		86395E28232E9E8800A956D2 /* profileFive.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E23232E9E8800A956D2 /* profileFive.png */; };
+		86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -52,6 +53,7 @@
 		86395E21232E9E8800A956D2 /* profileTwo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileTwo.png; sourceTree = "<group>"; };
 		86395E22232E9E8800A956D2 /* profileOne.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileOne.png; sourceTree = "<group>"; };
 		86395E23232E9E8800A956D2 /* profileFive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileFive.png; sourceTree = "<group>"; };
+		86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostFooterActivtityIndicatorCollectionReusableView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -164,6 +166,7 @@
 			isa = PBXGroup;
 			children = (
 				86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */,
+				86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 			files = (
 				86395E1E232E9A3500A956D2 /* PostCollectionViewCell.swift in Sources */,
 				861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */,
+				86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */,
 				861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */,
 				861F75C82322E42F000C0C0C /* AppDelegate.swift in Sources */,
 			);
