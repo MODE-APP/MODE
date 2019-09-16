@@ -1,7 +1,6 @@
 package main
 
 import (
-	pb "MODE/servers/backend/networking/proto/generated"
 	"bytes"
 	"context"
 	"errors"
@@ -10,6 +9,8 @@ import (
 	"log"
 	"net"
 	"os"
+
+	pb "MODE/servers/backend/networking/proto/generated"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"

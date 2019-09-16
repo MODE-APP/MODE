@@ -1,13 +1,6 @@
 syntax = "proto3";
-package proto;
+package protos;
 
-
-service Messaging {
-	rpc SendMessage(Message) returns (Status) {}
-	rpc CheckMessageStatus(Message) returns (Status) {}
-	rpc ChangeMessageStatus(Message) returns (Status) {}
-	rpc RetrieveMessages(Message) returns (stream Message){}
-}
 
 service Commenting {
 	rpc PostComment(Message) returns (Status) {}
@@ -15,10 +8,6 @@ service Commenting {
 	rpc EditComment(Message) returns (Status) {}
 }
 
-message Message {
-	string TextMessage = 1;
-	repeated string MessageDestination = 2;
-}
 
 service Heartbeating {
 	rpc TradeHeartbeat(Beat) returns (Status) {}
