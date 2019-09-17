@@ -19,6 +19,16 @@
 		861F75EB23230C19000C0C0C /* Feed.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EA23230C19000C0C0C /* Feed.storyboard */; };
 		861F75ED23230C22000C0C0C /* Explore.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EC23230C22000C0C0C /* Explore.storyboard */; };
 		861F75EF23230C2E000C0C0C /* Notifications.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 861F75EE23230C2E000C0C0C /* Notifications.storyboard */; };
+		861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 861F75F023231468000C0C0C /* ProfileViewController.swift */; };
+		86395E1C232DDB2600A956D2 /* exampleProfilePhoto.jpg in Resources */ = {isa = PBXBuildFile; fileRef = 86395E1B232DDB2600A956D2 /* exampleProfilePhoto.jpg */; };
+		86395E1E232E9A3500A956D2 /* PostCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */; };
+		86395E24232E9E8800A956D2 /* profileThree.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E1F232E9E8800A956D2 /* profileThree.png */; };
+		86395E25232E9E8800A956D2 /* profileFour.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E20232E9E8800A956D2 /* profileFour.png */; };
+		86395E26232E9E8800A956D2 /* profileTwo.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E21232E9E8800A956D2 /* profileTwo.png */; };
+		86395E27232E9E8800A956D2 /* profileOne.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E22232E9E8800A956D2 /* profileOne.png */; };
+		86395E28232E9E8800A956D2 /* profileFive.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E23232E9E8800A956D2 /* profileFive.png */; };
+		86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */; };
+		868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA2233075B100A31EAC /* UIConstants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -36,6 +46,16 @@
 		861F75EA23230C19000C0C0C /* Feed.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Feed.storyboard; sourceTree = "<group>"; };
 		861F75EC23230C22000C0C0C /* Explore.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Explore.storyboard; sourceTree = "<group>"; };
 		861F75EE23230C2E000C0C0C /* Notifications.storyboard */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; path = Notifications.storyboard; sourceTree = "<group>"; };
+		861F75F023231468000C0C0C /* ProfileViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViewController.swift; sourceTree = "<group>"; };
+		86395E1B232DDB2600A956D2 /* exampleProfilePhoto.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = exampleProfilePhoto.jpg; sourceTree = "<group>"; };
+		86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostCollectionViewCell.swift; sourceTree = "<group>"; };
+		86395E1F232E9E8800A956D2 /* profileThree.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileThree.png; sourceTree = "<group>"; };
+		86395E20232E9E8800A956D2 /* profileFour.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileFour.png; sourceTree = "<group>"; };
+		86395E21232E9E8800A956D2 /* profileTwo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileTwo.png; sourceTree = "<group>"; };
+		86395E22232E9E8800A956D2 /* profileOne.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileOne.png; sourceTree = "<group>"; };
+		86395E23232E9E8800A956D2 /* profileFive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileFive.png; sourceTree = "<group>"; };
+		86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostFooterActivtityIndicatorCollectionReusableView.swift; sourceTree = "<group>"; };
+		868CDAA2233075B100A31EAC /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -72,6 +92,7 @@
 				861F75DC2322E468000C0C0C /* View Controllers */,
 				861F75DB2322E461000C0C0C /* Model Controllers */,
 				861F75DA2322E45B000C0C0C /* Models */,
+				868CDAA12330758A00A31EAC /* Global Constants */,
 				861F75D92322E455000C0C0C /* Resources */,
 			);
 			path = Mode;
@@ -80,6 +101,7 @@
 		861F75D92322E455000C0C0C /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				86395E1A232DDB1E00A956D2 /* Images */,
 				861F75E32322EDB2000C0C0C /* Graphics */,
 				861F75E22322E553000C0C0C /* Fonts */,
 				861F75C72322E42F000C0C0C /* AppDelegate.swift */,
@@ -106,7 +128,9 @@
 		861F75DC2322E468000C0C0C /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				86395E17232DD19000A956D2 /* Custom Views */,
 				861F75E42322F3E8000C0C0C /* LoginViewController.swift */,
+				861F75F023231468000C0C0C /* ProfileViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -139,6 +163,36 @@
 			children = (
 			);
 			path = Graphics;
+			sourceTree = "<group>";
+		};
+		86395E17232DD19000A956D2 /* Custom Views */ = {
+			isa = PBXGroup;
+			children = (
+				86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */,
+				86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */,
+			);
+			path = "Custom Views";
+			sourceTree = "<group>";
+		};
+		86395E1A232DDB1E00A956D2 /* Images */ = {
+			isa = PBXGroup;
+			children = (
+				86395E1B232DDB2600A956D2 /* exampleProfilePhoto.jpg */,
+				86395E23232E9E8800A956D2 /* profileFive.png */,
+				86395E20232E9E8800A956D2 /* profileFour.png */,
+				86395E22232E9E8800A956D2 /* profileOne.png */,
+				86395E1F232E9E8800A956D2 /* profileThree.png */,
+				86395E21232E9E8800A956D2 /* profileTwo.png */,
+			);
+			path = Images;
+			sourceTree = "<group>";
+		};
+		868CDAA12330758A00A31EAC /* Global Constants */ = {
+			isa = PBXGroup;
+			children = (
+				868CDAA2233075B100A31EAC /* UIConstants.swift */,
+			);
+			path = "Global Constants";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,14 +253,20 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86395E26232E9E8800A956D2 /* profileTwo.png in Resources */,
+				86395E24232E9E8800A956D2 /* profileThree.png in Resources */,
 				861F75D22322E42F000C0C0C /* LaunchScreen.storyboard in Resources */,
+				86395E25232E9E8800A956D2 /* profileFour.png in Resources */,
 				861F75EF23230C2E000C0C0C /* Notifications.storyboard in Resources */,
 				861F75CF2322E42F000C0C0C /* Assets.xcassets in Resources */,
 				861F75EB23230C19000C0C0C /* Feed.storyboard in Resources */,
 				861F75E02322E54F000C0C0C /* SF-Pro-Display-Light.otf in Resources */,
 				861F75ED23230C22000C0C0C /* Explore.storyboard in Resources */,
+				86395E27232E9E8800A956D2 /* profileOne.png in Resources */,
 				861F75E723230AED000C0C0C /* MainTabBar.storyboard in Resources */,
+				86395E1C232DDB2600A956D2 /* exampleProfilePhoto.jpg in Resources */,
 				861F75CD2322E42F000C0C0C /* Main.storyboard in Resources */,
+				86395E28232E9E8800A956D2 /* profileFive.png in Resources */,
 				861F75E923230B4B000C0C0C /* Profile.storyboard in Resources */,
 				861F75E12322E54F000C0C0C /* SF-Pro-Display-Medium.otf in Resources */,
 			);
@@ -219,8 +279,12 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				86395E1E232E9A3500A956D2 /* PostCollectionViewCell.swift in Sources */,
+				861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */,
+				86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */,
 				861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */,
 				861F75C82322E42F000C0C0C /* AppDelegate.swift in Sources */,
+				868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
