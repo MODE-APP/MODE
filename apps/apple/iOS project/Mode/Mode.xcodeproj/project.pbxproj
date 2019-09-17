@@ -31,6 +31,7 @@
 		868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA2233075B100A31EAC /* UIConstants.swift */; };
 		868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */; };
 		868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA72330796200A31EAC /* MainTabBarController.swift */; };
+		86D818152330839A0025F206 /* CatagoryCollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86D818142330839A0025F206 /* CatagoryCollectionViewCell.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -60,6 +61,7 @@
 		868CDAA2233075B100A31EAC /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorePageViewController.swift; sourceTree = "<group>"; };
 		868CDAA72330796200A31EAC /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
+		86D818142330839A0025F206 /* CatagoryCollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CatagoryCollectionViewCell.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -133,6 +135,7 @@
 			isa = PBXGroup;
 			children = (
 				868CDAA62330793300A31EAC /* Navigation Controllers */,
+				86D81813233083650025F206 /* Custom Cells */,
 				86395E17232DD19000A956D2 /* Custom Views */,
 				861F75E42322F3E8000C0C0C /* LoginViewController.swift */,
 				861F75F023231468000C0C0C /* ProfileViewController.swift */,
@@ -174,7 +177,6 @@
 		86395E17232DD19000A956D2 /* Custom Views */ = {
 			isa = PBXGroup;
 			children = (
-				86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */,
 				86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */,
 			);
 			path = "Custom Views";
@@ -207,6 +209,15 @@
 				868CDAA72330796200A31EAC /* MainTabBarController.swift */,
 			);
 			path = "Navigation Controllers";
+			sourceTree = "<group>";
+		};
+		86D81813233083650025F206 /* Custom Cells */ = {
+			isa = PBXGroup;
+			children = (
+				86D818142330839A0025F206 /* CatagoryCollectionViewCell.swift */,
+				86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */,
+			);
+			path = "Custom Cells";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -297,6 +308,7 @@
 				868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */,
 				868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */,
 				861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */,
+				86D818152330839A0025F206 /* CatagoryCollectionViewCell.swift in Sources */,
 				86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */,
 				861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */,
 				861F75C82322E42F000C0C0C /* AppDelegate.swift in Sources */,
