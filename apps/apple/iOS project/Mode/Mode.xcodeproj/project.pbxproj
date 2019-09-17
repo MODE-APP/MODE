@@ -29,6 +29,8 @@
 		86395E28232E9E8800A956D2 /* profileFive.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E23232E9E8800A956D2 /* profileFive.png */; };
 		86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */; };
 		868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA2233075B100A31EAC /* UIConstants.swift */; };
+		868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */; };
+		868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA72330796200A31EAC /* MainTabBarController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -56,6 +58,8 @@
 		86395E23232E9E8800A956D2 /* profileFive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileFive.png; sourceTree = "<group>"; };
 		86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostFooterActivtityIndicatorCollectionReusableView.swift; sourceTree = "<group>"; };
 		868CDAA2233075B100A31EAC /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
+		868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorePageViewController.swift; sourceTree = "<group>"; };
+		868CDAA72330796200A31EAC /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,9 +132,11 @@
 		861F75DC2322E468000C0C0C /* View Controllers */ = {
 			isa = PBXGroup;
 			children = (
+				868CDAA62330793300A31EAC /* Navigation Controllers */,
 				86395E17232DD19000A956D2 /* Custom Views */,
 				861F75E42322F3E8000C0C0C /* LoginViewController.swift */,
 				861F75F023231468000C0C0C /* ProfileViewController.swift */,
+				868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */,
 			);
 			path = "View Controllers";
 			sourceTree = "<group>";
@@ -193,6 +199,14 @@
 				868CDAA2233075B100A31EAC /* UIConstants.swift */,
 			);
 			path = "Global Constants";
+			sourceTree = "<group>";
+		};
+		868CDAA62330793300A31EAC /* Navigation Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				868CDAA72330796200A31EAC /* MainTabBarController.swift */,
+			);
+			path = "Navigation Controllers";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -280,6 +294,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				86395E1E232E9A3500A956D2 /* PostCollectionViewCell.swift in Sources */,
+				868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */,
+				868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */,
 				861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */,
 				86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */,
 				861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */,
