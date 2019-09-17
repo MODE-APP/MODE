@@ -28,6 +28,7 @@
 		86395E27232E9E8800A956D2 /* profileOne.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E22232E9E8800A956D2 /* profileOne.png */; };
 		86395E28232E9E8800A956D2 /* profileFive.png in Resources */ = {isa = PBXBuildFile; fileRef = 86395E23232E9E8800A956D2 /* profileFive.png */; };
 		86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */; };
+		868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA2233075B100A31EAC /* UIConstants.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -54,6 +55,7 @@
 		86395E22232E9E8800A956D2 /* profileOne.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileOne.png; sourceTree = "<group>"; };
 		86395E23232E9E8800A956D2 /* profileFive.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = profileFive.png; sourceTree = "<group>"; };
 		86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostFooterActivtityIndicatorCollectionReusableView.swift; sourceTree = "<group>"; };
+		868CDAA2233075B100A31EAC /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -90,6 +92,7 @@
 				861F75DC2322E468000C0C0C /* View Controllers */,
 				861F75DB2322E461000C0C0C /* Model Controllers */,
 				861F75DA2322E45B000C0C0C /* Models */,
+				868CDAA12330758A00A31EAC /* Global Constants */,
 				861F75D92322E455000C0C0C /* Resources */,
 			);
 			path = Mode;
@@ -184,6 +187,14 @@
 			path = Images;
 			sourceTree = "<group>";
 		};
+		868CDAA12330758A00A31EAC /* Global Constants */ = {
+			isa = PBXGroup;
+			children = (
+				868CDAA2233075B100A31EAC /* UIConstants.swift */,
+			);
+			path = "Global Constants";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -273,6 +284,7 @@
 				86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */,
 				861F75E52322F3E8000C0C0C /* LoginViewController.swift in Sources */,
 				861F75C82322E42F000C0C0C /* AppDelegate.swift in Sources */,
+				868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

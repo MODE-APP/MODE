@@ -104,7 +104,6 @@ class ProfileViewController: UIViewController {
     }
     
     func loadMorePosts() {
-        print("Posts: \(self.dataSource.count)")
         getImages() {
             DispatchQueue.main.async {
                 for _ in 0..<30 {
@@ -129,7 +128,6 @@ class ProfileViewController: UIViewController {
                 }
                 self.profileCollectionView.reloadData()
                 self.loadingPosts = false
-                print("Posts: \(self.dataSource.count)")
             }
         }
     }
@@ -164,7 +162,7 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     // MARK: - FlowLayout
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        let size = CGSize(width: profileCollectionView.frame.width / 3 - 1, height: profileCollectionView.frame.width / 3 - 1)
+        let size = CGSize(width: profileCollectionView.frame.width / 3 - 1, height: profileCollectionView.frame.width / 3 * 1.6 - 1)
         return size
     }
     
@@ -184,7 +182,6 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
         let heightFromBottom = scrollView.contentSize.height - scrollView.contentOffset.y
         if heightFromBottom < 1300 && loadingPosts == false && loadedAllPosts == false{
-            print("\(heightFromBottom)")
             loadMorePosts()
             loadingPosts = true
         }
