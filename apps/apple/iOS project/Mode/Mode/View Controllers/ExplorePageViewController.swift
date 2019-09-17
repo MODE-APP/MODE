@@ -160,42 +160,51 @@ extension ExplorePageViewController: UICollectionViewDelegate, UICollectionViewD
         }
     }
     
+    
+    // MARK: - FlowLayout
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         if collectionView.restorationIdentifier == "catagoryCollectionView" {
-
+            return CGSize(width: 100, height: 35)
         } else {
-
+            
             let size = CGSize(width: explorePostsCollectionView.frame.width / 3 - 1, height: explorePostsCollectionView.frame.width / 3 * 1.6 - 1)
             return size
         }
     }
+
     
-    // MARK: - FlowLayout
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
+        if collectionView.restorationIdentifier == "catagoryCollectionView" {
+            return CGSize.zero
+        } else {
+            if loadedAllPosts {
+                return CGSize.zero
+            }
+            return CGSize(width: explorePostsCollectionView.frame.width, height: 55)
+        }
+    }
     
-    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-    //        let size = CGSize(width: profileCollectionView.frame.width / 3 - 1, height: profileCollectionView.frame.width / 3 * 1.6 - 1)
-    //        return size
-    //    }
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        if collectionView.restorationIdentifier == "catagoryCollectionView" {
+            return UICollectionReusableView()
+        } else {
+
+            guard let footerView = explorePostsCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "loadDataFooter", for: indexPath) as? PostFooterActivtityIndicatorCollectionReusableView else {fatalError("Couldn't get footer view at \(#function)")}
+            
+            return footerView
+        }
+    }
     
-    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForFooterInSection section: Int) -> CGSize {
-    //        if loadedAllPosts {
-    //            return CGSize.zero
-    //        }
-    //        return CGSize(width: profileCollectionView.frame.width, height: 55)
-    //    }
-    
-    //    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-    //        guard let footerView = profileCollectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: "loadDataFooter", for: indexPath) as? PostFooterActivtityIndicatorCollectionReusableView else {fatalError("Couldn't get footer view at \(#function)")}
-    //
-    //        return footerView
-    //    }
-    
-    //    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-    //        let heightFromBottom = scrollView.contentSize.height - scrollView.contentOffset.y
-    //        if heightFromBottom < 1300 && loadingPosts == false && loadedAllPosts == false{
-    //            loadMorePosts()
-    //            loadingPosts = true
-    //        }
-    //    }
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if scrollView.restorationIdentifier == "postsCollectionView" {
+            let heightFromBottom = scrollView.contentSize.height - scrollView.contentOffset.y
+            if heightFromBottom < 1300 && loadingPosts == false && loadedAllPosts == false{
+                loadMorePosts()
+                loadingPosts = true
+            }
+        }
+    }
 }
+
 

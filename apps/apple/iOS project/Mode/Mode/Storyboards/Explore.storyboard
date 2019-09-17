@@ -34,7 +34,7 @@
                                         <rect key="frame" x="19" y="0.0" width="252" height="38"/>
                                         <nil key="textColor"/>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
-                                        <textInputTraits key="textInputTraits"/>
+                                        <textInputTraits key="textInputTraits" returnKeyType="done"/>
                                         <connections>
                                             <action selector="didEndSearching:" destination="Gc6-RC-kAq" eventType="editingDidEnd" id="KNZ-Y6-qro"/>
                                             <action selector="didStartSearching:" destination="Gc6-RC-kAq" eventType="editingDidBegin" id="nGa-oi-seU"/>
@@ -81,10 +81,10 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="2k7-2E-5ab">
-                                                    <rect key="frame" x="0.0" y="0.0" width="120" height="38"/>
+                                                    <rect key="frame" x="0.0" y="0.0" width="100" height="35"/>
                                                     <subviews>
                                                         <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="9hI-DM-KK0">
-                                                            <rect key="frame" x="0.0" y="0.0" width="120" height="38"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="100" height="35"/>
                                                             <state key="normal" title="Sports">
                                                                 <color key="titleColor" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                             </state>
@@ -116,8 +116,8 @@
                                     </collectionViewCell>
                                 </cells>
                             </collectionView>
-                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" misplaced="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Z8P-zk-rlV">
-                                <rect key="frame" x="0.0" y="161" width="414" height="652"/>
+                            <collectionView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" restorationIdentifier="postsCollectionView" showsHorizontalScrollIndicator="NO" dataMode="prototypes" translatesAutoresizingMaskIntoConstraints="NO" id="Z8P-zk-rlV">
+                                <rect key="frame" x="1" y="161" width="414" height="652"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <collectionViewFlowLayout key="collectionViewLayout" minimumLineSpacing="1" minimumInteritemSpacing="1" id="kOd-dG-PAt">
                                     <size key="itemSize" width="212" height="211"/>
@@ -154,7 +154,7 @@
                                     <autoresizingMask key="autoresizingMask"/>
                                     <subviews>
                                         <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="thF-qe-syj">
-                                            <rect key="frame" x="0.0" y="0.0" width="412" height="50"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="50"/>
                                             <color key="color" white="0.33333333329999998" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                         </activityIndicatorView>
                                     </subviews>
