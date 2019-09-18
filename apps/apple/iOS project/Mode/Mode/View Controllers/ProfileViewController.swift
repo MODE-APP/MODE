@@ -186,67 +186,6 @@ extension ProfileViewController: UICollectionViewDelegate, UICollectionViewDataS
             loadingPosts = true
         }
     }
-    
-//    func collectionView(_ collectionView: UICollectionView, willDisplaySupplementaryView view: UICollectionReusableView, forElementKind elementKind: String, at indexPath: IndexPath) {
-//        loadDataFooterView?.prepareInitialAnimation()
-//    }
-//
-//    func collectionView(_ collectionView: UICollectionView, didEndDisplayingSupplementaryView view: UICollectionReusableView, forElementOfKind elementKind: String, at indexPath: IndexPath) {
-//        loadDataFooterView?.stopAnimating()
-//    }
-    
-//    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-//        let threshold   = 100.0 ;
-//        let contentOffset = scrollView.contentOffset.y;
-//        let contentHeight = scrollView.contentSize.height;
-//        let diffHeight = contentHeight - contentOffset;
-//        let frameHeight = scrollView.bounds.size.height;
-//        var triggerThreshold  = Float((diffHeight - frameHeight))/Float(threshold);
-//        triggerThreshold   =  min(triggerThreshold, 0.0)
-//        let pullRatio  = min(abs(triggerThreshold),1.0);
-//        loadDataFooterView?.setTransform(inTransform: CGAffineTransform.identity, scaleFactor: CGFloat(pullRatio))
-//        if pullRatio >= 1 {
-//            loadDataFooterView?.animateFinal()
-//        }
-//        print("pullRation:\(pullRatio)")
-//    }
-    
-    //compute the offset and call the load method
-//    func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
-//        let contentOffset = scrollView.contentOffset.y;
-//        let contentHeight = scrollView.contentSize.height;
-//        let diffHeight = contentHeight - contentOffset;
-//        let frameHeight = scrollView.bounds.size.height;
-//        let pullHeight  = abs(diffHeight - frameHeight);
-//        print("pullHeight:\(pullHeight)");
-//        if pullHeight == 0.0
-//        {
-//            if (loadDataFooterView?.isAnimatingFinal)! {
-//                print("load more trigger")
-//                isLoading = true
-//                loadDataFooterView?.startAnimate()
-//                Timer.scheduledTimer(withTimeInterval: 1, repeats: false, block: { (timer:Timer) in
-//                    for _ in 0..<12 {
-//                        var imageName: String = ""
-//                        let imageNumber = Int.random(in: 0..<5)
-//
-//                        switch imageNumber {
-//                        case 0: imageName = "profileOne"
-//                        case 1: imageName = "profileTwo"
-//                        case 2: imageName = "profileThree"
-//                        case 3: imageName = "profileFour"
-//                        case 4: imageName = "profileFive"
-//                        default: fatalError("Big Error at \(#function)")
-//                        }
-//                        let image = UIImage(named: imageName)!
-//                        self.dataSource.append(image)
-//                    }
-//                    self.isLoading = false
-//                    self.profileCollectionView.reloadData()
-//                })
-//            }
-//        }
-//    }
 }
 
 extension ProfileViewController: UICollectionViewDataSourcePrefetching {
