@@ -30,7 +30,7 @@
 		86395E2A232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */; };
 		864BA20A2331AC8C007E8A29 /* notificationTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864BA2092331AC8C007E8A29 /* notificationTableViewCell.swift */; };
 		864BA20C2331B1D6007E8A29 /* NotificationsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864BA20B2331B1D6007E8A29 /* NotificationsViewController.swift */; };
-		864BA20E2331B635007E8A29 /* loadingAdditionContentIndicatiorUIView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864BA20D2331B635007E8A29 /* loadingAdditionContentIndicatiorUIView.swift */; };
+		864EB9FA2333087100371F35 /* activityIndicatorCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 864EB9F92333087100371F35 /* activityIndicatorCell.swift */; };
 		868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA2233075B100A31EAC /* UIConstants.swift */; };
 		868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */; };
 		868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 868CDAA72330796200A31EAC /* MainTabBarController.swift */; };
@@ -63,7 +63,7 @@
 		86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostFooterActivtityIndicatorCollectionReusableView.swift; sourceTree = "<group>"; };
 		864BA2092331AC8C007E8A29 /* notificationTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = notificationTableViewCell.swift; sourceTree = "<group>"; };
 		864BA20B2331B1D6007E8A29 /* NotificationsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationsViewController.swift; sourceTree = "<group>"; };
-		864BA20D2331B635007E8A29 /* loadingAdditionContentIndicatiorUIView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = loadingAdditionContentIndicatiorUIView.swift; sourceTree = "<group>"; };
+		864EB9F92333087100371F35 /* activityIndicatorCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = activityIndicatorCell.swift; sourceTree = "<group>"; };
 		868CDAA2233075B100A31EAC /* UIConstants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UIConstants.swift; sourceTree = "<group>"; };
 		868CDAA4233077EA00A31EAC /* ExplorePageViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExplorePageViewController.swift; sourceTree = "<group>"; };
 		868CDAA72330796200A31EAC /* MainTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainTabBarController.swift; sourceTree = "<group>"; };
@@ -185,7 +185,6 @@
 			isa = PBXGroup;
 			children = (
 				86395E29232EAFF000A956D2 /* PostFooterActivtityIndicatorCollectionReusableView.swift */,
-				864BA20D2331B635007E8A29 /* loadingAdditionContentIndicatiorUIView.swift */,
 			);
 			path = "Custom Views";
 			sourceTree = "<group>";
@@ -225,6 +224,7 @@
 				86D818142330839A0025F206 /* CatagoryCollectionViewCell.swift */,
 				86395E1D232E9A3500A956D2 /* PostCollectionViewCell.swift */,
 				864BA2092331AC8C007E8A29 /* notificationTableViewCell.swift */,
+				864EB9F92333087100371F35 /* activityIndicatorCell.swift */,
 			);
 			path = "Custom Cells";
 			sourceTree = "<group>";
@@ -315,6 +315,7 @@
 			files = (
 				86395E1E232E9A3500A956D2 /* PostCollectionViewCell.swift in Sources */,
 				868CDAA5233077EA00A31EAC /* ExplorePageViewController.swift in Sources */,
+				864EB9FA2333087100371F35 /* activityIndicatorCell.swift in Sources */,
 				868CDAA82330796200A31EAC /* MainTabBarController.swift in Sources */,
 				861F75F123231468000C0C0C /* ProfileViewController.swift in Sources */,
 				864BA20A2331AC8C007E8A29 /* notificationTableViewCell.swift in Sources */,
@@ -324,7 +325,6 @@
 				864BA20C2331B1D6007E8A29 /* NotificationsViewController.swift in Sources */,
 				861F75C82322E42F000C0C0C /* AppDelegate.swift in Sources */,
 				868CDAA3233075B100A31EAC /* UIConstants.swift in Sources */,
-				864BA20E2331B635007E8A29 /* loadingAdditionContentIndicatiorUIView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

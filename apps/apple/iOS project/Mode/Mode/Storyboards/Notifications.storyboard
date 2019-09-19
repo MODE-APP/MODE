@@ -45,7 +45,7 @@
                                     <constraint firstAttribute="height" constant="100" id="h6B-b5-2xz"/>
                                 </constraints>
                             </view>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="72" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ccs-kh-pJu">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" showsHorizontalScrollIndicator="NO" dataMode="prototypes" style="plain" separatorStyle="none" rowHeight="72" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="ccs-kh-pJu">
                                 <rect key="frame" x="0.0" y="144" width="414" height="669"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
@@ -57,7 +57,7 @@
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
                                                 <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="poh-ne-nYz">
-                                                    <rect key="frame" x="20.5" y="0.0" width="373" height="99.5"/>
+                                                    <rect key="frame" x="20.5" y="0.0" width="373" height="100"/>
                                                     <subviews>
                                                         <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="89g-0f-Ytv">
                                                             <rect key="frame" x="68" y="40.5" width="259.5" height="19"/>
@@ -103,6 +103,28 @@
                                             <outlet property="notificationLabel" destination="89g-0f-Ytv" id="ieW-ty-p6d"/>
                                             <outlet property="notificationPhoto" destination="Ba8-QC-cDi" id="hXa-Ij-Pki"/>
                                             <outlet property="notificationSenderProfilePhoto" destination="6ud-N7-4eK" id="qak-qV-gG5"/>
+                                        </connections>
+                                    </tableViewCell>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="loadingCell" id="xes-bI-Xdg" customClass="activityIndicatorCell" customModule="Mode" customModuleProvider="target">
+                                        <rect key="frame" x="0.0" y="128" width="414" height="72"/>
+                                        <autoresizingMask key="autoresizingMask"/>
+                                        <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="xes-bI-Xdg" id="uUI-m9-GPF">
+                                            <rect key="frame" x="0.0" y="0.0" width="414" height="72"/>
+                                            <autoresizingMask key="autoresizingMask"/>
+                                            <subviews>
+                                                <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="gray" translatesAutoresizingMaskIntoConstraints="NO" id="O4Q-8l-5Cx">
+                                                    <rect key="frame" x="0.0" y="0.0" width="414" height="72"/>
+                                                </activityIndicatorView>
+                                            </subviews>
+                                            <constraints>
+                                                <constraint firstItem="O4Q-8l-5Cx" firstAttribute="centerX" secondItem="uUI-m9-GPF" secondAttribute="centerX" id="PgB-cu-K4P"/>
+                                                <constraint firstItem="O4Q-8l-5Cx" firstAttribute="centerY" secondItem="uUI-m9-GPF" secondAttribute="centerY" id="bO6-zf-dJx"/>
+                                                <constraint firstItem="O4Q-8l-5Cx" firstAttribute="width" secondItem="uUI-m9-GPF" secondAttribute="width" id="pV6-gE-Tc9"/>
+                                                <constraint firstItem="O4Q-8l-5Cx" firstAttribute="height" secondItem="uUI-m9-GPF" secondAttribute="height" id="rCr-2D-ckj"/>
+                                            </constraints>
+                                        </tableViewCellContentView>
+                                        <connections>
+                                            <outlet property="activityIndicatorView" destination="O4Q-8l-5Cx" id="PzZ-Sp-d2c"/>
                                         </connections>
                                     </tableViewCell>
                                 </prototypes>

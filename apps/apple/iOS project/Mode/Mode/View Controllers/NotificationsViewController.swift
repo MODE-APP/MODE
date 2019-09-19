@@ -24,7 +24,7 @@ class NotificationsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        dataSource = 15
+        dataSource = 5
         
         
         notificationsCollectionView.delegate = self
@@ -56,6 +56,13 @@ class NotificationsViewController: UIViewController {
         }
     }
 
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let heightFromBottom = scrollView.contentSize.height - scrollView.contentOffset.y
+        if heightFromBottom < 1300 && loadingNotifications == false && loadedAllNotifications == false{
+            loadMoreNotifications()
+            loadingNotifications = true
+        }
+    }
     /*
     // MARK: - Navigation
 
@@ -70,20 +77,36 @@ class NotificationsViewController: UIViewController {
 
 extension NotificationsViewController: UITableViewDelegate, UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return dataSource
+        if dataSource == numberOfNotifications {
+            return dataSource
+        } else {
+            return dataSource + 1
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = notificationsCollectionView.dequeueReusableCell(withIdentifier: "notificationCell", for: indexPath) as? notificationTableViewCell else {return UITableViewCell()}
+        if indexPath.row == dataSource && !loadedAllNotifications {
+            if let cell = notificationsCollectionView.dequeueReusableCell(withIdentifier: "loadingCell") as? activityIndicatorCell {
+                cell.activityIndicatorView.startAnimating()
+                return cell
+            } else {
+                return UITableViewCell()
+            }
+        } else if let cell = notificationsCollectionView.dequeueReusableCell(withIdentifier: "notificationCell", for: indexPath) as? notificationTableViewCell {
+            return cell
+        } else {
+            return UITableViewCell()
+        }
         
-        return cell
     }
     
-    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
-        
-    }
-    
-    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
-        <#code#>
-    }
+//    func tableView(_ tableView: UITableView, viewForFooterInSection section: Int) -> UIView? {
+//        let view = LoadingAdditionContentIndicatiorUIView()
+//        view.configureViews()
+//        return view
+//    }
+//
+//    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+//        return 55
+//    }
 }
