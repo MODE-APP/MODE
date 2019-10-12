@@ -1,6 +1,7 @@
 package main
 
 import (
+	"bufio"
 	"bytes"
 	"context"
 	"errors"
@@ -10,13 +11,14 @@ import (
 	"net"
 	"os"
 
-	pb "MODE/servers/backend/networking/proto/generated"
+	pb "MODE/servers/backend/networking/proto/generated/protos"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/peer"
 )
 
 type server struct{}
+
 type picture struct {
 	pictureContent []byte
 	location       string
@@ -35,9 +37,11 @@ func main() {
 	pb.RegisterMessagingServer(Serv, &server{})
 	pb.RegisterHeartbeatingServer(Serv, &server{})
 	pb.RegisterPictureUploadingServer(Serv, &server{})
+	go waitForCloseCommand()
 	if err := Serv.Serve(lis); err != nil {
 		log.Fatalf("Failed to serve: %v", err)
 	}
+
 }
 
 func eCheck(err error) {
@@ -97,18 +101,15 @@ func (s *server) UploadPicture(stream pb.PictureUploading_UploadPictureServer) e
 	}
 }
 
-func (s *server) SendMessage(ctx context.Context, in *pb.Message) (*pb.Status, error) {
-	log.Printf("Received: %v", in.GetTextMessage())
+func (s *server) SendMessage(ctx context.Context, in *pb.UserMessage) (*pb.Status, error) {
+	log.Printf("Message: %v       Destination: %v", in.GetMessage(), in.GetDestination())
 	return &pb.Status{Message: "Server received your message.", Code: pb.StatusCode_Success}, nil
 }
 
-func (s *server) CheckMessageStatus(ctx context.Context, in *pb.Message) (*pb.Status, error) {
-	return &pb.Status{Message: "Server received your message.", Code: pb.StatusCode_Success}, nil
-}
-func (s *server) RetrieveMessages(message *pb.Message, stream pb.Messaging_RetrieveMessagesServer) error {
+func (s *server) UpdateInbox(mostRecentTime *pb.LastUpdateTime, stream pb.Messaging_UpdateInboxServer) error {
 	return nil
 }
-func (s *server) ChangeMessageStatus(ctx context.Context, in *pb.Message) (*pb.Status, error) {
+func (s *server) ChangeMessageStatus(ctx context.Context, in *pb.UserMessage) (*pb.Status, error) {
 	return &pb.Status{Message: "Server received your message.", Code: pb.StatusCode_Success}, nil
 }
 
@@ -139,4 +140,16 @@ func (Pic *picture) writePictureToLocation() error {
 	}
 	fmt.Println(l, "bytes written successfully")
 	return nil
+}
+
+func waitForCloseCommand(server *grpc.Server) {
+	scanner := bufio.NewScanner(os.Stdin)
+	for scanner.Scan() {
+		if scanner.Text() == "close" {
+			closeServer()
+		}
+	}
+	if scanner.Err() != nil {
+		panic(err)
+	}
 }

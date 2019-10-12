@@ -2,49 +2,65 @@ syntax = "proto3";
 package protos;
 
 
+service Messaging {
+	rpc FetchMessages(ConversationFetch) returns (stream Message){}
+	rpc SendMessage(Message) returns (Status){}
+	rpc GetMessageStatus(stream Message) returns (stream MessageStatus){}
+	
+}
+
 service Commenting {
-	rpc PostComment(Message) returns (Status) {}
-	rpc DeleteComment(Message) returns (Status) {}
-	rpc EditComment(Message) returns (Status) {}
+	rpc PostComment(Comment) returns (Status) {}
+	rpc DeleteComment(Comment) returns (Status) {}
+	rpc EditComment(Comment) returns (Status) {}
 }
 
+service ProfileManaging{
+	rpc GetProfile(Username) returns (Profile){}
+	rpc FollowUnFollow(Username) returns (Status){}
+	rpc ChangePrivacy(Username) returns (Status){}
+	rpc ProfilePictureFeed(stream ProfileStream) returns (stream Picture){}
+	rpc GetProfilePicture(Username) returns (Picture){}
+	//Need services for editing profile
 
-service Heartbeating {
-	rpc TradeHeartbeat(Beat) returns (Status) {}
 }
 
-message Beat {
-	bytes Beat = 1;
+service Updating {
+	rpc UpdateNotifications(NotificationBox) returns (NotificationBox){}
+	rpc UpdateLikes(LikeBox) returns (LikeBox){}
+	rpc UpdateComments(CommentBox) returns (CommentBox){}
+	rpc UpdateMessages(MessageBox) returns (MessageBox){}
+	rpc UpdateFeed(FeedBox) returns (FeedBox){}
+	rpc BackgroundNotifications(stream Beat) returns (stream Notification){}
 }
 
-service PictureUploading {
-	rpc UploadPicture(stream Chunk) returns (Status);
+message Message {
+	string text = 1;
+	oneof course {
+		User username = 2;
+		Groupchat groupchat =3;
+	}
+	MessageStatus status = 4;
+	int64 unixTime = 5;
+
 }
 
-message Chunk {
-	oneof ChunkContent {
-	bytes Content = 1;
-	string Location = 2;
-	string TextPost = 3;
-	int64 Checksum = 4;
+message MessageStatus {
+	enum StatusCode{
+		SENT = 0;
+		DELIVERED = 1;
+		READ = 2;
 	}
 }
 
-enum StatusCode {
-	Unknown = 0;
-	Success = 1;
-	Failed = 2;
+message User {
+
 }
 
-message Status {
-	string Message = 1;
-	StatusCode Code = 2;
+message Groupchat {
+
 }
 
-service PictureDownloading {
-	rpc DownloadPicture(PictureLocation) returns (stream Chunk);
-}
-
-message PictureLocation {
-	string Location = 1;
+message GeneralStatus {
+	
 }
