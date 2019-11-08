@@ -12,17 +12,28 @@ service Essential {
 *Token Security RPC
 */
 service TokenSecurity{
-	rpc RequestToken(UnsignedToken) returns (SignedToken){}
+	rpc RequestToken(Credentials) returns (SignedToken){}
 }
 
-message UnsignedToken{
-	int64 hashToken = 2;
+message Credentials{
+	string username = 1;
+	string password = 2;
 }
 
 message SignedToken{
-	int64 hash = 1;
-	User username = 2;
-
+	message Header {
+		string alg = 1;
+		string type = 2;
+	}
+	Header header = 1;
+	message Payload {
+		string username = 1;
+	}
+	Payload payload = 2;
+	message Signature {
+		string signature = 1;
+	}
+	Signature signature = 3;
 }
 
 /**

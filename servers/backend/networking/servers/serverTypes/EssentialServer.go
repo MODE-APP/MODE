@@ -5,6 +5,7 @@ import (
 	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"io/ioutil"
+	"log"
 	"net"
 
 	"google.golang.org/grpc"
@@ -39,8 +40,10 @@ func (serv *EssentialServer) Serve() error {
 func (*EssentialServer) FetchCertificate(ctx context.Context, info *proto.Info) (*proto.File, error) {
 	buf, err := ioutil.ReadFile("/home/arline/go/src/MODE/servers/backend/certs/ModeCertificate.crt")
 	if err != nil {
+		log.Println("err wasnt nil")
 		return nil, err
 	}
+	log.Println("found cert successfully")
 	return &proto.File{
 		FileBytes: buf, FileName: "MODE_CERT.crt", Checksum: 0}, nil
 }
