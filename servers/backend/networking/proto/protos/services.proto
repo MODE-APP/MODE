@@ -1,37 +1,38 @@
 syntax = "proto3";
 package protos;
+/**
+*Essential RPC
+*/
 
+service Essential {
+	rpc FetchCertificate(Info) returns (File){}
+}
 
+/**
+*Token Security RPC
+*/
+service TokenSecurity{
+	rpc RequestToken(UnsignedToken) returns (SignedToken){}
+}
+
+message UnsignedToken{
+	int64 hashToken = 2;
+}
+
+message SignedToken{
+	int64 hash = 1;
+	User username = 2;
+
+}
+
+/**
+*Messaging RPC
+*/
 service Messaging {
-	rpc FetchMessages(ConversationFetch) returns (stream Message){}
-	rpc SendMessage(Message) returns (Status){}
+	rpc FetchMessages(Info) returns (stream Message){}
+	rpc SendMessage(Message) returns (MessageStatus){}
 	rpc GetMessageStatus(stream Message) returns (stream MessageStatus){}
 	
-}
-
-service Commenting {
-	rpc PostComment(Comment) returns (Status) {}
-	rpc DeleteComment(Comment) returns (Status) {}
-	rpc EditComment(Comment) returns (Status) {}
-}
-
-service ProfileManaging{
-	rpc GetProfile(Username) returns (Profile){}
-	rpc FollowUnFollow(Username) returns (Status){}
-	rpc ChangePrivacy(Username) returns (Status){}
-	rpc ProfilePictureFeed(stream ProfileStream) returns (stream Picture){}
-	rpc GetProfilePicture(Username) returns (Picture){}
-	//Need services for editing profile
-
-}
-
-service Updating {
-	rpc UpdateNotifications(NotificationBox) returns (NotificationBox){}
-	rpc UpdateLikes(LikeBox) returns (LikeBox){}
-	rpc UpdateComments(CommentBox) returns (CommentBox){}
-	rpc UpdateMessages(MessageBox) returns (MessageBox){}
-	rpc UpdateFeed(FeedBox) returns (FeedBox){}
-	rpc BackgroundNotifications(stream Beat) returns (stream Notification){}
 }
 
 message Message {
@@ -41,7 +42,7 @@ message Message {
 		Groupchat groupchat =3;
 	}
 	MessageStatus status = 4;
-	int64 unixTime = 5;
+	int64 identification = 6;
 
 }
 
@@ -50,17 +51,199 @@ message MessageStatus {
 		SENT = 0;
 		DELIVERED = 1;
 		READ = 2;
+		FAILED = 3;
 	}
 }
 
-message User {
 
+
+/*
+*Commenting RPC
+*/
+service Commenting {
+	rpc PostComment(Comment) returns (GeneralStatus) {}
+	rpc DeleteComment(Comment) returns (GeneralStatus) {}
+	rpc EditComment(Comment) returns (GeneralStatus) {}
+}
+
+message Comment {
+	string text = 1;
+	int64 identification = 2;
+	User user = 3;
+	FeedContent picture = 4;
+}
+
+/**
+*Browsing RPC
+*/
+service Browsing{
+	rpc GetProfile(User) returns (Profile){}
+	rpc FollowUnFollow(User) returns (GeneralStatus){}
+	rpc ChangePrivacy(User) returns (GeneralStatus){}
+	rpc GetProfilePicture(User) returns (Picture){}
+	//Need services for editing profile
+
+}
+
+/**
+*FeedContent represents the different types of content that can be displayed on a user's feed
+*/
+message FeedContent{
+	oneof content {
+		Picture picture = 1;
+		Video video = 2;
+	}
+}
+
+/**
+*Profile represents the data held on a user's profile
+*/
+message Profile {
+	User user = 1;
+	Picture profilePicture = 2;
+	repeated FeedContent content = 3;
+	string bio = 4;
+}
+
+
+service Posting {
+	rpc PostComment(Comment) returns (GeneralStatus){}
+	rpc PostFeedContent(FeedContent) returns (GeneralStatus){}
+	
+}
+
+/**
+*Updating RPC
+*/
+service Updating {
+	rpc UpdateNotifications(stream Notification) returns (stream Notification){}
+	rpc UpdateComments(stream Notification) returns (stream Comment){}
+	rpc UpdateMessages(stream Notification) returns (stream Message){}
+	rpc BackgroundNotifications(stream Info) returns (stream Notification){}
+}
+
+
+/**
+*Messages not tied to specific rpc
+*/
+
+/**
+*Used as a signal in bi-directional streaming to indicate the server sending the next element
+*/
+message GetNext{
+}
+
+/**
+*Represents a follow from one user to another
+*/
+message Follow {
+	User user = 1;
+}
+
+/**
+*Represents a like directed at a picture or comment
+*/
+message Like{
+	oneof likedContent{
+		Picture picture = 1;
+		Comment comment = 2;
+	}
+}
+
+/**
+*Represents a tag done by a user to a separate user
+*/
+message Tag{
+	oneof TagLocation{
+		Picture picture = 1;
+		Comment comment = 2;
+	}
+	User user = 3;
+}
+
+/**
+*Notification represents the kind of notifications given to users
+*/
+message Notification{
+	oneof type {
+		Like like = 1;
+		Message message = 2;
+		Tag tag = 3;
+		Comment comment = 4;
+		string custom = 5;
+	}
+}
+
+/**
+*Picture represents a picture file, its identifiers, and its comments attached
+*/
+message Picture {
+	File contentFile = 1;
+	int64 identification = 2;
+	repeated Comment comments = 3;
+}
+
+/**
+*Video represents a video file, its identifiers, the thumbnail, and its comments attached
+*/
+message Video {
+	File contentFile = 1;
+	int64 identifcation = 2;
+	Picture thumbnail = 3;
+	repeated Comment comments = 4;
+}
+
+
+/**
+*Identifiers represents the common identifiers used by database and client
+*/
+message Identifiers{
+	oneof identifiers{
+		User user = 1;
+		Groupchat groupchat = 2;
+		int64 identificationHash = 3;
+	}
+}
+
+
+
+
+
+message User {
+	string username = 1;
 }
 
 message Groupchat {
-
+	repeated User users=1;
 }
 
 message GeneralStatus {
-	
+	enum StatusCode {
+		OK = 0;
+		FAILED = 1;
+		UNKNOWN = 2;
+		PERMISSION_DENIED = 3;
+		UNAUTHENTICATED = 4;
+		UNIMPLEMENTED = 5;
+		INTERNAL = 6;
+		CANCELLED = 7;
+	}
+}
+
+message Info {
+
+}
+
+message File{
+	bytes fileBytes = 1;
+	string fileName = 2;
+	int64 checksum = 3;
+}
+
+message StreamedFileChunk{
+	oneof ChunkContent{
+		bytes fileBytes = 1;
+		string fileName = 2;
+		int64 checksum = 3;
+	}
 }

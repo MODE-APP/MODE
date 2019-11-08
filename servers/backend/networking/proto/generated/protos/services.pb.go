@@ -8,25 +8,34 @@ It is generated from these files:
 	protos/services.proto
 
 It has these top-level messages:
-	LastUpdateTime
-	UserMessage
+	Message
+	MessageStatus
 	Comment
-	Beat
-	Chunk
-	Status
-	PictureLocation
+	FeedContent
+	Profile
+	GetNext
+	Follow
+	Like
+	Tag
+	Notification
+	Picture
+	Video
+	Identifiers
+	User
+	Groupchat
+	GeneralStatus
+	Info
+	File
+	StreamedFileChunk
 */
 package protos
 
+import proto "github.com/golang/protobuf/proto"
+import fmt "fmt"
+import math "math"
+
 import (
-	fmt "fmt"
-
-	proto "github.com/golang/protobuf/proto"
-
-	math "math"
-
 	context "golang.org/x/net/context"
-
 	grpc "google.golang.org/grpc"
 )
 
@@ -41,201 +50,208 @@ var _ = math.Inf
 // proto package needs to be updated.
 const _ = proto.ProtoPackageIsVersion2 // please upgrade the proto package
 
-type StatusCode int32
+type MessageStatus_StatusCode int32
 
 const (
-	StatusCode_Unknown StatusCode = 0
-	StatusCode_Success StatusCode = 1
-	StatusCode_Failed  StatusCode = 2
+	MessageStatus_SENT      MessageStatus_StatusCode = 0
+	MessageStatus_DELIVERED MessageStatus_StatusCode = 1
+	MessageStatus_READ      MessageStatus_StatusCode = 2
+	MessageStatus_FAILED    MessageStatus_StatusCode = 3
 )
 
-var StatusCode_name = map[int32]string{
-	0: "Unknown",
-	1: "Success",
-	2: "Failed",
+var MessageStatus_StatusCode_name = map[int32]string{
+	0: "SENT",
+	1: "DELIVERED",
+	2: "READ",
+	3: "FAILED",
 }
-var StatusCode_value = map[string]int32{
-	"Unknown": 0,
-	"Success": 1,
-	"Failed":  2,
-}
-
-func (x StatusCode) String() string {
-	return proto.EnumName(StatusCode_name, int32(x))
-}
-func (StatusCode) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
-
-type LastUpdateTime struct {
-	Time string `protobuf:"bytes,1,opt,name=Time" json:"Time,omitempty"`
+var MessageStatus_StatusCode_value = map[string]int32{
+	"SENT":      0,
+	"DELIVERED": 1,
+	"READ":      2,
+	"FAILED":    3,
 }
 
-func (m *LastUpdateTime) Reset()                    { *m = LastUpdateTime{} }
-func (m *LastUpdateTime) String() string            { return proto.CompactTextString(m) }
-func (*LastUpdateTime) ProtoMessage()               {}
-func (*LastUpdateTime) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+func (x MessageStatus_StatusCode) String() string {
+	return proto.EnumName(MessageStatus_StatusCode_name, int32(x))
+}
+func (MessageStatus_StatusCode) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{1, 0} }
 
-func (m *LastUpdateTime) GetTime() string {
+type GeneralStatus_StatusCode int32
+
+const (
+	GeneralStatus_OK                GeneralStatus_StatusCode = 0
+	GeneralStatus_FAILED            GeneralStatus_StatusCode = 1
+	GeneralStatus_UNKNOWN           GeneralStatus_StatusCode = 2
+	GeneralStatus_PERMISSION_DENIED GeneralStatus_StatusCode = 3
+	GeneralStatus_UNAUTHENTICATED   GeneralStatus_StatusCode = 4
+	GeneralStatus_UNIMPLEMENTED     GeneralStatus_StatusCode = 5
+	GeneralStatus_INTERNAL          GeneralStatus_StatusCode = 6
+	GeneralStatus_CANCELLED         GeneralStatus_StatusCode = 7
+)
+
+var GeneralStatus_StatusCode_name = map[int32]string{
+	0: "OK",
+	1: "FAILED",
+	2: "UNKNOWN",
+	3: "PERMISSION_DENIED",
+	4: "UNAUTHENTICATED",
+	5: "UNIMPLEMENTED",
+	6: "INTERNAL",
+	7: "CANCELLED",
+}
+var GeneralStatus_StatusCode_value = map[string]int32{
+	"OK":                0,
+	"FAILED":            1,
+	"UNKNOWN":           2,
+	"PERMISSION_DENIED": 3,
+	"UNAUTHENTICATED":   4,
+	"UNIMPLEMENTED":     5,
+	"INTERNAL":          6,
+	"CANCELLED":         7,
+}
+
+func (x GeneralStatus_StatusCode) String() string {
+	return proto.EnumName(GeneralStatus_StatusCode_name, int32(x))
+}
+func (GeneralStatus_StatusCode) EnumDescriptor() ([]byte, []int) { return fileDescriptor0, []int{15, 0} }
+
+type Message struct {
+	Text string `protobuf:"bytes,1,opt,name=text" json:"text,omitempty"`
+	// Types that are valid to be assigned to Course:
+	//	*Message_Username
+	//	*Message_Groupchat
+	Course         isMessage_Course `protobuf_oneof:"course"`
+	Status         *MessageStatus   `protobuf:"bytes,4,opt,name=status" json:"status,omitempty"`
+	Identification int64            `protobuf:"varint,6,opt,name=identification" json:"identification,omitempty"`
+}
+
+func (m *Message) Reset()                    { *m = Message{} }
+func (m *Message) String() string            { return proto.CompactTextString(m) }
+func (*Message) ProtoMessage()               {}
+func (*Message) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{0} }
+
+type isMessage_Course interface{ isMessage_Course() }
+
+type Message_Username struct {
+	Username *User `protobuf:"bytes,2,opt,name=username,oneof"`
+}
+type Message_Groupchat struct {
+	Groupchat *Groupchat `protobuf:"bytes,3,opt,name=groupchat,oneof"`
+}
+
+func (*Message_Username) isMessage_Course()  {}
+func (*Message_Groupchat) isMessage_Course() {}
+
+func (m *Message) GetCourse() isMessage_Course {
 	if m != nil {
-		return m.Time
-	}
-	return ""
-}
-
-type UserMessage struct {
-	Message     string `protobuf:"bytes,1,opt,name=Message" json:"Message,omitempty"`
-	Destination string `protobuf:"bytes,2,opt,name=Destination" json:"Destination,omitempty"`
-}
-
-func (m *UserMessage) Reset()                    { *m = UserMessage{} }
-func (m *UserMessage) String() string            { return proto.CompactTextString(m) }
-func (*UserMessage) ProtoMessage()               {}
-func (*UserMessage) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
-
-func (m *UserMessage) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-func (m *UserMessage) GetDestination() string {
-	if m != nil {
-		return m.Destination
-	}
-	return ""
-}
-
-type Comment struct {
-	// Types that are valid to be assigned to MessageData:
-	//	*Comment_Comment
-	//	*Comment_Purpose
-	//	*Comment_Location
-	MessageData isComment_MessageData `protobuf_oneof:"messageData"`
-}
-
-func (m *Comment) Reset()                    { *m = Comment{} }
-func (m *Comment) String() string            { return proto.CompactTextString(m) }
-func (*Comment) ProtoMessage()               {}
-func (*Comment) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
-
-type isComment_MessageData interface{ isComment_MessageData() }
-
-type Comment_Comment struct {
-	Comment string `protobuf:"bytes,1,opt,name=Comment,oneof"`
-}
-type Comment_Purpose struct {
-	Purpose string `protobuf:"bytes,2,opt,name=Purpose,oneof"`
-}
-type Comment_Location struct {
-	Location string `protobuf:"bytes,3,opt,name=location,oneof"`
-}
-
-func (*Comment_Comment) isComment_MessageData()  {}
-func (*Comment_Purpose) isComment_MessageData()  {}
-func (*Comment_Location) isComment_MessageData() {}
-
-func (m *Comment) GetMessageData() isComment_MessageData {
-	if m != nil {
-		return m.MessageData
+		return m.Course
 	}
 	return nil
 }
 
-func (m *Comment) GetComment() string {
-	if x, ok := m.GetMessageData().(*Comment_Comment); ok {
-		return x.Comment
+func (m *Message) GetText() string {
+	if m != nil {
+		return m.Text
 	}
 	return ""
 }
 
-func (m *Comment) GetPurpose() string {
-	if x, ok := m.GetMessageData().(*Comment_Purpose); ok {
-		return x.Purpose
+func (m *Message) GetUsername() *User {
+	if x, ok := m.GetCourse().(*Message_Username); ok {
+		return x.Username
 	}
-	return ""
+	return nil
 }
 
-func (m *Comment) GetLocation() string {
-	if x, ok := m.GetMessageData().(*Comment_Location); ok {
-		return x.Location
+func (m *Message) GetGroupchat() *Groupchat {
+	if x, ok := m.GetCourse().(*Message_Groupchat); ok {
+		return x.Groupchat
 	}
-	return ""
+	return nil
+}
+
+func (m *Message) GetStatus() *MessageStatus {
+	if m != nil {
+		return m.Status
+	}
+	return nil
+}
+
+func (m *Message) GetIdentification() int64 {
+	if m != nil {
+		return m.Identification
+	}
+	return 0
 }
 
 // XXX_OneofFuncs is for the internal use of the proto package.
-func (*Comment) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Comment_OneofMarshaler, _Comment_OneofUnmarshaler, _Comment_OneofSizer, []interface{}{
-		(*Comment_Comment)(nil),
-		(*Comment_Purpose)(nil),
-		(*Comment_Location)(nil),
+func (*Message) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Message_OneofMarshaler, _Message_OneofUnmarshaler, _Message_OneofSizer, []interface{}{
+		(*Message_Username)(nil),
+		(*Message_Groupchat)(nil),
 	}
 }
 
-func _Comment_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Comment)
-	// messageData
-	switch x := m.MessageData.(type) {
-	case *Comment_Comment:
-		b.EncodeVarint(1<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Comment)
-	case *Comment_Purpose:
+func _Message_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Message)
+	// course
+	switch x := m.Course.(type) {
+	case *Message_Username:
 		b.EncodeVarint(2<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Purpose)
-	case *Comment_Location:
+		if err := b.EncodeMessage(x.Username); err != nil {
+			return err
+		}
+	case *Message_Groupchat:
 		b.EncodeVarint(3<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Location)
+		if err := b.EncodeMessage(x.Groupchat); err != nil {
+			return err
+		}
 	case nil:
 	default:
-		return fmt.Errorf("Comment.MessageData has unexpected type %T", x)
+		return fmt.Errorf("Message.Course has unexpected type %T", x)
 	}
 	return nil
 }
 
-func _Comment_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Comment)
+func _Message_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Message)
 	switch tag {
-	case 1: // messageData.Comment
+	case 2: // course.username
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		x, err := b.DecodeStringBytes()
-		m.MessageData = &Comment_Comment{x}
+		msg := new(User)
+		err := b.DecodeMessage(msg)
+		m.Course = &Message_Username{msg}
 		return true, err
-	case 2: // messageData.Purpose
+	case 3: // course.groupchat
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		x, err := b.DecodeStringBytes()
-		m.MessageData = &Comment_Purpose{x}
-		return true, err
-	case 3: // messageData.location
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.MessageData = &Comment_Location{x}
+		msg := new(Groupchat)
+		err := b.DecodeMessage(msg)
+		m.Course = &Message_Groupchat{msg}
 		return true, err
 	default:
 		return false, nil
 	}
 }
 
-func _Comment_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Comment)
-	// messageData
-	switch x := m.MessageData.(type) {
-	case *Comment_Comment:
-		n += proto.SizeVarint(1<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Comment)))
-		n += len(x.Comment)
-	case *Comment_Purpose:
+func _Message_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Message)
+	// course
+	switch x := m.Course.(type) {
+	case *Message_Username:
+		s := proto.Size(x.Username)
 		n += proto.SizeVarint(2<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Purpose)))
-		n += len(x.Purpose)
-	case *Comment_Location:
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Message_Groupchat:
+		s := proto.Size(x.Groupchat)
 		n += proto.SizeVarint(3<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Location)))
-		n += len(x.Location)
+		n += proto.SizeVarint(uint64(s))
+		n += s
 	case nil:
 	default:
 		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
@@ -243,178 +259,1137 @@ func _Comment_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-type Beat struct {
-	Beat []byte `protobuf:"bytes,1,opt,name=Beat,proto3" json:"Beat,omitempty"`
+type MessageStatus struct {
 }
 
-func (m *Beat) Reset()                    { *m = Beat{} }
-func (m *Beat) String() string            { return proto.CompactTextString(m) }
-func (*Beat) ProtoMessage()               {}
-func (*Beat) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+func (m *MessageStatus) Reset()                    { *m = MessageStatus{} }
+func (m *MessageStatus) String() string            { return proto.CompactTextString(m) }
+func (*MessageStatus) ProtoMessage()               {}
+func (*MessageStatus) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{1} }
 
-func (m *Beat) GetBeat() []byte {
+type Comment struct {
+	Text           string       `protobuf:"bytes,1,opt,name=text" json:"text,omitempty"`
+	Identification int64        `protobuf:"varint,2,opt,name=identification" json:"identification,omitempty"`
+	User           *User        `protobuf:"bytes,3,opt,name=user" json:"user,omitempty"`
+	Picture        *FeedContent `protobuf:"bytes,4,opt,name=picture" json:"picture,omitempty"`
+}
+
+func (m *Comment) Reset()                    { *m = Comment{} }
+func (m *Comment) String() string            { return proto.CompactTextString(m) }
+func (*Comment) ProtoMessage()               {}
+func (*Comment) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{2} }
+
+func (m *Comment) GetText() string {
 	if m != nil {
-		return m.Beat
-	}
-	return nil
-}
-
-type Chunk struct {
-	// Types that are valid to be assigned to ChunkContent:
-	//	*Chunk_Content
-	//	*Chunk_Location
-	//	*Chunk_TextPost
-	//	*Chunk_Checksum
-	ChunkContent isChunk_ChunkContent `protobuf_oneof:"ChunkContent"`
-}
-
-func (m *Chunk) Reset()                    { *m = Chunk{} }
-func (m *Chunk) String() string            { return proto.CompactTextString(m) }
-func (*Chunk) ProtoMessage()               {}
-func (*Chunk) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
-
-type isChunk_ChunkContent interface{ isChunk_ChunkContent() }
-
-type Chunk_Content struct {
-	Content []byte `protobuf:"bytes,1,opt,name=Content,proto3,oneof"`
-}
-type Chunk_Location struct {
-	Location string `protobuf:"bytes,2,opt,name=Location,oneof"`
-}
-type Chunk_TextPost struct {
-	TextPost string `protobuf:"bytes,3,opt,name=TextPost,oneof"`
-}
-type Chunk_Checksum struct {
-	Checksum int64 `protobuf:"varint,4,opt,name=Checksum,oneof"`
-}
-
-func (*Chunk_Content) isChunk_ChunkContent()  {}
-func (*Chunk_Location) isChunk_ChunkContent() {}
-func (*Chunk_TextPost) isChunk_ChunkContent() {}
-func (*Chunk_Checksum) isChunk_ChunkContent() {}
-
-func (m *Chunk) GetChunkContent() isChunk_ChunkContent {
-	if m != nil {
-		return m.ChunkContent
-	}
-	return nil
-}
-
-func (m *Chunk) GetContent() []byte {
-	if x, ok := m.GetChunkContent().(*Chunk_Content); ok {
-		return x.Content
-	}
-	return nil
-}
-
-func (m *Chunk) GetLocation() string {
-	if x, ok := m.GetChunkContent().(*Chunk_Location); ok {
-		return x.Location
+		return m.Text
 	}
 	return ""
 }
 
-func (m *Chunk) GetTextPost() string {
-	if x, ok := m.GetChunkContent().(*Chunk_TextPost); ok {
-		return x.TextPost
-	}
-	return ""
-}
-
-func (m *Chunk) GetChecksum() int64 {
-	if x, ok := m.GetChunkContent().(*Chunk_Checksum); ok {
-		return x.Checksum
+func (m *Comment) GetIdentification() int64 {
+	if m != nil {
+		return m.Identification
 	}
 	return 0
 }
 
-// XXX_OneofFuncs is for the internal use of the proto package.
-func (*Chunk) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
-	return _Chunk_OneofMarshaler, _Chunk_OneofUnmarshaler, _Chunk_OneofSizer, []interface{}{
-		(*Chunk_Content)(nil),
-		(*Chunk_Location)(nil),
-		(*Chunk_TextPost)(nil),
-		(*Chunk_Checksum)(nil),
-	}
-}
-
-func _Chunk_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
-	m := msg.(*Chunk)
-	// ChunkContent
-	switch x := m.ChunkContent.(type) {
-	case *Chunk_Content:
-		b.EncodeVarint(1<<3 | proto.WireBytes)
-		b.EncodeRawBytes(x.Content)
-	case *Chunk_Location:
-		b.EncodeVarint(2<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.Location)
-	case *Chunk_TextPost:
-		b.EncodeVarint(3<<3 | proto.WireBytes)
-		b.EncodeStringBytes(x.TextPost)
-	case *Chunk_Checksum:
-		b.EncodeVarint(4<<3 | proto.WireVarint)
-		b.EncodeVarint(uint64(x.Checksum))
-	case nil:
-	default:
-		return fmt.Errorf("Chunk.ChunkContent has unexpected type %T", x)
+func (m *Comment) GetUser() *User {
+	if m != nil {
+		return m.User
 	}
 	return nil
 }
 
-func _Chunk_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
-	m := msg.(*Chunk)
+func (m *Comment) GetPicture() *FeedContent {
+	if m != nil {
+		return m.Picture
+	}
+	return nil
+}
+
+// *
+// FeedContent represents the different types of content that can be displayed on a user's feed
+type FeedContent struct {
+	// Types that are valid to be assigned to Content:
+	//	*FeedContent_Picture
+	//	*FeedContent_Video
+	Content isFeedContent_Content `protobuf_oneof:"content"`
+}
+
+func (m *FeedContent) Reset()                    { *m = FeedContent{} }
+func (m *FeedContent) String() string            { return proto.CompactTextString(m) }
+func (*FeedContent) ProtoMessage()               {}
+func (*FeedContent) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{3} }
+
+type isFeedContent_Content interface{ isFeedContent_Content() }
+
+type FeedContent_Picture struct {
+	Picture *Picture `protobuf:"bytes,1,opt,name=picture,oneof"`
+}
+type FeedContent_Video struct {
+	Video *Video `protobuf:"bytes,2,opt,name=video,oneof"`
+}
+
+func (*FeedContent_Picture) isFeedContent_Content() {}
+func (*FeedContent_Video) isFeedContent_Content()   {}
+
+func (m *FeedContent) GetContent() isFeedContent_Content {
+	if m != nil {
+		return m.Content
+	}
+	return nil
+}
+
+func (m *FeedContent) GetPicture() *Picture {
+	if x, ok := m.GetContent().(*FeedContent_Picture); ok {
+		return x.Picture
+	}
+	return nil
+}
+
+func (m *FeedContent) GetVideo() *Video {
+	if x, ok := m.GetContent().(*FeedContent_Video); ok {
+		return x.Video
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*FeedContent) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _FeedContent_OneofMarshaler, _FeedContent_OneofUnmarshaler, _FeedContent_OneofSizer, []interface{}{
+		(*FeedContent_Picture)(nil),
+		(*FeedContent_Video)(nil),
+	}
+}
+
+func _FeedContent_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*FeedContent)
+	// content
+	switch x := m.Content.(type) {
+	case *FeedContent_Picture:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Picture); err != nil {
+			return err
+		}
+	case *FeedContent_Video:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Video); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("FeedContent.Content has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _FeedContent_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*FeedContent)
 	switch tag {
-	case 1: // ChunkContent.Content
+	case 1: // content.picture
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		x, err := b.DecodeRawBytes(true)
-		m.ChunkContent = &Chunk_Content{x}
+		msg := new(Picture)
+		err := b.DecodeMessage(msg)
+		m.Content = &FeedContent_Picture{msg}
 		return true, err
-	case 2: // ChunkContent.Location
+	case 2: // content.video
 		if wire != proto.WireBytes {
 			return true, proto.ErrInternalBadWireType
 		}
-		x, err := b.DecodeStringBytes()
-		m.ChunkContent = &Chunk_Location{x}
-		return true, err
-	case 3: // ChunkContent.TextPost
-		if wire != proto.WireBytes {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeStringBytes()
-		m.ChunkContent = &Chunk_TextPost{x}
-		return true, err
-	case 4: // ChunkContent.Checksum
-		if wire != proto.WireVarint {
-			return true, proto.ErrInternalBadWireType
-		}
-		x, err := b.DecodeVarint()
-		m.ChunkContent = &Chunk_Checksum{int64(x)}
+		msg := new(Video)
+		err := b.DecodeMessage(msg)
+		m.Content = &FeedContent_Video{msg}
 		return true, err
 	default:
 		return false, nil
 	}
 }
 
-func _Chunk_OneofSizer(msg proto.Message) (n int) {
-	m := msg.(*Chunk)
+func _FeedContent_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*FeedContent)
+	// content
+	switch x := m.Content.(type) {
+	case *FeedContent_Picture:
+		s := proto.Size(x.Picture)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *FeedContent_Video:
+		s := proto.Size(x.Video)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// *
+// Profile represents the data held on a user's profile
+type Profile struct {
+	User           *User          `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
+	ProfilePicture *Picture       `protobuf:"bytes,2,opt,name=profilePicture" json:"profilePicture,omitempty"`
+	Content        []*FeedContent `protobuf:"bytes,3,rep,name=content" json:"content,omitempty"`
+	Bio            string         `protobuf:"bytes,4,opt,name=bio" json:"bio,omitempty"`
+}
+
+func (m *Profile) Reset()                    { *m = Profile{} }
+func (m *Profile) String() string            { return proto.CompactTextString(m) }
+func (*Profile) ProtoMessage()               {}
+func (*Profile) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{4} }
+
+func (m *Profile) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+func (m *Profile) GetProfilePicture() *Picture {
+	if m != nil {
+		return m.ProfilePicture
+	}
+	return nil
+}
+
+func (m *Profile) GetContent() []*FeedContent {
+	if m != nil {
+		return m.Content
+	}
+	return nil
+}
+
+func (m *Profile) GetBio() string {
+	if m != nil {
+		return m.Bio
+	}
+	return ""
+}
+
+// *
+// Used as a signal in bi-directional streaming to indicate the server sending the next element
+type GetNext struct {
+}
+
+func (m *GetNext) Reset()                    { *m = GetNext{} }
+func (m *GetNext) String() string            { return proto.CompactTextString(m) }
+func (*GetNext) ProtoMessage()               {}
+func (*GetNext) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
+
+// *
+// Represents a follow from one user to another
+type Follow struct {
+	User *User `protobuf:"bytes,1,opt,name=user" json:"user,omitempty"`
+}
+
+func (m *Follow) Reset()                    { *m = Follow{} }
+func (m *Follow) String() string            { return proto.CompactTextString(m) }
+func (*Follow) ProtoMessage()               {}
+func (*Follow) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
+
+func (m *Follow) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+// *
+// Represents a like directed at a picture or comment
+type Like struct {
+	// Types that are valid to be assigned to LikedContent:
+	//	*Like_Picture
+	//	*Like_Comment
+	LikedContent isLike_LikedContent `protobuf_oneof:"likedContent"`
+}
+
+func (m *Like) Reset()                    { *m = Like{} }
+func (m *Like) String() string            { return proto.CompactTextString(m) }
+func (*Like) ProtoMessage()               {}
+func (*Like) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{7} }
+
+type isLike_LikedContent interface{ isLike_LikedContent() }
+
+type Like_Picture struct {
+	Picture *Picture `protobuf:"bytes,1,opt,name=picture,oneof"`
+}
+type Like_Comment struct {
+	Comment *Comment `protobuf:"bytes,2,opt,name=comment,oneof"`
+}
+
+func (*Like_Picture) isLike_LikedContent() {}
+func (*Like_Comment) isLike_LikedContent() {}
+
+func (m *Like) GetLikedContent() isLike_LikedContent {
+	if m != nil {
+		return m.LikedContent
+	}
+	return nil
+}
+
+func (m *Like) GetPicture() *Picture {
+	if x, ok := m.GetLikedContent().(*Like_Picture); ok {
+		return x.Picture
+	}
+	return nil
+}
+
+func (m *Like) GetComment() *Comment {
+	if x, ok := m.GetLikedContent().(*Like_Comment); ok {
+		return x.Comment
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Like) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Like_OneofMarshaler, _Like_OneofUnmarshaler, _Like_OneofSizer, []interface{}{
+		(*Like_Picture)(nil),
+		(*Like_Comment)(nil),
+	}
+}
+
+func _Like_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Like)
+	// likedContent
+	switch x := m.LikedContent.(type) {
+	case *Like_Picture:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Picture); err != nil {
+			return err
+		}
+	case *Like_Comment:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Comment); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("Like.LikedContent has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Like_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Like)
+	switch tag {
+	case 1: // likedContent.picture
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Picture)
+		err := b.DecodeMessage(msg)
+		m.LikedContent = &Like_Picture{msg}
+		return true, err
+	case 2: // likedContent.comment
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Comment)
+		err := b.DecodeMessage(msg)
+		m.LikedContent = &Like_Comment{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Like_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Like)
+	// likedContent
+	switch x := m.LikedContent.(type) {
+	case *Like_Picture:
+		s := proto.Size(x.Picture)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Like_Comment:
+		s := proto.Size(x.Comment)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// *
+// Represents a tag done by a user to a separate user
+type Tag struct {
+	// Types that are valid to be assigned to TagLocation:
+	//	*Tag_Picture
+	//	*Tag_Comment
+	TagLocation isTag_TagLocation `protobuf_oneof:"TagLocation"`
+	User        *User             `protobuf:"bytes,3,opt,name=user" json:"user,omitempty"`
+}
+
+func (m *Tag) Reset()                    { *m = Tag{} }
+func (m *Tag) String() string            { return proto.CompactTextString(m) }
+func (*Tag) ProtoMessage()               {}
+func (*Tag) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{8} }
+
+type isTag_TagLocation interface{ isTag_TagLocation() }
+
+type Tag_Picture struct {
+	Picture *Picture `protobuf:"bytes,1,opt,name=picture,oneof"`
+}
+type Tag_Comment struct {
+	Comment *Comment `protobuf:"bytes,2,opt,name=comment,oneof"`
+}
+
+func (*Tag_Picture) isTag_TagLocation() {}
+func (*Tag_Comment) isTag_TagLocation() {}
+
+func (m *Tag) GetTagLocation() isTag_TagLocation {
+	if m != nil {
+		return m.TagLocation
+	}
+	return nil
+}
+
+func (m *Tag) GetPicture() *Picture {
+	if x, ok := m.GetTagLocation().(*Tag_Picture); ok {
+		return x.Picture
+	}
+	return nil
+}
+
+func (m *Tag) GetComment() *Comment {
+	if x, ok := m.GetTagLocation().(*Tag_Comment); ok {
+		return x.Comment
+	}
+	return nil
+}
+
+func (m *Tag) GetUser() *User {
+	if m != nil {
+		return m.User
+	}
+	return nil
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Tag) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Tag_OneofMarshaler, _Tag_OneofUnmarshaler, _Tag_OneofSizer, []interface{}{
+		(*Tag_Picture)(nil),
+		(*Tag_Comment)(nil),
+	}
+}
+
+func _Tag_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Tag)
+	// TagLocation
+	switch x := m.TagLocation.(type) {
+	case *Tag_Picture:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Picture); err != nil {
+			return err
+		}
+	case *Tag_Comment:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Comment); err != nil {
+			return err
+		}
+	case nil:
+	default:
+		return fmt.Errorf("Tag.TagLocation has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Tag_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Tag)
+	switch tag {
+	case 1: // TagLocation.picture
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Picture)
+		err := b.DecodeMessage(msg)
+		m.TagLocation = &Tag_Picture{msg}
+		return true, err
+	case 2: // TagLocation.comment
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Comment)
+		err := b.DecodeMessage(msg)
+		m.TagLocation = &Tag_Comment{msg}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Tag_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Tag)
+	// TagLocation
+	switch x := m.TagLocation.(type) {
+	case *Tag_Picture:
+		s := proto.Size(x.Picture)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Tag_Comment:
+		s := proto.Size(x.Comment)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// *
+// Notification represents the kind of notifications given to users
+type Notification struct {
+	// Types that are valid to be assigned to Type:
+	//	*Notification_Like
+	//	*Notification_Message
+	//	*Notification_Tag
+	//	*Notification_Comment
+	//	*Notification_Custom
+	Type isNotification_Type `protobuf_oneof:"type"`
+}
+
+func (m *Notification) Reset()                    { *m = Notification{} }
+func (m *Notification) String() string            { return proto.CompactTextString(m) }
+func (*Notification) ProtoMessage()               {}
+func (*Notification) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{9} }
+
+type isNotification_Type interface{ isNotification_Type() }
+
+type Notification_Like struct {
+	Like *Like `protobuf:"bytes,1,opt,name=like,oneof"`
+}
+type Notification_Message struct {
+	Message *Message `protobuf:"bytes,2,opt,name=message,oneof"`
+}
+type Notification_Tag struct {
+	Tag *Tag `protobuf:"bytes,3,opt,name=tag,oneof"`
+}
+type Notification_Comment struct {
+	Comment *Comment `protobuf:"bytes,4,opt,name=comment,oneof"`
+}
+type Notification_Custom struct {
+	Custom string `protobuf:"bytes,5,opt,name=custom,oneof"`
+}
+
+func (*Notification_Like) isNotification_Type()    {}
+func (*Notification_Message) isNotification_Type() {}
+func (*Notification_Tag) isNotification_Type()     {}
+func (*Notification_Comment) isNotification_Type() {}
+func (*Notification_Custom) isNotification_Type()  {}
+
+func (m *Notification) GetType() isNotification_Type {
+	if m != nil {
+		return m.Type
+	}
+	return nil
+}
+
+func (m *Notification) GetLike() *Like {
+	if x, ok := m.GetType().(*Notification_Like); ok {
+		return x.Like
+	}
+	return nil
+}
+
+func (m *Notification) GetMessage() *Message {
+	if x, ok := m.GetType().(*Notification_Message); ok {
+		return x.Message
+	}
+	return nil
+}
+
+func (m *Notification) GetTag() *Tag {
+	if x, ok := m.GetType().(*Notification_Tag); ok {
+		return x.Tag
+	}
+	return nil
+}
+
+func (m *Notification) GetComment() *Comment {
+	if x, ok := m.GetType().(*Notification_Comment); ok {
+		return x.Comment
+	}
+	return nil
+}
+
+func (m *Notification) GetCustom() string {
+	if x, ok := m.GetType().(*Notification_Custom); ok {
+		return x.Custom
+	}
+	return ""
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Notification) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Notification_OneofMarshaler, _Notification_OneofUnmarshaler, _Notification_OneofSizer, []interface{}{
+		(*Notification_Like)(nil),
+		(*Notification_Message)(nil),
+		(*Notification_Tag)(nil),
+		(*Notification_Comment)(nil),
+		(*Notification_Custom)(nil),
+	}
+}
+
+func _Notification_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Notification)
+	// type
+	switch x := m.Type.(type) {
+	case *Notification_Like:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Like); err != nil {
+			return err
+		}
+	case *Notification_Message:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Message); err != nil {
+			return err
+		}
+	case *Notification_Tag:
+		b.EncodeVarint(3<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Tag); err != nil {
+			return err
+		}
+	case *Notification_Comment:
+		b.EncodeVarint(4<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Comment); err != nil {
+			return err
+		}
+	case *Notification_Custom:
+		b.EncodeVarint(5<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.Custom)
+	case nil:
+	default:
+		return fmt.Errorf("Notification.Type has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Notification_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Notification)
+	switch tag {
+	case 1: // type.like
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Like)
+		err := b.DecodeMessage(msg)
+		m.Type = &Notification_Like{msg}
+		return true, err
+	case 2: // type.message
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Message)
+		err := b.DecodeMessage(msg)
+		m.Type = &Notification_Message{msg}
+		return true, err
+	case 3: // type.tag
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Tag)
+		err := b.DecodeMessage(msg)
+		m.Type = &Notification_Tag{msg}
+		return true, err
+	case 4: // type.comment
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Comment)
+		err := b.DecodeMessage(msg)
+		m.Type = &Notification_Comment{msg}
+		return true, err
+	case 5: // type.custom
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.Type = &Notification_Custom{x}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Notification_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Notification)
+	// type
+	switch x := m.Type.(type) {
+	case *Notification_Like:
+		s := proto.Size(x.Like)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Notification_Message:
+		s := proto.Size(x.Message)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Notification_Tag:
+		s := proto.Size(x.Tag)
+		n += proto.SizeVarint(3<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Notification_Comment:
+		s := proto.Size(x.Comment)
+		n += proto.SizeVarint(4<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Notification_Custom:
+		n += proto.SizeVarint(5<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(len(x.Custom)))
+		n += len(x.Custom)
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+// *
+// Picture represents a picture file, its identifiers, and its comments attached
+type Picture struct {
+	ContentFile    *File      `protobuf:"bytes,1,opt,name=contentFile" json:"contentFile,omitempty"`
+	Identification int64      `protobuf:"varint,2,opt,name=identification" json:"identification,omitempty"`
+	Comments       []*Comment `protobuf:"bytes,3,rep,name=comments" json:"comments,omitempty"`
+}
+
+func (m *Picture) Reset()                    { *m = Picture{} }
+func (m *Picture) String() string            { return proto.CompactTextString(m) }
+func (*Picture) ProtoMessage()               {}
+func (*Picture) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{10} }
+
+func (m *Picture) GetContentFile() *File {
+	if m != nil {
+		return m.ContentFile
+	}
+	return nil
+}
+
+func (m *Picture) GetIdentification() int64 {
+	if m != nil {
+		return m.Identification
+	}
+	return 0
+}
+
+func (m *Picture) GetComments() []*Comment {
+	if m != nil {
+		return m.Comments
+	}
+	return nil
+}
+
+// *
+// Video represents a video file, its identifiers, the thumbnail, and its comments attached
+type Video struct {
+	ContentFile   *File      `protobuf:"bytes,1,opt,name=contentFile" json:"contentFile,omitempty"`
+	Identifcation int64      `protobuf:"varint,2,opt,name=identifcation" json:"identifcation,omitempty"`
+	Thumbnail     *Picture   `protobuf:"bytes,3,opt,name=thumbnail" json:"thumbnail,omitempty"`
+	Comments      []*Comment `protobuf:"bytes,4,rep,name=comments" json:"comments,omitempty"`
+}
+
+func (m *Video) Reset()                    { *m = Video{} }
+func (m *Video) String() string            { return proto.CompactTextString(m) }
+func (*Video) ProtoMessage()               {}
+func (*Video) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{11} }
+
+func (m *Video) GetContentFile() *File {
+	if m != nil {
+		return m.ContentFile
+	}
+	return nil
+}
+
+func (m *Video) GetIdentifcation() int64 {
+	if m != nil {
+		return m.Identifcation
+	}
+	return 0
+}
+
+func (m *Video) GetThumbnail() *Picture {
+	if m != nil {
+		return m.Thumbnail
+	}
+	return nil
+}
+
+func (m *Video) GetComments() []*Comment {
+	if m != nil {
+		return m.Comments
+	}
+	return nil
+}
+
+// *
+// Identifiers represents the common identifiers used by database and client
+type Identifiers struct {
+	// Types that are valid to be assigned to Identifiers:
+	//	*Identifiers_User
+	//	*Identifiers_Groupchat
+	//	*Identifiers_IdentificationHash
+	Identifiers isIdentifiers_Identifiers `protobuf_oneof:"identifiers"`
+}
+
+func (m *Identifiers) Reset()                    { *m = Identifiers{} }
+func (m *Identifiers) String() string            { return proto.CompactTextString(m) }
+func (*Identifiers) ProtoMessage()               {}
+func (*Identifiers) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{12} }
+
+type isIdentifiers_Identifiers interface{ isIdentifiers_Identifiers() }
+
+type Identifiers_User struct {
+	User *User `protobuf:"bytes,1,opt,name=user,oneof"`
+}
+type Identifiers_Groupchat struct {
+	Groupchat *Groupchat `protobuf:"bytes,2,opt,name=groupchat,oneof"`
+}
+type Identifiers_IdentificationHash struct {
+	IdentificationHash int64 `protobuf:"varint,3,opt,name=identificationHash,oneof"`
+}
+
+func (*Identifiers_User) isIdentifiers_Identifiers()               {}
+func (*Identifiers_Groupchat) isIdentifiers_Identifiers()          {}
+func (*Identifiers_IdentificationHash) isIdentifiers_Identifiers() {}
+
+func (m *Identifiers) GetIdentifiers() isIdentifiers_Identifiers {
+	if m != nil {
+		return m.Identifiers
+	}
+	return nil
+}
+
+func (m *Identifiers) GetUser() *User {
+	if x, ok := m.GetIdentifiers().(*Identifiers_User); ok {
+		return x.User
+	}
+	return nil
+}
+
+func (m *Identifiers) GetGroupchat() *Groupchat {
+	if x, ok := m.GetIdentifiers().(*Identifiers_Groupchat); ok {
+		return x.Groupchat
+	}
+	return nil
+}
+
+func (m *Identifiers) GetIdentificationHash() int64 {
+	if x, ok := m.GetIdentifiers().(*Identifiers_IdentificationHash); ok {
+		return x.IdentificationHash
+	}
+	return 0
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*Identifiers) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _Identifiers_OneofMarshaler, _Identifiers_OneofUnmarshaler, _Identifiers_OneofSizer, []interface{}{
+		(*Identifiers_User)(nil),
+		(*Identifiers_Groupchat)(nil),
+		(*Identifiers_IdentificationHash)(nil),
+	}
+}
+
+func _Identifiers_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*Identifiers)
+	// identifiers
+	switch x := m.Identifiers.(type) {
+	case *Identifiers_User:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.User); err != nil {
+			return err
+		}
+	case *Identifiers_Groupchat:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		if err := b.EncodeMessage(x.Groupchat); err != nil {
+			return err
+		}
+	case *Identifiers_IdentificationHash:
+		b.EncodeVarint(3<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.IdentificationHash))
+	case nil:
+	default:
+		return fmt.Errorf("Identifiers.Identifiers has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _Identifiers_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*Identifiers)
+	switch tag {
+	case 1: // identifiers.user
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(User)
+		err := b.DecodeMessage(msg)
+		m.Identifiers = &Identifiers_User{msg}
+		return true, err
+	case 2: // identifiers.groupchat
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		msg := new(Groupchat)
+		err := b.DecodeMessage(msg)
+		m.Identifiers = &Identifiers_Groupchat{msg}
+		return true, err
+	case 3: // identifiers.identificationHash
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.Identifiers = &Identifiers_IdentificationHash{int64(x)}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _Identifiers_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*Identifiers)
+	// identifiers
+	switch x := m.Identifiers.(type) {
+	case *Identifiers_User:
+		s := proto.Size(x.User)
+		n += proto.SizeVarint(1<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Identifiers_Groupchat:
+		s := proto.Size(x.Groupchat)
+		n += proto.SizeVarint(2<<3 | proto.WireBytes)
+		n += proto.SizeVarint(uint64(s))
+		n += s
+	case *Identifiers_IdentificationHash:
+		n += proto.SizeVarint(3<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64(x.IdentificationHash))
+	case nil:
+	default:
+		panic(fmt.Sprintf("proto: unexpected type %T in oneof", x))
+	}
+	return n
+}
+
+type User struct {
+	Username string `protobuf:"bytes,1,opt,name=username" json:"username,omitempty"`
+}
+
+func (m *User) Reset()                    { *m = User{} }
+func (m *User) String() string            { return proto.CompactTextString(m) }
+func (*User) ProtoMessage()               {}
+func (*User) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{13} }
+
+func (m *User) GetUsername() string {
+	if m != nil {
+		return m.Username
+	}
+	return ""
+}
+
+type Groupchat struct {
+	Users []*User `protobuf:"bytes,1,rep,name=users" json:"users,omitempty"`
+}
+
+func (m *Groupchat) Reset()                    { *m = Groupchat{} }
+func (m *Groupchat) String() string            { return proto.CompactTextString(m) }
+func (*Groupchat) ProtoMessage()               {}
+func (*Groupchat) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{14} }
+
+func (m *Groupchat) GetUsers() []*User {
+	if m != nil {
+		return m.Users
+	}
+	return nil
+}
+
+type GeneralStatus struct {
+}
+
+func (m *GeneralStatus) Reset()                    { *m = GeneralStatus{} }
+func (m *GeneralStatus) String() string            { return proto.CompactTextString(m) }
+func (*GeneralStatus) ProtoMessage()               {}
+func (*GeneralStatus) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{15} }
+
+type Info struct {
+}
+
+func (m *Info) Reset()                    { *m = Info{} }
+func (m *Info) String() string            { return proto.CompactTextString(m) }
+func (*Info) ProtoMessage()               {}
+func (*Info) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{16} }
+
+type File struct {
+	FileBytes []byte `protobuf:"bytes,1,opt,name=fileBytes,proto3" json:"fileBytes,omitempty"`
+	FileName  string `protobuf:"bytes,2,opt,name=fileName" json:"fileName,omitempty"`
+	Checksum  int64  `protobuf:"varint,3,opt,name=checksum" json:"checksum,omitempty"`
+}
+
+func (m *File) Reset()                    { *m = File{} }
+func (m *File) String() string            { return proto.CompactTextString(m) }
+func (*File) ProtoMessage()               {}
+func (*File) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{17} }
+
+func (m *File) GetFileBytes() []byte {
+	if m != nil {
+		return m.FileBytes
+	}
+	return nil
+}
+
+func (m *File) GetFileName() string {
+	if m != nil {
+		return m.FileName
+	}
+	return ""
+}
+
+func (m *File) GetChecksum() int64 {
+	if m != nil {
+		return m.Checksum
+	}
+	return 0
+}
+
+type StreamedFileChunk struct {
+	// Types that are valid to be assigned to ChunkContent:
+	//	*StreamedFileChunk_FileBytes
+	//	*StreamedFileChunk_FileName
+	//	*StreamedFileChunk_Checksum
+	ChunkContent isStreamedFileChunk_ChunkContent `protobuf_oneof:"ChunkContent"`
+}
+
+func (m *StreamedFileChunk) Reset()                    { *m = StreamedFileChunk{} }
+func (m *StreamedFileChunk) String() string            { return proto.CompactTextString(m) }
+func (*StreamedFileChunk) ProtoMessage()               {}
+func (*StreamedFileChunk) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{18} }
+
+type isStreamedFileChunk_ChunkContent interface{ isStreamedFileChunk_ChunkContent() }
+
+type StreamedFileChunk_FileBytes struct {
+	FileBytes []byte `protobuf:"bytes,1,opt,name=fileBytes,proto3,oneof"`
+}
+type StreamedFileChunk_FileName struct {
+	FileName string `protobuf:"bytes,2,opt,name=fileName,oneof"`
+}
+type StreamedFileChunk_Checksum struct {
+	Checksum int64 `protobuf:"varint,3,opt,name=checksum,oneof"`
+}
+
+func (*StreamedFileChunk_FileBytes) isStreamedFileChunk_ChunkContent() {}
+func (*StreamedFileChunk_FileName) isStreamedFileChunk_ChunkContent()  {}
+func (*StreamedFileChunk_Checksum) isStreamedFileChunk_ChunkContent()  {}
+
+func (m *StreamedFileChunk) GetChunkContent() isStreamedFileChunk_ChunkContent {
+	if m != nil {
+		return m.ChunkContent
+	}
+	return nil
+}
+
+func (m *StreamedFileChunk) GetFileBytes() []byte {
+	if x, ok := m.GetChunkContent().(*StreamedFileChunk_FileBytes); ok {
+		return x.FileBytes
+	}
+	return nil
+}
+
+func (m *StreamedFileChunk) GetFileName() string {
+	if x, ok := m.GetChunkContent().(*StreamedFileChunk_FileName); ok {
+		return x.FileName
+	}
+	return ""
+}
+
+func (m *StreamedFileChunk) GetChecksum() int64 {
+	if x, ok := m.GetChunkContent().(*StreamedFileChunk_Checksum); ok {
+		return x.Checksum
+	}
+	return 0
+}
+
+// XXX_OneofFuncs is for the internal use of the proto package.
+func (*StreamedFileChunk) XXX_OneofFuncs() (func(msg proto.Message, b *proto.Buffer) error, func(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error), func(msg proto.Message) (n int), []interface{}) {
+	return _StreamedFileChunk_OneofMarshaler, _StreamedFileChunk_OneofUnmarshaler, _StreamedFileChunk_OneofSizer, []interface{}{
+		(*StreamedFileChunk_FileBytes)(nil),
+		(*StreamedFileChunk_FileName)(nil),
+		(*StreamedFileChunk_Checksum)(nil),
+	}
+}
+
+func _StreamedFileChunk_OneofMarshaler(msg proto.Message, b *proto.Buffer) error {
+	m := msg.(*StreamedFileChunk)
 	// ChunkContent
 	switch x := m.ChunkContent.(type) {
-	case *Chunk_Content:
+	case *StreamedFileChunk_FileBytes:
+		b.EncodeVarint(1<<3 | proto.WireBytes)
+		b.EncodeRawBytes(x.FileBytes)
+	case *StreamedFileChunk_FileName:
+		b.EncodeVarint(2<<3 | proto.WireBytes)
+		b.EncodeStringBytes(x.FileName)
+	case *StreamedFileChunk_Checksum:
+		b.EncodeVarint(3<<3 | proto.WireVarint)
+		b.EncodeVarint(uint64(x.Checksum))
+	case nil:
+	default:
+		return fmt.Errorf("StreamedFileChunk.ChunkContent has unexpected type %T", x)
+	}
+	return nil
+}
+
+func _StreamedFileChunk_OneofUnmarshaler(msg proto.Message, tag, wire int, b *proto.Buffer) (bool, error) {
+	m := msg.(*StreamedFileChunk)
+	switch tag {
+	case 1: // ChunkContent.fileBytes
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeRawBytes(true)
+		m.ChunkContent = &StreamedFileChunk_FileBytes{x}
+		return true, err
+	case 2: // ChunkContent.fileName
+		if wire != proto.WireBytes {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeStringBytes()
+		m.ChunkContent = &StreamedFileChunk_FileName{x}
+		return true, err
+	case 3: // ChunkContent.checksum
+		if wire != proto.WireVarint {
+			return true, proto.ErrInternalBadWireType
+		}
+		x, err := b.DecodeVarint()
+		m.ChunkContent = &StreamedFileChunk_Checksum{int64(x)}
+		return true, err
+	default:
+		return false, nil
+	}
+}
+
+func _StreamedFileChunk_OneofSizer(msg proto.Message) (n int) {
+	m := msg.(*StreamedFileChunk)
+	// ChunkContent
+	switch x := m.ChunkContent.(type) {
+	case *StreamedFileChunk_FileBytes:
 		n += proto.SizeVarint(1<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Content)))
-		n += len(x.Content)
-	case *Chunk_Location:
+		n += proto.SizeVarint(uint64(len(x.FileBytes)))
+		n += len(x.FileBytes)
+	case *StreamedFileChunk_FileName:
 		n += proto.SizeVarint(2<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.Location)))
-		n += len(x.Location)
-	case *Chunk_TextPost:
-		n += proto.SizeVarint(3<<3 | proto.WireBytes)
-		n += proto.SizeVarint(uint64(len(x.TextPost)))
-		n += len(x.TextPost)
-	case *Chunk_Checksum:
-		n += proto.SizeVarint(4<<3 | proto.WireVarint)
+		n += proto.SizeVarint(uint64(len(x.FileName)))
+		n += len(x.FileName)
+	case *StreamedFileChunk_Checksum:
+		n += proto.SizeVarint(3<<3 | proto.WireVarint)
 		n += proto.SizeVarint(uint64(x.Checksum))
 	case nil:
 	default:
@@ -423,55 +1398,28 @@ func _Chunk_OneofSizer(msg proto.Message) (n int) {
 	return n
 }
 
-type Status struct {
-	Message string     `protobuf:"bytes,1,opt,name=Message" json:"Message,omitempty"`
-	Code    StatusCode `protobuf:"varint,2,opt,name=Code,enum=protos.StatusCode" json:"Code,omitempty"`
-}
-
-func (m *Status) Reset()                    { *m = Status{} }
-func (m *Status) String() string            { return proto.CompactTextString(m) }
-func (*Status) ProtoMessage()               {}
-func (*Status) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{5} }
-
-func (m *Status) GetMessage() string {
-	if m != nil {
-		return m.Message
-	}
-	return ""
-}
-
-func (m *Status) GetCode() StatusCode {
-	if m != nil {
-		return m.Code
-	}
-	return StatusCode_Unknown
-}
-
-type PictureLocation struct {
-	Location string `protobuf:"bytes,1,opt,name=Location" json:"Location,omitempty"`
-}
-
-func (m *PictureLocation) Reset()                    { *m = PictureLocation{} }
-func (m *PictureLocation) String() string            { return proto.CompactTextString(m) }
-func (*PictureLocation) ProtoMessage()               {}
-func (*PictureLocation) Descriptor() ([]byte, []int) { return fileDescriptor0, []int{6} }
-
-func (m *PictureLocation) GetLocation() string {
-	if m != nil {
-		return m.Location
-	}
-	return ""
-}
-
 func init() {
-	proto.RegisterType((*LastUpdateTime)(nil), "protos.LastUpdateTime")
-	proto.RegisterType((*UserMessage)(nil), "protos.UserMessage")
+	proto.RegisterType((*Message)(nil), "protos.Message")
+	proto.RegisterType((*MessageStatus)(nil), "protos.MessageStatus")
 	proto.RegisterType((*Comment)(nil), "protos.Comment")
-	proto.RegisterType((*Beat)(nil), "protos.Beat")
-	proto.RegisterType((*Chunk)(nil), "protos.Chunk")
-	proto.RegisterType((*Status)(nil), "protos.Status")
-	proto.RegisterType((*PictureLocation)(nil), "protos.PictureLocation")
-	proto.RegisterEnum("protos.StatusCode", StatusCode_name, StatusCode_value)
+	proto.RegisterType((*FeedContent)(nil), "protos.FeedContent")
+	proto.RegisterType((*Profile)(nil), "protos.Profile")
+	proto.RegisterType((*GetNext)(nil), "protos.GetNext")
+	proto.RegisterType((*Follow)(nil), "protos.Follow")
+	proto.RegisterType((*Like)(nil), "protos.Like")
+	proto.RegisterType((*Tag)(nil), "protos.Tag")
+	proto.RegisterType((*Notification)(nil), "protos.Notification")
+	proto.RegisterType((*Picture)(nil), "protos.Picture")
+	proto.RegisterType((*Video)(nil), "protos.Video")
+	proto.RegisterType((*Identifiers)(nil), "protos.Identifiers")
+	proto.RegisterType((*User)(nil), "protos.User")
+	proto.RegisterType((*Groupchat)(nil), "protos.Groupchat")
+	proto.RegisterType((*GeneralStatus)(nil), "protos.GeneralStatus")
+	proto.RegisterType((*Info)(nil), "protos.Info")
+	proto.RegisterType((*File)(nil), "protos.File")
+	proto.RegisterType((*StreamedFileChunk)(nil), "protos.StreamedFileChunk")
+	proto.RegisterEnum("protos.MessageStatus_StatusCode", MessageStatus_StatusCode_name, MessageStatus_StatusCode_value)
+	proto.RegisterEnum("protos.GeneralStatus_StatusCode", GeneralStatus_StatusCode_name, GeneralStatus_StatusCode_value)
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -482,14 +1430,76 @@ var _ grpc.ClientConn
 // is compatible with the grpc package it is being compiled against.
 const _ = grpc.SupportPackageIsVersion4
 
+// Client API for Essential service
+
+type EssentialClient interface {
+	FetchCertificate(ctx context.Context, in *Info, opts ...grpc.CallOption) (*File, error)
+}
+
+type essentialClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewEssentialClient(cc *grpc.ClientConn) EssentialClient {
+	return &essentialClient{cc}
+}
+
+func (c *essentialClient) FetchCertificate(ctx context.Context, in *Info, opts ...grpc.CallOption) (*File, error) {
+	out := new(File)
+	err := grpc.Invoke(ctx, "/protos.Essential/FetchCertificate", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Essential service
+
+type EssentialServer interface {
+	FetchCertificate(context.Context, *Info) (*File, error)
+}
+
+func RegisterEssentialServer(s *grpc.Server, srv EssentialServer) {
+	s.RegisterService(&_Essential_serviceDesc, srv)
+}
+
+func _Essential_FetchCertificate_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Info)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(EssentialServer).FetchCertificate(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Essential/FetchCertificate",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(EssentialServer).FetchCertificate(ctx, req.(*Info))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Essential_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Essential",
+	HandlerType: (*EssentialServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "FetchCertificate",
+			Handler:    _Essential_FetchCertificate_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "protos/services.proto",
+}
+
 // Client API for Messaging service
 
 type MessagingClient interface {
-	UpdateInbox(ctx context.Context, in *LastUpdateTime, opts ...grpc.CallOption) (Messaging_UpdateInboxClient, error)
-	SendMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error)
-	DeleteMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error)
-	EditMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error)
-	ChangeMessageStatus(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error)
+	FetchMessages(ctx context.Context, in *Info, opts ...grpc.CallOption) (Messaging_FetchMessagesClient, error)
+	SendMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*MessageStatus, error)
+	GetMessageStatus(ctx context.Context, opts ...grpc.CallOption) (Messaging_GetMessageStatusClient, error)
 }
 
 type messagingClient struct {
@@ -500,12 +1510,12 @@ func NewMessagingClient(cc *grpc.ClientConn) MessagingClient {
 	return &messagingClient{cc}
 }
 
-func (c *messagingClient) UpdateInbox(ctx context.Context, in *LastUpdateTime, opts ...grpc.CallOption) (Messaging_UpdateInboxClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_Messaging_serviceDesc.Streams[0], c.cc, "/protos.Messaging/UpdateInbox", opts...)
+func (c *messagingClient) FetchMessages(ctx context.Context, in *Info, opts ...grpc.CallOption) (Messaging_FetchMessagesClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Messaging_serviceDesc.Streams[0], c.cc, "/protos.Messaging/FetchMessages", opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &messagingUpdateInboxClient{stream}
+	x := &messagingFetchMessagesClient{stream}
 	if err := x.ClientStream.SendMsg(in); err != nil {
 		return nil, err
 	}
@@ -515,25 +1525,25 @@ func (c *messagingClient) UpdateInbox(ctx context.Context, in *LastUpdateTime, o
 	return x, nil
 }
 
-type Messaging_UpdateInboxClient interface {
-	Recv() (*UserMessage, error)
+type Messaging_FetchMessagesClient interface {
+	Recv() (*Message, error)
 	grpc.ClientStream
 }
 
-type messagingUpdateInboxClient struct {
+type messagingFetchMessagesClient struct {
 	grpc.ClientStream
 }
 
-func (x *messagingUpdateInboxClient) Recv() (*UserMessage, error) {
-	m := new(UserMessage)
+func (x *messagingFetchMessagesClient) Recv() (*Message, error) {
+	m := new(Message)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-func (c *messagingClient) SendMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *messagingClient) SendMessage(ctx context.Context, in *Message, opts ...grpc.CallOption) (*MessageStatus, error) {
+	out := new(MessageStatus)
 	err := grpc.Invoke(ctx, "/protos.Messaging/SendMessage", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -541,70 +1551,72 @@ func (c *messagingClient) SendMessage(ctx context.Context, in *UserMessage, opts
 	return out, nil
 }
 
-func (c *messagingClient) DeleteMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := grpc.Invoke(ctx, "/protos.Messaging/DeleteMessage", in, out, c.cc, opts...)
+func (c *messagingClient) GetMessageStatus(ctx context.Context, opts ...grpc.CallOption) (Messaging_GetMessageStatusClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Messaging_serviceDesc.Streams[1], c.cc, "/protos.Messaging/GetMessageStatus", opts...)
 	if err != nil {
 		return nil, err
 	}
-	return out, nil
+	x := &messagingGetMessageStatusClient{stream}
+	return x, nil
 }
 
-func (c *messagingClient) EditMessage(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := grpc.Invoke(ctx, "/protos.Messaging/EditMessage", in, out, c.cc, opts...)
-	if err != nil {
-		return nil, err
-	}
-	return out, nil
+type Messaging_GetMessageStatusClient interface {
+	Send(*Message) error
+	Recv() (*MessageStatus, error)
+	grpc.ClientStream
 }
 
-func (c *messagingClient) ChangeMessageStatus(ctx context.Context, in *UserMessage, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := grpc.Invoke(ctx, "/protos.Messaging/ChangeMessageStatus", in, out, c.cc, opts...)
-	if err != nil {
+type messagingGetMessageStatusClient struct {
+	grpc.ClientStream
+}
+
+func (x *messagingGetMessageStatusClient) Send(m *Message) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *messagingGetMessageStatusClient) Recv() (*MessageStatus, error) {
+	m := new(MessageStatus)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	return out, nil
+	return m, nil
 }
 
 // Server API for Messaging service
 
 type MessagingServer interface {
-	UpdateInbox(*LastUpdateTime, Messaging_UpdateInboxServer) error
-	SendMessage(context.Context, *UserMessage) (*Status, error)
-	DeleteMessage(context.Context, *UserMessage) (*Status, error)
-	EditMessage(context.Context, *UserMessage) (*Status, error)
-	ChangeMessageStatus(context.Context, *UserMessage) (*Status, error)
+	FetchMessages(*Info, Messaging_FetchMessagesServer) error
+	SendMessage(context.Context, *Message) (*MessageStatus, error)
+	GetMessageStatus(Messaging_GetMessageStatusServer) error
 }
 
 func RegisterMessagingServer(s *grpc.Server, srv MessagingServer) {
 	s.RegisterService(&_Messaging_serviceDesc, srv)
 }
 
-func _Messaging_UpdateInbox_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(LastUpdateTime)
+func _Messaging_FetchMessages_Handler(srv interface{}, stream grpc.ServerStream) error {
+	m := new(Info)
 	if err := stream.RecvMsg(m); err != nil {
 		return err
 	}
-	return srv.(MessagingServer).UpdateInbox(m, &messagingUpdateInboxServer{stream})
+	return srv.(MessagingServer).FetchMessages(m, &messagingFetchMessagesServer{stream})
 }
 
-type Messaging_UpdateInboxServer interface {
-	Send(*UserMessage) error
+type Messaging_FetchMessagesServer interface {
+	Send(*Message) error
 	grpc.ServerStream
 }
 
-type messagingUpdateInboxServer struct {
+type messagingFetchMessagesServer struct {
 	grpc.ServerStream
 }
 
-func (x *messagingUpdateInboxServer) Send(m *UserMessage) error {
+func (x *messagingFetchMessagesServer) Send(m *Message) error {
 	return x.ServerStream.SendMsg(m)
 }
 
 func _Messaging_SendMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMessage)
+	in := new(Message)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
@@ -616,63 +1628,35 @@ func _Messaging_SendMessage_Handler(srv interface{}, ctx context.Context, dec fu
 		FullMethod: "/protos.Messaging/SendMessage",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessagingServer).SendMessage(ctx, req.(*UserMessage))
+		return srv.(MessagingServer).SendMessage(ctx, req.(*Message))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-func _Messaging_DeleteMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessagingServer).DeleteMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protos.Messaging/DeleteMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessagingServer).DeleteMessage(ctx, req.(*UserMessage))
-	}
-	return interceptor(ctx, in, info, handler)
+func _Messaging_GetMessageStatus_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(MessagingServer).GetMessageStatus(&messagingGetMessageStatusServer{stream})
 }
 
-func _Messaging_EditMessage_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMessage)
-	if err := dec(in); err != nil {
-		return nil, err
-	}
-	if interceptor == nil {
-		return srv.(MessagingServer).EditMessage(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protos.Messaging/EditMessage",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessagingServer).EditMessage(ctx, req.(*UserMessage))
-	}
-	return interceptor(ctx, in, info, handler)
+type Messaging_GetMessageStatusServer interface {
+	Send(*MessageStatus) error
+	Recv() (*Message, error)
+	grpc.ServerStream
 }
 
-func _Messaging_ChangeMessageStatus_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(UserMessage)
-	if err := dec(in); err != nil {
+type messagingGetMessageStatusServer struct {
+	grpc.ServerStream
+}
+
+func (x *messagingGetMessageStatusServer) Send(m *MessageStatus) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *messagingGetMessageStatusServer) Recv() (*Message, error) {
+	m := new(Message)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
-	if interceptor == nil {
-		return srv.(MessagingServer).ChangeMessageStatus(ctx, in)
-	}
-	info := &grpc.UnaryServerInfo{
-		Server:     srv,
-		FullMethod: "/protos.Messaging/ChangeMessageStatus",
-	}
-	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(MessagingServer).ChangeMessageStatus(ctx, req.(*UserMessage))
-	}
-	return interceptor(ctx, in, info, handler)
+	return m, nil
 }
 
 var _Messaging_serviceDesc = grpc.ServiceDesc{
@@ -683,24 +1667,18 @@ var _Messaging_serviceDesc = grpc.ServiceDesc{
 			MethodName: "SendMessage",
 			Handler:    _Messaging_SendMessage_Handler,
 		},
-		{
-			MethodName: "DeleteMessage",
-			Handler:    _Messaging_DeleteMessage_Handler,
-		},
-		{
-			MethodName: "EditMessage",
-			Handler:    _Messaging_EditMessage_Handler,
-		},
-		{
-			MethodName: "ChangeMessageStatus",
-			Handler:    _Messaging_ChangeMessageStatus_Handler,
-		},
 	},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "UpdateInbox",
-			Handler:       _Messaging_UpdateInbox_Handler,
+			StreamName:    "FetchMessages",
+			Handler:       _Messaging_FetchMessages_Handler,
 			ServerStreams: true,
+		},
+		{
+			StreamName:    "GetMessageStatus",
+			Handler:       _Messaging_GetMessageStatus_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "protos/services.proto",
@@ -709,9 +1687,9 @@ var _Messaging_serviceDesc = grpc.ServiceDesc{
 // Client API for Commenting service
 
 type CommentingClient interface {
-	PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error)
-	DeleteComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error)
-	EditComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error)
+	PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error)
+	DeleteComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error)
+	EditComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error)
 }
 
 type commentingClient struct {
@@ -722,8 +1700,8 @@ func NewCommentingClient(cc *grpc.ClientConn) CommentingClient {
 	return &commentingClient{cc}
 }
 
-func (c *commentingClient) PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *commentingClient) PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
 	err := grpc.Invoke(ctx, "/protos.Commenting/PostComment", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -731,8 +1709,8 @@ func (c *commentingClient) PostComment(ctx context.Context, in *Comment, opts ..
 	return out, nil
 }
 
-func (c *commentingClient) DeleteComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *commentingClient) DeleteComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
 	err := grpc.Invoke(ctx, "/protos.Commenting/DeleteComment", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -740,8 +1718,8 @@ func (c *commentingClient) DeleteComment(ctx context.Context, in *Comment, opts 
 	return out, nil
 }
 
-func (c *commentingClient) EditComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
+func (c *commentingClient) EditComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
 	err := grpc.Invoke(ctx, "/protos.Commenting/EditComment", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
@@ -752,9 +1730,9 @@ func (c *commentingClient) EditComment(ctx context.Context, in *Comment, opts ..
 // Server API for Commenting service
 
 type CommentingServer interface {
-	PostComment(context.Context, *Comment) (*Status, error)
-	DeleteComment(context.Context, *Comment) (*Status, error)
-	EditComment(context.Context, *Comment) (*Status, error)
+	PostComment(context.Context, *Comment) (*GeneralStatus, error)
+	DeleteComment(context.Context, *Comment) (*GeneralStatus, error)
+	EditComment(context.Context, *Comment) (*GeneralStatus, error)
 }
 
 func RegisterCommentingServer(s *grpc.Server, srv CommentingServer) {
@@ -836,254 +1814,552 @@ var _Commenting_serviceDesc = grpc.ServiceDesc{
 	Metadata: "protos/services.proto",
 }
 
-// Client API for Heartbeating service
+// Client API for Browsing service
 
-type HeartbeatingClient interface {
-	TradeHeartbeat(ctx context.Context, in *Beat, opts ...grpc.CallOption) (*Status, error)
+type BrowsingClient interface {
+	GetProfile(ctx context.Context, in *User, opts ...grpc.CallOption) (*Profile, error)
+	FollowUnFollow(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneralStatus, error)
+	ChangePrivacy(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneralStatus, error)
+	GetProfilePicture(ctx context.Context, in *User, opts ...grpc.CallOption) (*Picture, error)
 }
 
-type heartbeatingClient struct {
+type browsingClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewHeartbeatingClient(cc *grpc.ClientConn) HeartbeatingClient {
-	return &heartbeatingClient{cc}
+func NewBrowsingClient(cc *grpc.ClientConn) BrowsingClient {
+	return &browsingClient{cc}
 }
 
-func (c *heartbeatingClient) TradeHeartbeat(ctx context.Context, in *Beat, opts ...grpc.CallOption) (*Status, error) {
-	out := new(Status)
-	err := grpc.Invoke(ctx, "/protos.Heartbeating/TradeHeartbeat", in, out, c.cc, opts...)
+func (c *browsingClient) GetProfile(ctx context.Context, in *User, opts ...grpc.CallOption) (*Profile, error) {
+	out := new(Profile)
+	err := grpc.Invoke(ctx, "/protos.Browsing/GetProfile", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
 	return out, nil
 }
 
-// Server API for Heartbeating service
-
-type HeartbeatingServer interface {
-	TradeHeartbeat(context.Context, *Beat) (*Status, error)
+func (c *browsingClient) FollowUnFollow(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
+	err := grpc.Invoke(ctx, "/protos.Browsing/FollowUnFollow", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-func RegisterHeartbeatingServer(s *grpc.Server, srv HeartbeatingServer) {
-	s.RegisterService(&_Heartbeating_serviceDesc, srv)
+func (c *browsingClient) ChangePrivacy(ctx context.Context, in *User, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
+	err := grpc.Invoke(ctx, "/protos.Browsing/ChangePrivacy", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
 }
 
-func _Heartbeating_TradeHeartbeat_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
-	in := new(Beat)
+func (c *browsingClient) GetProfilePicture(ctx context.Context, in *User, opts ...grpc.CallOption) (*Picture, error) {
+	out := new(Picture)
+	err := grpc.Invoke(ctx, "/protos.Browsing/GetProfilePicture", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Browsing service
+
+type BrowsingServer interface {
+	GetProfile(context.Context, *User) (*Profile, error)
+	FollowUnFollow(context.Context, *User) (*GeneralStatus, error)
+	ChangePrivacy(context.Context, *User) (*GeneralStatus, error)
+	GetProfilePicture(context.Context, *User) (*Picture, error)
+}
+
+func RegisterBrowsingServer(s *grpc.Server, srv BrowsingServer) {
+	s.RegisterService(&_Browsing_serviceDesc, srv)
+}
+
+func _Browsing_GetProfile_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
 	if err := dec(in); err != nil {
 		return nil, err
 	}
 	if interceptor == nil {
-		return srv.(HeartbeatingServer).TradeHeartbeat(ctx, in)
+		return srv.(BrowsingServer).GetProfile(ctx, in)
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/protos.Heartbeating/TradeHeartbeat",
+		FullMethod: "/protos.Browsing/GetProfile",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
-		return srv.(HeartbeatingServer).TradeHeartbeat(ctx, req.(*Beat))
+		return srv.(BrowsingServer).GetProfile(ctx, req.(*User))
 	}
 	return interceptor(ctx, in, info, handler)
 }
 
-var _Heartbeating_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "protos.Heartbeating",
-	HandlerType: (*HeartbeatingServer)(nil),
+func _Browsing_FollowUnFollow_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrowsingServer).FollowUnFollow(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Browsing/FollowUnFollow",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrowsingServer).FollowUnFollow(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Browsing_ChangePrivacy_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrowsingServer).ChangePrivacy(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Browsing/ChangePrivacy",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrowsingServer).ChangePrivacy(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Browsing_GetProfilePicture_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(User)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(BrowsingServer).GetProfilePicture(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Browsing/GetProfilePicture",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(BrowsingServer).GetProfilePicture(ctx, req.(*User))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Browsing_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Browsing",
+	HandlerType: (*BrowsingServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
-			MethodName: "TradeHeartbeat",
-			Handler:    _Heartbeating_TradeHeartbeat_Handler,
+			MethodName: "GetProfile",
+			Handler:    _Browsing_GetProfile_Handler,
+		},
+		{
+			MethodName: "FollowUnFollow",
+			Handler:    _Browsing_FollowUnFollow_Handler,
+		},
+		{
+			MethodName: "ChangePrivacy",
+			Handler:    _Browsing_ChangePrivacy_Handler,
+		},
+		{
+			MethodName: "GetProfilePicture",
+			Handler:    _Browsing_GetProfilePicture_Handler,
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
 	Metadata: "protos/services.proto",
 }
 
-// Client API for PictureUploading service
+// Client API for Posting service
 
-type PictureUploadingClient interface {
-	UploadPicture(ctx context.Context, opts ...grpc.CallOption) (PictureUploading_UploadPictureClient, error)
+type PostingClient interface {
+	PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error)
+	PostFeedContent(ctx context.Context, in *FeedContent, opts ...grpc.CallOption) (*GeneralStatus, error)
 }
 
-type pictureUploadingClient struct {
+type postingClient struct {
 	cc *grpc.ClientConn
 }
 
-func NewPictureUploadingClient(cc *grpc.ClientConn) PictureUploadingClient {
-	return &pictureUploadingClient{cc}
+func NewPostingClient(cc *grpc.ClientConn) PostingClient {
+	return &postingClient{cc}
 }
 
-func (c *pictureUploadingClient) UploadPicture(ctx context.Context, opts ...grpc.CallOption) (PictureUploading_UploadPictureClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_PictureUploading_serviceDesc.Streams[0], c.cc, "/protos.PictureUploading/UploadPicture", opts...)
+func (c *postingClient) PostComment(ctx context.Context, in *Comment, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
+	err := grpc.Invoke(ctx, "/protos.Posting/PostComment", in, out, c.cc, opts...)
 	if err != nil {
 		return nil, err
 	}
-	x := &pictureUploadingUploadPictureClient{stream}
+	return out, nil
+}
+
+func (c *postingClient) PostFeedContent(ctx context.Context, in *FeedContent, opts ...grpc.CallOption) (*GeneralStatus, error) {
+	out := new(GeneralStatus)
+	err := grpc.Invoke(ctx, "/protos.Posting/PostFeedContent", in, out, c.cc, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
+// Server API for Posting service
+
+type PostingServer interface {
+	PostComment(context.Context, *Comment) (*GeneralStatus, error)
+	PostFeedContent(context.Context, *FeedContent) (*GeneralStatus, error)
+}
+
+func RegisterPostingServer(s *grpc.Server, srv PostingServer) {
+	s.RegisterService(&_Posting_serviceDesc, srv)
+}
+
+func _Posting_PostComment_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(Comment)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostingServer).PostComment(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Posting/PostComment",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostingServer).PostComment(ctx, req.(*Comment))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+func _Posting_PostFeedContent_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(FeedContent)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(PostingServer).PostFeedContent(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/protos.Posting/PostFeedContent",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(PostingServer).PostFeedContent(ctx, req.(*FeedContent))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
+var _Posting_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Posting",
+	HandlerType: (*PostingServer)(nil),
+	Methods: []grpc.MethodDesc{
+		{
+			MethodName: "PostComment",
+			Handler:    _Posting_PostComment_Handler,
+		},
+		{
+			MethodName: "PostFeedContent",
+			Handler:    _Posting_PostFeedContent_Handler,
+		},
+	},
+	Streams:  []grpc.StreamDesc{},
+	Metadata: "protos/services.proto",
+}
+
+// Client API for Updating service
+
+type UpdatingClient interface {
+	UpdateNotifications(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateNotificationsClient, error)
+	UpdateComments(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateCommentsClient, error)
+	UpdateMessages(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateMessagesClient, error)
+	BackgroundNotifications(ctx context.Context, opts ...grpc.CallOption) (Updating_BackgroundNotificationsClient, error)
+}
+
+type updatingClient struct {
+	cc *grpc.ClientConn
+}
+
+func NewUpdatingClient(cc *grpc.ClientConn) UpdatingClient {
+	return &updatingClient{cc}
+}
+
+func (c *updatingClient) UpdateNotifications(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateNotificationsClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Updating_serviceDesc.Streams[0], c.cc, "/protos.Updating/UpdateNotifications", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &updatingUpdateNotificationsClient{stream}
 	return x, nil
 }
 
-type PictureUploading_UploadPictureClient interface {
-	Send(*Chunk) error
-	CloseAndRecv() (*Status, error)
+type Updating_UpdateNotificationsClient interface {
+	Send(*Notification) error
+	Recv() (*Notification, error)
 	grpc.ClientStream
 }
 
-type pictureUploadingUploadPictureClient struct {
+type updatingUpdateNotificationsClient struct {
 	grpc.ClientStream
 }
 
-func (x *pictureUploadingUploadPictureClient) Send(m *Chunk) error {
+func (x *updatingUpdateNotificationsClient) Send(m *Notification) error {
 	return x.ClientStream.SendMsg(m)
 }
 
-func (x *pictureUploadingUploadPictureClient) CloseAndRecv() (*Status, error) {
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	m := new(Status)
+func (x *updatingUpdateNotificationsClient) Recv() (*Notification, error) {
+	m := new(Notification)
 	if err := x.ClientStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-// Server API for PictureUploading service
-
-type PictureUploadingServer interface {
-	UploadPicture(PictureUploading_UploadPictureServer) error
+func (c *updatingClient) UpdateComments(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateCommentsClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Updating_serviceDesc.Streams[1], c.cc, "/protos.Updating/UpdateComments", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &updatingUpdateCommentsClient{stream}
+	return x, nil
 }
 
-func RegisterPictureUploadingServer(s *grpc.Server, srv PictureUploadingServer) {
-	s.RegisterService(&_PictureUploading_serviceDesc, srv)
+type Updating_UpdateCommentsClient interface {
+	Send(*Notification) error
+	Recv() (*Comment, error)
+	grpc.ClientStream
 }
 
-func _PictureUploading_UploadPicture_Handler(srv interface{}, stream grpc.ServerStream) error {
-	return srv.(PictureUploadingServer).UploadPicture(&pictureUploadingUploadPictureServer{stream})
+type updatingUpdateCommentsClient struct {
+	grpc.ClientStream
 }
 
-type PictureUploading_UploadPictureServer interface {
-	SendAndClose(*Status) error
-	Recv() (*Chunk, error)
+func (x *updatingUpdateCommentsClient) Send(m *Notification) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *updatingUpdateCommentsClient) Recv() (*Comment, error) {
+	m := new(Comment)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *updatingClient) UpdateMessages(ctx context.Context, opts ...grpc.CallOption) (Updating_UpdateMessagesClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Updating_serviceDesc.Streams[2], c.cc, "/protos.Updating/UpdateMessages", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &updatingUpdateMessagesClient{stream}
+	return x, nil
+}
+
+type Updating_UpdateMessagesClient interface {
+	Send(*Notification) error
+	Recv() (*Message, error)
+	grpc.ClientStream
+}
+
+type updatingUpdateMessagesClient struct {
+	grpc.ClientStream
+}
+
+func (x *updatingUpdateMessagesClient) Send(m *Notification) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *updatingUpdateMessagesClient) Recv() (*Message, error) {
+	m := new(Message)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func (c *updatingClient) BackgroundNotifications(ctx context.Context, opts ...grpc.CallOption) (Updating_BackgroundNotificationsClient, error) {
+	stream, err := grpc.NewClientStream(ctx, &_Updating_serviceDesc.Streams[3], c.cc, "/protos.Updating/BackgroundNotifications", opts...)
+	if err != nil {
+		return nil, err
+	}
+	x := &updatingBackgroundNotificationsClient{stream}
+	return x, nil
+}
+
+type Updating_BackgroundNotificationsClient interface {
+	Send(*Info) error
+	Recv() (*Notification, error)
+	grpc.ClientStream
+}
+
+type updatingBackgroundNotificationsClient struct {
+	grpc.ClientStream
+}
+
+func (x *updatingBackgroundNotificationsClient) Send(m *Info) error {
+	return x.ClientStream.SendMsg(m)
+}
+
+func (x *updatingBackgroundNotificationsClient) Recv() (*Notification, error) {
+	m := new(Notification)
+	if err := x.ClientStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+// Server API for Updating service
+
+type UpdatingServer interface {
+	UpdateNotifications(Updating_UpdateNotificationsServer) error
+	UpdateComments(Updating_UpdateCommentsServer) error
+	UpdateMessages(Updating_UpdateMessagesServer) error
+	BackgroundNotifications(Updating_BackgroundNotificationsServer) error
+}
+
+func RegisterUpdatingServer(s *grpc.Server, srv UpdatingServer) {
+	s.RegisterService(&_Updating_serviceDesc, srv)
+}
+
+func _Updating_UpdateNotifications_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UpdatingServer).UpdateNotifications(&updatingUpdateNotificationsServer{stream})
+}
+
+type Updating_UpdateNotificationsServer interface {
+	Send(*Notification) error
+	Recv() (*Notification, error)
 	grpc.ServerStream
 }
 
-type pictureUploadingUploadPictureServer struct {
+type updatingUpdateNotificationsServer struct {
 	grpc.ServerStream
 }
 
-func (x *pictureUploadingUploadPictureServer) SendAndClose(m *Status) error {
+func (x *updatingUpdateNotificationsServer) Send(m *Notification) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-func (x *pictureUploadingUploadPictureServer) Recv() (*Chunk, error) {
-	m := new(Chunk)
+func (x *updatingUpdateNotificationsServer) Recv() (*Notification, error) {
+	m := new(Notification)
 	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-var _PictureUploading_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "protos.PictureUploading",
-	HandlerType: (*PictureUploadingServer)(nil),
-	Methods:     []grpc.MethodDesc{},
-	Streams: []grpc.StreamDesc{
-		{
-			StreamName:    "UploadPicture",
-			Handler:       _PictureUploading_UploadPicture_Handler,
-			ClientStreams: true,
-		},
-	},
-	Metadata: "protos/services.proto",
+func _Updating_UpdateComments_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UpdatingServer).UpdateComments(&updatingUpdateCommentsServer{stream})
 }
 
-// Client API for PictureDownloading service
-
-type PictureDownloadingClient interface {
-	DownloadPicture(ctx context.Context, in *PictureLocation, opts ...grpc.CallOption) (PictureDownloading_DownloadPictureClient, error)
+type Updating_UpdateCommentsServer interface {
+	Send(*Comment) error
+	Recv() (*Notification, error)
+	grpc.ServerStream
 }
 
-type pictureDownloadingClient struct {
-	cc *grpc.ClientConn
+type updatingUpdateCommentsServer struct {
+	grpc.ServerStream
 }
 
-func NewPictureDownloadingClient(cc *grpc.ClientConn) PictureDownloadingClient {
-	return &pictureDownloadingClient{cc}
+func (x *updatingUpdateCommentsServer) Send(m *Comment) error {
+	return x.ServerStream.SendMsg(m)
 }
 
-func (c *pictureDownloadingClient) DownloadPicture(ctx context.Context, in *PictureLocation, opts ...grpc.CallOption) (PictureDownloading_DownloadPictureClient, error) {
-	stream, err := grpc.NewClientStream(ctx, &_PictureDownloading_serviceDesc.Streams[0], c.cc, "/protos.PictureDownloading/DownloadPicture", opts...)
-	if err != nil {
-		return nil, err
-	}
-	x := &pictureDownloadingDownloadPictureClient{stream}
-	if err := x.ClientStream.SendMsg(in); err != nil {
-		return nil, err
-	}
-	if err := x.ClientStream.CloseSend(); err != nil {
-		return nil, err
-	}
-	return x, nil
-}
-
-type PictureDownloading_DownloadPictureClient interface {
-	Recv() (*Chunk, error)
-	grpc.ClientStream
-}
-
-type pictureDownloadingDownloadPictureClient struct {
-	grpc.ClientStream
-}
-
-func (x *pictureDownloadingDownloadPictureClient) Recv() (*Chunk, error) {
-	m := new(Chunk)
-	if err := x.ClientStream.RecvMsg(m); err != nil {
+func (x *updatingUpdateCommentsServer) Recv() (*Notification, error) {
+	m := new(Notification)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
 		return nil, err
 	}
 	return m, nil
 }
 
-// Server API for PictureDownloading service
-
-type PictureDownloadingServer interface {
-	DownloadPicture(*PictureLocation, PictureDownloading_DownloadPictureServer) error
+func _Updating_UpdateMessages_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UpdatingServer).UpdateMessages(&updatingUpdateMessagesServer{stream})
 }
 
-func RegisterPictureDownloadingServer(s *grpc.Server, srv PictureDownloadingServer) {
-	s.RegisterService(&_PictureDownloading_serviceDesc, srv)
-}
-
-func _PictureDownloading_DownloadPicture_Handler(srv interface{}, stream grpc.ServerStream) error {
-	m := new(PictureLocation)
-	if err := stream.RecvMsg(m); err != nil {
-		return err
-	}
-	return srv.(PictureDownloadingServer).DownloadPicture(m, &pictureDownloadingDownloadPictureServer{stream})
-}
-
-type PictureDownloading_DownloadPictureServer interface {
-	Send(*Chunk) error
+type Updating_UpdateMessagesServer interface {
+	Send(*Message) error
+	Recv() (*Notification, error)
 	grpc.ServerStream
 }
 
-type pictureDownloadingDownloadPictureServer struct {
+type updatingUpdateMessagesServer struct {
 	grpc.ServerStream
 }
 
-func (x *pictureDownloadingDownloadPictureServer) Send(m *Chunk) error {
+func (x *updatingUpdateMessagesServer) Send(m *Message) error {
 	return x.ServerStream.SendMsg(m)
 }
 
-var _PictureDownloading_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "protos.PictureDownloading",
-	HandlerType: (*PictureDownloadingServer)(nil),
+func (x *updatingUpdateMessagesServer) Recv() (*Notification, error) {
+	m := new(Notification)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+func _Updating_BackgroundNotifications_Handler(srv interface{}, stream grpc.ServerStream) error {
+	return srv.(UpdatingServer).BackgroundNotifications(&updatingBackgroundNotificationsServer{stream})
+}
+
+type Updating_BackgroundNotificationsServer interface {
+	Send(*Notification) error
+	Recv() (*Info, error)
+	grpc.ServerStream
+}
+
+type updatingBackgroundNotificationsServer struct {
+	grpc.ServerStream
+}
+
+func (x *updatingBackgroundNotificationsServer) Send(m *Notification) error {
+	return x.ServerStream.SendMsg(m)
+}
+
+func (x *updatingBackgroundNotificationsServer) Recv() (*Info, error) {
+	m := new(Info)
+	if err := x.ServerStream.RecvMsg(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
+var _Updating_serviceDesc = grpc.ServiceDesc{
+	ServiceName: "protos.Updating",
+	HandlerType: (*UpdatingServer)(nil),
 	Methods:     []grpc.MethodDesc{},
 	Streams: []grpc.StreamDesc{
 		{
-			StreamName:    "DownloadPicture",
-			Handler:       _PictureDownloading_DownloadPicture_Handler,
+			StreamName:    "UpdateNotifications",
+			Handler:       _Updating_UpdateNotifications_Handler,
 			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "UpdateComments",
+			Handler:       _Updating_UpdateComments_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "UpdateMessages",
+			Handler:       _Updating_UpdateMessages_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
+		},
+		{
+			StreamName:    "BackgroundNotifications",
+			Handler:       _Updating_BackgroundNotifications_Handler,
+			ServerStreams: true,
+			ClientStreams: true,
 		},
 	},
 	Metadata: "protos/services.proto",
@@ -1092,40 +2368,81 @@ var _PictureDownloading_serviceDesc = grpc.ServiceDesc{
 func init() { proto.RegisterFile("protos/services.proto", fileDescriptor0) }
 
 var fileDescriptor0 = []byte{
-	// 547 bytes of a gzipped FileDescriptorProto
-	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0x94, 0x54, 0xdb, 0x6e, 0xd3, 0x40,
-	0x10, 0x8d, 0xdb, 0x90, 0xd0, 0x71, 0x6e, 0xda, 0x0a, 0x88, 0x2c, 0x1e, 0x22, 0x0b, 0xa1, 0x08,
-	0x89, 0x12, 0x99, 0x8a, 0x17, 0x10, 0x42, 0x89, 0x41, 0x2d, 0x2a, 0x52, 0xc8, 0xe5, 0x03, 0x36,
-	0xf6, 0x28, 0xb1, 0x12, 0xef, 0x46, 0xde, 0x35, 0xed, 0x4f, 0xf0, 0x17, 0xbc, 0xf2, 0x8f, 0x68,
-	0xbd, 0xbb, 0x6e, 0x52, 0x45, 0xa8, 0x79, 0xf2, 0xce, 0x39, 0x33, 0x73, 0xce, 0xac, 0xc7, 0x86,
-	0x67, 0xdb, 0x8c, 0x4b, 0x2e, 0xde, 0x09, 0xcc, 0x7e, 0x25, 0x11, 0x8a, 0x8b, 0x22, 0x26, 0x35,
-	0x0d, 0xfb, 0xaf, 0xa0, 0x75, 0x43, 0x85, 0x9c, 0x6f, 0x63, 0x2a, 0x71, 0x96, 0xa4, 0x48, 0x08,
-	0x54, 0xd5, 0xb3, 0xeb, 0xf4, 0x9c, 0xfe, 0xd9, 0xa4, 0x38, 0xfb, 0xd7, 0xe0, 0xce, 0x05, 0x66,
-	0x3f, 0x50, 0x08, 0xba, 0x44, 0xd2, 0x85, 0xba, 0x39, 0x9a, 0x2c, 0x1b, 0x92, 0x1e, 0xb8, 0x21,
-	0x0a, 0x99, 0x30, 0x2a, 0x13, 0xce, 0xba, 0x27, 0x05, 0xbb, 0x0b, 0xf9, 0x0c, 0xea, 0x23, 0x9e,
-	0xa6, 0xc8, 0x24, 0xf1, 0xca, 0xa3, 0x6e, 0x73, 0x55, 0x99, 0xec, 0x72, 0xe3, 0x3c, 0xdb, 0x72,
-	0x81, 0xba, 0x89, 0xe2, 0x0c, 0x40, 0x5e, 0xc2, 0xd3, 0x0d, 0x8f, 0xb4, 0xc2, 0xa9, 0x21, 0x4b,
-	0x64, 0xd8, 0x04, 0x37, 0xd5, 0x6e, 0x42, 0x2a, 0xa9, 0xef, 0x41, 0x75, 0x88, 0x54, 0xaa, 0xb1,
-	0xd4, 0xb3, 0x50, 0x6a, 0x4c, 0x8a, 0xb3, 0xff, 0xdb, 0x81, 0x27, 0xa3, 0x55, 0xce, 0xd6, 0xda,
-	0x0a, 0x93, 0xd6, 0x4a, 0x43, 0x5b, 0x29, 0x00, 0x25, 0x77, 0x63, 0xe5, 0xac, 0x97, 0x12, 0x51,
-	0xec, 0x0c, 0xef, 0xe4, 0x98, 0x0b, 0x79, 0x6f, 0xc6, 0x22, 0x8a, 0x1d, 0xad, 0x30, 0x5a, 0x8b,
-	0x3c, 0xed, 0x56, 0x7b, 0x4e, 0xff, 0x54, 0xb1, 0x16, 0x19, 0xb6, 0xa0, 0x51, 0xc8, 0x1b, 0x25,
-	0xff, 0x3b, 0xd4, 0xa6, 0x92, 0xca, 0x5c, 0xfc, 0xe7, 0x86, 0x5f, 0x43, 0x75, 0xc4, 0x63, 0x7d,
-	0x2b, 0xad, 0x80, 0xe8, 0xd7, 0x29, 0x2e, 0x74, 0x9d, 0x62, 0x26, 0x05, 0xef, 0xbf, 0x85, 0xf6,
-	0x38, 0x89, 0x64, 0x9e, 0x61, 0x69, 0xd5, 0xdb, 0x19, 0x44, 0x77, 0x2d, 0xe3, 0x37, 0x01, 0xc0,
-	0x7d, 0x0b, 0xe2, 0x42, 0x7d, 0xce, 0xd6, 0x8c, 0xdf, 0xb2, 0x4e, 0x45, 0x05, 0xd3, 0x3c, 0x8a,
-	0x50, 0x88, 0x8e, 0x43, 0x00, 0x6a, 0xdf, 0x68, 0xb2, 0xc1, 0xb8, 0x73, 0x12, 0xfc, 0x3d, 0x81,
-	0x33, 0x6d, 0x2b, 0x61, 0x4b, 0xf2, 0x19, 0x5c, 0xbd, 0x45, 0xd7, 0x6c, 0xc1, 0xef, 0xc8, 0x73,
-	0xeb, 0x6c, 0x7f, 0xbd, 0xbc, 0x73, 0x8b, 0xef, 0x2c, 0x94, 0x5f, 0x19, 0x38, 0xe4, 0x12, 0xdc,
-	0x29, 0xb2, 0xd8, 0xce, 0x79, 0x28, 0xcf, 0x6b, 0xed, 0x8f, 0xeb, 0x57, 0xc8, 0x07, 0x68, 0x86,
-	0xb8, 0x41, 0x89, 0x47, 0xd6, 0x5d, 0x82, 0xfb, 0x35, 0x4e, 0xe4, 0x91, 0x55, 0x9f, 0xe0, 0x7c,
-	0xb4, 0xa2, 0x6c, 0x69, 0xd5, 0xcc, 0xdb, 0x7a, 0x5c, 0x75, 0xf0, 0xc7, 0x01, 0x30, 0xfb, 0xad,
-	0x2e, 0x6c, 0x00, 0xae, 0xda, 0x11, 0xbb, 0xf1, 0x6d, 0x9b, 0x6f, 0x80, 0x03, 0xf2, 0x81, 0x1d,
-	0xf6, 0x88, 0x9a, 0x81, 0x1e, 0xf4, 0xf1, 0x15, 0xc1, 0x17, 0x68, 0x5c, 0x21, 0xcd, 0xe4, 0x02,
-	0xa9, 0xf1, 0xd9, 0x9a, 0x65, 0x34, 0xc6, 0x12, 0x24, 0x0d, 0x5b, 0xa3, 0xbe, 0xa2, 0x03, 0x1d,
-	0x42, 0xe8, 0x98, 0xdd, 0x9b, 0x6f, 0x37, 0x9c, 0xc6, 0xba, 0x4b, 0x53, 0x07, 0x86, 0x21, 0xcd,
-	0xd2, 0x89, 0xfa, 0x04, 0x1e, 0x76, 0xe9, 0x3b, 0xc1, 0x4f, 0x20, 0x26, 0x37, 0xe4, 0xb7, 0xcc,
-	0xf6, 0xf9, 0x08, 0x6d, 0x1b, 0xda, 0x4e, 0x2f, 0x6c, 0xe9, 0x83, 0x85, 0xf7, 0xf6, 0x25, 0x06,
-	0xce, 0x42, 0xff, 0xf5, 0xde, 0xff, 0x0b, 0x00, 0x00, 0xff, 0xff, 0x08, 0x0e, 0xca, 0xe0, 0x15,
-	0x05, 0x00, 0x00,
+	// 1216 bytes of a gzipped FileDescriptorProto
+	0x1f, 0x8b, 0x08, 0x00, 0x00, 0x00, 0x00, 0x00, 0x02, 0xff, 0xb4, 0x57, 0x4f, 0x6f, 0xe3, 0x44,
+	0x14, 0xf7, 0x24, 0x6e, 0x12, 0xbf, 0x34, 0xdd, 0x74, 0x96, 0x15, 0x51, 0xb5, 0x82, 0x6a, 0x04,
+	0xa8, 0xda, 0x55, 0x77, 0x4b, 0x40, 0x54, 0x08, 0xad, 0x20, 0x7f, 0xdc, 0x24, 0xda, 0xd4, 0x8d,
+	0x9c, 0x64, 0xb9, 0x20, 0x21, 0xd7, 0x99, 0x26, 0x56, 0x13, 0x3b, 0xf2, 0x4c, 0xba, 0xdb, 0x13,
+	0x07, 0x4e, 0x5c, 0x10, 0xa7, 0xbd, 0x70, 0xde, 0x0f, 0xb1, 0x7c, 0x09, 0x3e, 0x01, 0x12, 0x1f,
+	0x05, 0x8d, 0x3d, 0x76, 0x62, 0x37, 0xa1, 0xad, 0x10, 0x37, 0xcf, 0xfb, 0x33, 0xef, 0xf7, 0x7e,
+	0xf3, 0xde, 0xbc, 0x31, 0x3c, 0x9a, 0xfb, 0x1e, 0xf7, 0xd8, 0x73, 0x46, 0xfd, 0x2b, 0xc7, 0xa6,
+	0xec, 0x59, 0xb0, 0xc6, 0xb9, 0x50, 0x4c, 0xfe, 0x42, 0x90, 0x3f, 0xa5, 0x8c, 0x59, 0x63, 0x8a,
+	0x31, 0xa8, 0x9c, 0xbe, 0xe1, 0x15, 0xb4, 0x8f, 0x0e, 0x34, 0x33, 0xf8, 0xc6, 0x4f, 0xa0, 0xb0,
+	0x60, 0xd4, 0x77, 0xad, 0x19, 0xad, 0x64, 0xf6, 0xd1, 0x41, 0xb1, 0xba, 0x1d, 0xee, 0xc0, 0x9e,
+	0x0d, 0x19, 0xf5, 0xdb, 0x8a, 0x19, 0xeb, 0xf1, 0xe7, 0xa0, 0x8d, 0x7d, 0x6f, 0x31, 0xb7, 0x27,
+	0x16, 0xaf, 0x64, 0x03, 0xe3, 0xdd, 0xc8, 0xb8, 0x15, 0x29, 0xda, 0x8a, 0xb9, 0xb4, 0xc2, 0x87,
+	0x90, 0x63, 0xdc, 0xe2, 0x0b, 0x56, 0x51, 0x03, 0xfb, 0x47, 0x91, 0xbd, 0xc4, 0xd4, 0x0f, 0x94,
+	0xa6, 0x34, 0xc2, 0x9f, 0xc1, 0x8e, 0x33, 0xa2, 0x2e, 0x77, 0x2e, 0x1c, 0xdb, 0xe2, 0x8e, 0xe7,
+	0x56, 0x72, 0xfb, 0xe8, 0x20, 0x6b, 0xa6, 0xa4, 0xf5, 0x02, 0xe4, 0x6c, 0x6f, 0xe1, 0x33, 0x4a,
+	0xba, 0x50, 0x4a, 0x6c, 0x45, 0xbe, 0x01, 0x08, 0xbf, 0x1a, 0xde, 0x88, 0xe2, 0x02, 0xa8, 0x7d,
+	0xdd, 0x18, 0x94, 0x15, 0x5c, 0x02, 0xad, 0xa9, 0x77, 0x3b, 0xaf, 0x74, 0x53, 0x6f, 0x96, 0x91,
+	0x50, 0x98, 0x7a, 0xad, 0x59, 0xce, 0x60, 0x80, 0xdc, 0x49, 0xad, 0xd3, 0xd5, 0x9b, 0xe5, 0x2c,
+	0x79, 0x8b, 0x20, 0xdf, 0xf0, 0x66, 0x33, 0xea, 0xf2, 0xb5, 0x6c, 0xdd, 0xc4, 0x97, 0x59, 0x87,
+	0x0f, 0xef, 0x83, 0x2a, 0x58, 0x93, 0x24, 0x25, 0x18, 0x35, 0x03, 0x0d, 0x3e, 0x84, 0xfc, 0xdc,
+	0xb1, 0xf9, 0xc2, 0xa7, 0x92, 0x99, 0x87, 0x91, 0xd1, 0x09, 0xa5, 0xa3, 0x86, 0xe7, 0x72, 0xea,
+	0x72, 0x33, 0xb2, 0x21, 0x53, 0x28, 0xae, 0xc8, 0xf1, 0xd3, 0xa5, 0x37, 0x0a, 0xbc, 0x1f, 0x44,
+	0xde, 0xbd, 0x50, 0xdc, 0x56, 0x62, 0x5f, 0xfc, 0x29, 0x6c, 0x5d, 0x39, 0x23, 0xea, 0xc9, 0xf3,
+	0x2d, 0x45, 0xa6, 0xaf, 0x84, 0xb0, 0xad, 0x98, 0xa1, 0xb6, 0xae, 0x41, 0xde, 0x0e, 0xb7, 0x27,
+	0xef, 0x10, 0xe4, 0x7b, 0xbe, 0x77, 0xe1, 0x4c, 0x69, 0x9c, 0x0a, 0xda, 0x98, 0xca, 0x31, 0xec,
+	0xcc, 0x43, 0x63, 0x19, 0x5c, 0x06, 0x4a, 0x63, 0x32, 0x53, 0x66, 0x82, 0x03, 0x19, 0xb1, 0x92,
+	0xdd, 0xcf, 0x6e, 0xe4, 0x40, 0xda, 0xe0, 0x32, 0x64, 0xcf, 0x1d, 0x2f, 0xa0, 0x4b, 0x33, 0xc5,
+	0x27, 0xd1, 0x20, 0xdf, 0xa2, 0xdc, 0xa0, 0x6f, 0x38, 0x79, 0x02, 0xb9, 0x13, 0x6f, 0x3a, 0xf5,
+	0x5e, 0xdf, 0x0e, 0x98, 0xcc, 0x41, 0xed, 0x3a, 0x97, 0xf4, 0x7e, 0x2c, 0x3e, 0x15, 0x60, 0x83,
+	0xca, 0x48, 0xa7, 0x27, 0x0b, 0x46, 0x18, 0x4b, 0x8b, 0xfa, 0x0e, 0x6c, 0x4f, 0x9d, 0xcb, 0x38,
+	0x07, 0xf2, 0x1b, 0x82, 0xec, 0xc0, 0x1a, 0xff, 0x7f, 0x11, 0x6f, 0xaf, 0xb8, 0x7a, 0x09, 0x8a,
+	0x03, 0x6b, 0xdc, 0xf5, 0xc2, 0x12, 0x25, 0x7f, 0x22, 0xd8, 0x36, 0xbc, 0x95, 0x9a, 0x25, 0xa0,
+	0x0a, 0xcc, 0x69, 0xde, 0x04, 0x53, 0x6d, 0xc5, 0x0c, 0x74, 0x02, 0xd2, 0x2c, 0xec, 0xb6, 0x34,
+	0x24, 0xd9, 0x84, 0x02, 0x92, 0xb4, 0xc0, 0x1f, 0x43, 0x96, 0x5b, 0x63, 0x89, 0xa8, 0x18, 0x19,
+	0x0e, 0xac, 0x71, 0x5b, 0x31, 0x85, 0x66, 0x35, 0x41, 0xf5, 0xd6, 0x04, 0x2b, 0x90, 0xb3, 0x17,
+	0x8c, 0x7b, 0xb3, 0xca, 0x96, 0x28, 0x80, 0xb6, 0x62, 0xca, 0x75, 0x3d, 0x07, 0x2a, 0xbf, 0x9e,
+	0x53, 0xf2, 0xab, 0xa8, 0x5a, 0xc9, 0xdd, 0x33, 0x28, 0xca, 0xb2, 0x39, 0x71, 0xa6, 0x37, 0x72,
+	0x12, 0x32, 0x73, 0xd5, 0xe0, 0xce, 0x8d, 0xfd, 0x14, 0x0a, 0x12, 0x10, 0x93, 0x35, 0x9b, 0xc6,
+	0x6c, 0xc6, 0x06, 0xe4, 0x3d, 0x82, 0xad, 0xa0, 0xc9, 0xee, 0x0d, 0xe7, 0x13, 0x28, 0xc9, 0xc0,
+	0x09, 0x34, 0x49, 0x21, 0x3e, 0x04, 0x8d, 0x4f, 0x16, 0xb3, 0x73, 0xd7, 0x72, 0xa6, 0x92, 0xe6,
+	0x1b, 0x3d, 0xb7, 0xb4, 0x48, 0x60, 0x57, 0x6f, 0xc3, 0xfe, 0x0e, 0x41, 0xb1, 0x23, 0x73, 0xa7,
+	0x3e, 0x13, 0xd5, 0xb1, 0xa9, 0xab, 0x44, 0x75, 0x04, 0x17, 0x41, 0x62, 0x3e, 0x64, 0xee, 0x34,
+	0x1f, 0x8e, 0x00, 0x27, 0x19, 0x6e, 0x5b, 0x6c, 0x12, 0xe4, 0x92, 0x6d, 0x2b, 0xe6, 0x1a, 0x9d,
+	0x28, 0x63, 0x67, 0x89, 0x8b, 0x10, 0x50, 0x05, 0x06, 0xbc, 0xb7, 0x32, 0xc7, 0xc2, 0x1b, 0x3b,
+	0x5e, 0x93, 0xe7, 0xa0, 0xc5, 0xe1, 0x31, 0x81, 0x2d, 0xa1, 0x60, 0x15, 0x14, 0x50, 0x90, 0xec,
+	0x94, 0x50, 0x45, 0x7e, 0x47, 0x50, 0x6a, 0x51, 0x97, 0xfa, 0xd6, 0x54, 0x4e, 0x95, 0x5f, 0x50,
+	0x62, 0xac, 0xe4, 0x20, 0x73, 0xf6, 0xb2, 0xac, 0xac, 0xcc, 0x0e, 0x84, 0x8b, 0x90, 0x1f, 0x1a,
+	0x2f, 0x8d, 0xb3, 0xef, 0x8d, 0x72, 0x06, 0x3f, 0x82, 0xdd, 0x9e, 0x6e, 0x9e, 0x76, 0xfa, 0xfd,
+	0xce, 0x99, 0xf1, 0x63, 0x53, 0x37, 0x3a, 0x62, 0xbe, 0xe0, 0x87, 0xf0, 0x60, 0x68, 0xd4, 0x86,
+	0x83, 0xb6, 0x6e, 0x0c, 0x3a, 0x8d, 0xda, 0x40, 0x6f, 0x96, 0x55, 0xbc, 0x0b, 0xa5, 0xa1, 0xd1,
+	0x39, 0xed, 0x75, 0xf5, 0x53, 0xdd, 0x10, 0xa2, 0x2d, 0xbc, 0x0d, 0x85, 0x8e, 0x31, 0xd0, 0x4d,
+	0xa3, 0xd6, 0x2d, 0xe7, 0xc4, 0xe8, 0x6a, 0xd4, 0x8c, 0x86, 0xde, 0x15, 0x81, 0xf2, 0x24, 0x07,
+	0x6a, 0xc7, 0xbd, 0xf0, 0xc8, 0x0f, 0xa0, 0x06, 0xc5, 0xf2, 0x18, 0x34, 0x71, 0xab, 0xd6, 0xaf,
+	0x39, 0x65, 0x41, 0xee, 0xdb, 0xe6, 0x52, 0x20, 0x88, 0x11, 0x0b, 0x23, 0x1a, 0xf0, 0x9a, 0x19,
+	0xaf, 0x85, 0xce, 0x9e, 0x50, 0xfb, 0x92, 0x2d, 0x66, 0x21, 0xe7, 0x66, 0xbc, 0x26, 0x3f, 0xc1,
+	0x6e, 0x9f, 0xfb, 0xd4, 0x9a, 0xd1, 0x91, 0x88, 0xd2, 0x98, 0x2c, 0xdc, 0x4b, 0xfc, 0xd1, 0x8d,
+	0x50, 0xe2, 0x38, 0x97, 0xc1, 0x1e, 0xa7, 0x83, 0x89, 0xf7, 0x43, 0x1c, 0xee, 0x71, 0x3a, 0x9c,
+	0xd0, 0x46, 0x12, 0x71, 0x67, 0x06, 0x41, 0xe4, 0x9d, 0x59, 0x7d, 0x01, 0x9a, 0xce, 0x98, 0x38,
+	0x69, 0x6b, 0x8a, 0x8f, 0xa0, 0x7c, 0x42, 0xb9, 0x3d, 0x69, 0x50, 0x5f, 0xd6, 0x03, 0xc5, 0xf1,
+	0xd1, 0x09, 0x36, 0xf6, 0x12, 0xdd, 0x44, 0x94, 0xea, 0x1f, 0x08, 0xb4, 0xf0, 0x52, 0x72, 0xdc,
+	0x31, 0xae, 0x42, 0x29, 0xf0, 0x97, 0xd7, 0x14, 0x4b, 0x39, 0xa7, 0xaf, 0x31, 0xa2, 0x1c, 0x21,
+	0x7c, 0x0c, 0xc5, 0x3e, 0x75, 0x47, 0xd1, 0xeb, 0x29, 0x6d, 0xb3, 0xb7, 0xfe, 0x2d, 0x43, 0x14,
+	0xfc, 0x1d, 0x94, 0x5b, 0x94, 0x27, 0xa4, 0x77, 0xf7, 0x3e, 0x40, 0x47, 0xa8, 0xfa, 0x1e, 0x01,
+	0xc8, 0x9e, 0x14, 0xe8, 0x8f, 0xa1, 0xd8, 0xf3, 0x18, 0x8f, 0x5e, 0x26, 0xe9, 0xb6, 0x5d, 0xee,
+	0x95, 0x2c, 0x5a, 0x05, 0x7f, 0x0d, 0xa5, 0x26, 0x9d, 0x52, 0x4e, 0xef, 0xef, 0x7a, 0x0c, 0x45,
+	0x7d, 0xe4, 0xdc, 0x3f, 0x66, 0xf5, 0x6f, 0x04, 0x85, 0xba, 0xef, 0xbd, 0x66, 0x02, 0xf9, 0x21,
+	0x40, 0x8b, 0xf2, 0xe8, 0x2d, 0x91, 0x68, 0xb6, 0x25, 0xe9, 0x52, 0x1d, 0x04, 0xdd, 0x09, 0xa7,
+	0xf8, 0xd0, 0x95, 0xd3, 0x3c, 0xe9, 0xb2, 0x11, 0xed, 0x57, 0x50, 0x6a, 0x4c, 0x2c, 0x77, 0x4c,
+	0x7b, 0xbe, 0x73, 0x65, 0xd9, 0xd7, 0x77, 0xf5, 0xfb, 0x12, 0x76, 0x97, 0xf8, 0xa2, 0xe1, 0xb1,
+	0x09, 0xa6, 0x7c, 0x8b, 0x29, 0xd5, 0x9f, 0xc5, 0xa4, 0xf1, 0xd8, 0x7f, 0x3b, 0x9b, 0x6f, 0xe1,
+	0x81, 0x70, 0x5c, 0x7d, 0xd6, 0xad, 0x7b, 0xff, 0x6c, 0x26, 0xfa, 0x6d, 0x06, 0x0a, 0xc3, 0xf9,
+	0xc8, 0x0a, 0x60, 0xb4, 0xe0, 0x61, 0xf0, 0x4d, 0x57, 0x67, 0x3a, 0xc3, 0x1f, 0x44, 0xce, 0xab,
+	0xe2, 0xbd, 0xb5, 0xd2, 0xb0, 0xf4, 0xf0, 0x0b, 0xd8, 0x09, 0x37, 0x92, 0x09, 0x6c, 0xda, 0x23,
+	0x9d, 0x68, 0xda, 0x3d, 0xee, 0xb4, 0x5b, 0xdc, 0xe3, 0x8e, 0x0b, 0xdc, 0x1b, 0xf0, 0x61, 0xdd,
+	0xb2, 0x2f, 0xc5, 0x80, 0x70, 0x47, 0xc9, 0x54, 0x92, 0x1d, 0xfb, 0x2f, 0x29, 0x9c, 0x87, 0xff,
+	0x3e, 0x5f, 0xfc, 0x13, 0x00, 0x00, 0xff, 0xff, 0x0e, 0x3e, 0xe0, 0x73, 0x1b, 0x0d, 0x00, 0x00,
 }
