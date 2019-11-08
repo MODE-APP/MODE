@@ -20,7 +20,6 @@ class LoginViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
         usernameTextField.delegate = self
         passwordTextField.delegate = self
         
@@ -28,6 +27,10 @@ class LoginViewController: UIViewController {
 //        usernameTextField.becomeFirstResponder()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        self.performSegue(withIdentifier: "showMainTabBar", sender: nil)
+    }
     // MARK: - Actions
     
     @IBAction func viewTapped(_ sender: Any) {

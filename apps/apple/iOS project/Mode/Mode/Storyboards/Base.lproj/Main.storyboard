@@ -93,7 +93,7 @@
                                         </state>
                                         <connections>
                                             <action selector="logingButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="3e1-sK-JdJ"/>
-                                            <segue destination="0Hq-pd-KFS" kind="show" id="TKQ-mV-G77"/>
+                                            <segue destination="0Hq-pd-KFS" kind="show" identifier="showMainTabBar" id="TKQ-mV-G77"/>
                                         </connections>
                                     </button>
                                 </subviews>
