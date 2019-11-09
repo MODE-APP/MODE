@@ -1,14 +1,11 @@
 package servers
 
 import (
-	protos "MODE/servers/backend/networking/proto/generated/protos"
+	"MODE/servers/backend/networking/proto/generated/protos"
+	customtokens "MODE/servers/backend/networking/security/customtokens"
 	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
-	"crypto/hmac"
-	"crypto/sha256"
-	"encoding/hex"
 	"errors"
-	"io"
 	"io/ioutil"
 	"net"
 	"os"
@@ -69,20 +66,10 @@ func (serv *TLSserver) RequestToken(ctx context.Context, creds *protos.Credentia
 		return nil, err
 	}
 
-	sig, err := GenerateSignature([]byte(headData+pay.Username), sec)
+	sig, err := customtokens.GenerateSignature([]byte(headData+pay.Username), sec)
 	signature := &protos.SignedToken_Signature{
 		Signature: sig}
 	return &protos.SignedToken{
 		Header: head, Payload: pay, Signature: signature}, nil
 
-}
-
-//GenerateSignature returns a HS256 signature used for tokenization
-func GenerateSignature(data, secret []byte) (string, error) {
-	h := hmac.New(sha256.New, secret)
-	_, err := h.Write(data)
-	if err != io.ErrClosedPipe {
-		return "", err
-	}
-	return hex.EncodeToString(h.Sum(nil)), nil
 }

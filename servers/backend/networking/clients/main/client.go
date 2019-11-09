@@ -8,8 +8,18 @@ import (
 
 func main() {
 	log.Println("Starting main")
-	client := clients.NewEssentialClient("localhost", "3218")
-	client.Connect()
+	cert, err := os.Open("/home/arline/go/src/MODE/servers/backend/certs/ModeCertificate.crt")
+	if err != nil {
+		panic(err)
+	}
+	client, err := clients.NewTLSClient("localhost", "3218", cert)
+	if err != nil {
+		panic(err)
+	}
+	err = client.Connect()
+	if err != nil {
+		panic(err)
+	}
 	file, filename, err := client.FetchCertificate()
 	if err != nil {
 		panic(err)
@@ -23,4 +33,8 @@ func main() {
 		panic(err)
 	}
 
+	client.TestCall()
+	if err != nil {
+		panic(err)
+	}
 }

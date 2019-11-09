@@ -50,11 +50,20 @@ func (client *EssentialClient) FetchCertificate() (fileBuf []byte, filename stri
 	if client.ClientConn != nil && client.ctx != nil && client.EssentialClient != nil {
 		file, err := client.EssentialClient.FetchCertificate(client.ctx, &proto.Info{})
 		if err != nil {
-			log.Println("error wasnt nil")
 			return nil, "", err
 		}
 		log.Println("returning cert")
 		return file.FileBytes, file.FileName, nil
 	}
 	return nil, "", errors.New("connection not ready")
+}
+
+func (client *EssentialClient) RegisterClientTypes() {
+	client.EssentialClient = proto.NewEssentialClient(client.ClientConn)
+}
+
+func (client *EssentialClient) TestCall() {
+	status, err := client.EssentialClient.TestCall(client.ctx, &proto.Info{})
+	log.Println(status)
+	log.Println(err)
 }

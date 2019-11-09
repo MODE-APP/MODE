@@ -36,6 +36,11 @@ func (serv *EssentialServer) Serve() error {
 	return err
 }
 
+func (*EssentialServer) TestCall(ctx context.Context, info *proto.Info) (*proto.GeneralStatus, error) {
+	return &proto.GeneralStatus{
+		Status: proto.GeneralStatus_OK}, nil
+}
+
 //FetchCertificate returns a copy of the public key to the client requesting it
 func (*EssentialServer) FetchCertificate(ctx context.Context, info *proto.Info) (*proto.File, error) {
 	buf, err := ioutil.ReadFile("/home/arline/go/src/MODE/servers/backend/certs/ModeCertificate.crt")

@@ -6,6 +6,7 @@ package protos;
 
 service Essential {
 	rpc FetchCertificate(Info) returns (File){}
+	rpc TestCall(Info) returns (GeneralStatus){}
 }
 
 /**
@@ -239,6 +240,7 @@ message GeneralStatus {
 		INTERNAL = 6;
 		CANCELLED = 7;
 	}
+	StatusCode status = 1;
 }
 
 message Info {

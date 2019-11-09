@@ -2,10 +2,12 @@ package interceptors
 
 import (
 	"context"
+	"errors"
 	"log"
 	"time"
 
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/metadata"
 )
 
 //TLSInterceptor checks the given username/password username/token combination against the ones in the database
@@ -30,5 +32,11 @@ func TLSInterceptor(ctx context.Context,
 
 //Unimplemented authorize function for token-based auth
 func authorize(ctx context.Context) error {
-	return nil
+	md, ok := metadata.FromIncomingContext(ctx)
+	if !ok {
+		return errors.New("auth: metadata not found in rpc")
+	}
+	tokenHeader := md["tokenHead"]
+	tokenPayload := md["tokenPayload"]
+	tokenSignature := md["tokenSignature"]
 }
