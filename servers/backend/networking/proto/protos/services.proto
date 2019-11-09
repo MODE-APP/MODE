@@ -217,10 +217,6 @@ message Identifiers{
 	}
 }
 
-
-
-
-
 message User {
 	string username = 1;
 }

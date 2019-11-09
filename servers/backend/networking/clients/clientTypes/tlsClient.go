@@ -1,7 +1,9 @@
 package clients
 
 import (
+	"MODE/servers/backend/networking/proto/generated/protos"
 	proto "MODE/servers/backend/networking/proto/generated/protos"
+	"MODE/servers/backend/networking/security/customtokens"
 	"context"
 	"errors"
 	"log"
@@ -9,13 +11,15 @@ import (
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
+	"google.golang.org/grpc/metadata"
 )
 
 //TLSClient connects to a server using a TLS certificate
 type TLSClient struct {
 	EssentialClient
 	proto.TokenSecurityClient
-	cert *os.File
+	cert  *os.File
+	Token customtokens.BasicToken
 }
 
 //NewTLSClient returns a TLS struct with the specified params
@@ -52,4 +56,24 @@ func (client *TLSClient) Connect() error {
 func (client *TLSClient) RegisterClientTypes() {
 	client.EssentialClient.RegisterClientTypes()
 	client.TokenSecurityClient = proto.NewTokenSecurityClient(client.ClientConn)
+}
+
+func (client *TLSClient) RequestToken(username, password string) (customtokens.BasicToken, error) {
+	token, err := client.TokenSecurityClient.RequestToken(client.ctx, &protos.Credentials{
+		Username: username, Password: password})
+	return customtokens.BasicToken{
+		TokenHeader:    token.GetHeader().GetAlg() + token.GetHeader().GetType(),
+		TokenPayload:   token.GetPayload().GetUsername(),
+		TokenSignature: token.GetSignature().GetSignature()}, err
+}
+
+func (client *TLSClient) ApplyTokenToMetadata() error {
+	md := metadata.New(map[string]string{"tokenheader": client.Token.TokenHeader,
+		"tokenpayload":   client.Token.TokenPayload,
+		"tokensignature": client.Token.TokenSignature})
+	if (client.Token == customtokens.BasicToken{}) {
+		return errors.New("could not create md from token")
+	}
+	client.ctx = metadata.NewOutgoingContext(client.ctx, md)
+	return nil
 }

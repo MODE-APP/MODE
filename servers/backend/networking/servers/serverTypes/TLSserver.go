@@ -67,6 +67,9 @@ func (serv *TLSserver) RequestToken(ctx context.Context, creds *protos.Credentia
 	}
 
 	sig, err := customtokens.GenerateSignature([]byte(headData+pay.Username), sec)
+	if err != nil {
+		return nil, err
+	}
 	signature := &protos.SignedToken_Signature{
 		Signature: sig}
 	return &protos.SignedToken{
