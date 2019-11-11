@@ -18,7 +18,6 @@ func main() {
 	eCheck(err)
 	client.Token = token
 	client.ApplyTokenToMetadata()
-	client.TestCall()
 	if err != nil {
 		panic(err)
 	}

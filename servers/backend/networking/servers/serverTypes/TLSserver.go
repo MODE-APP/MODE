@@ -9,6 +9,7 @@ import (
 	"io/ioutil"
 	"net"
 	"os"
+	"time"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/credentials"
@@ -54,22 +55,26 @@ func (serv *TLSserver) Serve() error {
 //RequestToken creates a token that can be used to verify identity
 func (serv *TLSserver) RequestToken(ctx context.Context, creds *protos.Credentials) (*protos.SignedToken, error) {
 	head := &protos.SignedToken_Header{
-		Alg:  "HS256",
-		Type: "MODE-TOKEN"}
-	headData := head.Alg + head.Type
+		EncAlg:  "HS256",
+		TimeAlg: "Unix",
+		Type:    "MODE-TOKEN"}
+	headData := head.EncAlg + head.TimeAlg + head.Type
 
 	pay := &protos.SignedToken_Payload{
-		Username: creds.Username}
+		Username:       creds.Username,
+		ExpirationDate: time.Now().AddDate(0, 0, 7).Unix()}
+	payData := pay.Username + string(pay.ExpirationDate)
 
 	sec, err := ioutil.ReadFile(serv.privateKey.Name())
 	if err != nil {
-		return nil, err
+		return nil, errors.New("internal error: signature secret")
 	}
 
-	sig, err := customtokens.GenerateSignature([]byte(headData+pay.Username), sec)
+	sig, err := customtokens.GenerateSignature([]byte(headData+payData), sec)
 	if err != nil {
-		return nil, err
+		return nil, errors.New("internal error: generating signature")
 	}
+
 	signature := &protos.SignedToken_Signature{
 		Signature: sig}
 	return &protos.SignedToken{

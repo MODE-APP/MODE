@@ -19,7 +19,7 @@ type TLSClient struct {
 	EssentialClient
 	proto.TokenSecurityClient
 	cert  *os.File
-	Token customtokens.BasicToken
+	Token customtokens.Token
 }
 
 //NewTLSClient returns a TLS struct with the specified params
@@ -58,22 +58,46 @@ func (client *TLSClient) RegisterClientTypes() {
 	client.TokenSecurityClient = proto.NewTokenSecurityClient(client.ClientConn)
 }
 
-func (client *TLSClient) RequestToken(username, password string) (customtokens.BasicToken, error) {
+//RequestToken asks the server a token and returns it
+func (client *TLSClient) RequestToken(username, password string) (customtokens.Token, error) {
 	token, err := client.TokenSecurityClient.RequestToken(client.ctx, &protos.Credentials{
 		Username: username, Password: password})
-	return customtokens.BasicToken{
-		TokenHeader:    token.GetHeader().GetAlg() + token.GetHeader().GetType(),
-		TokenPayload:   token.GetPayload().GetUsername(),
-		TokenSignature: token.GetSignature().GetSignature()}, err
+	if err == nil {
+		return customtokens.Token{
+			TokenHeader: map[string]string{
+				"encalg":  token.GetHeader().GetEncAlg(),
+				"timealg": token.GetHeader().GetTimeAlg(),
+				"type":    token.GetHeader().GetType(),
+			},
+			TokenPayload: map[string]string{
+				"username":   token.GetPayload().GetUsername(),
+				"expiration": string(token.GetPayload().GetExpirationDate()),
+			},
+			TokenSignature: token.GetSignature().GetSignature(),
+		}, nil
+	}
+	return customtokens.Token{}, err
 }
 
+//ApplyTokenToMetadata applies the client's token to the client's metadata
 func (client *TLSClient) ApplyTokenToMetadata() error {
-	md := metadata.New(map[string]string{"tokenheader": client.Token.TokenHeader,
-		"tokenpayload":   client.Token.TokenPayload,
-		"tokensignature": client.Token.TokenSignature})
-	if (client.Token == customtokens.BasicToken{}) {
-		return errors.New("could not create md from token")
+	tok := client.Token
+	if tok.TokenSignature == "" {
+		return errors.New("auth: missing signature on token")
 	}
+	tokMap := map[string]string{}
+	for k, v := range tok.TokenHeader {
+		if tokMap[k] == "" {
+			tokMap[k] = v
+		}
+	}
+	for k, v := range tok.TokenPayload {
+		if tokMap[k] == "" {
+			tokMap[k] = v
+		}
+	}
+	tokMap["signature"] = tok.TokenSignature
+	md := metadata.New(tokMap)
 	client.ctx = metadata.NewOutgoingContext(client.ctx, md)
 	return nil
 }
