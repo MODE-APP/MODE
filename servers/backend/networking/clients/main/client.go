@@ -14,10 +14,15 @@ func main() {
 	eCheck(err)
 	err = client.Connect()
 	eCheck(err)
-	token, err := client.RequestToken("chasearline", "mypassword")
+	token, err := client.RequestRefreshToken("chasearline", "mypassword")
 	eCheck(err)
-	client.Token = token
-	client.ApplyTokenToMetadata()
+	client.RefreshToken = token
+	client.ApplyTokenToMetadata(client.RefreshToken)
+	token, err = client.RequestAccessToken()
+	eCheck(err)
+	client.AccessToken = token
+	client.ApplyTokenToMetadata(client.AccessToken)
+	token, err = client.RequestAccessToken()
 	if err != nil {
 		panic(err)
 	}
@@ -25,6 +30,6 @@ func main() {
 
 func eCheck(err error) {
 	if err != nil {
-		panic(err)
+		log.Fatalf("\n%v\n", err)
 	}
 }

@@ -1,12 +1,13 @@
 package interceptors
 
 import (
+	"MODE/servers/backend/networking/proto/generated/protos"
 	"MODE/servers/backend/networking/security/customtokens"
 	"context"
 	"errors"
-	"io/ioutil"
-	"log"
-	"strings"
+	"fmt"
+	"os"
+	"strconv"
 	"time"
 
 	"google.golang.org/grpc"
@@ -18,67 +19,93 @@ func TLSInterceptor(ctx context.Context,
 	req interface{},
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
-
-	// Skip authorize when fetching certificate/tokens
+	// Skip authorize when fetching certificate/refreshtoken
+	fmt.Printf("Request -- Time: %v\t  Method: %s\t", time.Now().Format("2006-01-02 3:04:05PM"), info.FullMethod)
 	if info.FullMethod != "/protos.Essential/FetchCertificate" &&
-		info.FullMethod != "/protos.TokenSecurity/RequestToken" {
-		if ok, err := authorize(ctx); !ok {
-			log.Printf("Request - Method: %s\tTime: %s\tAuthorized: %s", info.FullMethod, time.Now(), "false")
+		info.FullMethod != "/protos.TokenSecurity/RequestRefreshToken" {
+		if err := authorize(ctx, info.FullMethod); err != nil {
+			fmt.Printf("Authorized: %v", false)
+			fmt.Println()
 			return nil, err
 		}
+		fmt.Printf("Authorized: %v", true)
+
 	}
-	log.Printf("Request - Method: %s\tTime: %s\tAuthorized: %s", info.FullMethod, time.Now(), "true")
+	fmt.Println()
 	// Calls the handler
 	h, err := handler(ctx, req)
 	return h, err
 }
 
 //Unimplemented authorize function for token-based auth
-func authorize(ctx context.Context) (bool, error) {
+func authorize(ctx context.Context, method string) error {
 	md, ok := metadata.FromIncomingContext(ctx)
+	if md["username"] != nil {
+		fmt.Printf("Username: %v\t", md["username"][0])
+	}
 	if !ok {
-		return false, errors.New("auth: metadata not found in rpc")
+		return errors.New("auth: metadata not found in context")
 	}
-	if md["password"] != nil {
-		ok, err := AuthorizePassword(md["username"][0], md["password"][0])
-		if !ok || err != nil {
-			return false, errors.New("auth: password could not be authenticated")
+	if md["type"] != nil && md["type"][0] == "mode-access-token" {
+		if method != "/protos.TokenSecurity/RequestRefreshToken" &&
+			method != "/protos.TokenSecurity/RequestAccessToken" {
+			return authorizeToken(md)
 		}
-	} else if md["tokenheader"] != nil {
-		tokenHeader := md["tokenheader"]
-		tokenPayload := md["tokenpayload"]
-		tokenSignature := md["tokensignature"]
-		ok, err := AuthorizeToken(strings.Join(tokenHeader, ""), strings.Join(tokenPayload, ""), tokenSignature[0])
-		return ok, err
+		fmt.Printf("Token is of wrong type\t")
+		return errors.New("auth: wrong token type for method call")
+	} else if md["type"] != nil && md["type"][0] == "mode-refresh-token" {
+		if method == "/protos.TokenSecurity/RequestAccessToken" {
+			return authorizeToken(md)
+		}
+		fmt.Printf("Token is of wrong type\t")
+		return errors.New("auth: wrong token type for method call")
 	}
-	return false, errors.New("auth: no credentials given")
+	return errors.New("auth: credentials missing")
 }
 
 //AuthorizeToken generates the hash and compares the result against the token data given
-func AuthorizeToken(tokenHeader, tokenPayload, tokenSignature string) (bool, error) {
-	sec, err := ioutil.ReadFile("/home/arline/go/src/MODE/servers/backend/certs/ModeKey.key")
-	if err != nil {
-		return false, errors.New("internal error, key location incorrect")
+func authorizeToken(md metadata.MD) error {
+	tok := &protos.SignedToken{
+		Header: map[string]string{
+			"encalg":  md["encalg"][0],
+			"timealg": md["timealg"][0],
+			"type":    md["type"][0],
+		},
+		Payload: map[string]string{
+			"username":   md["username"][0],
+			"expiration": md["expiration"][0],
+		},
+		Signature: md["signature"][0],
 	}
 
-	localSig, err := customtokens.GenerateSignature([]byte(tokenHeader+tokenPayload), sec)
+	unixTimeStamp, err := strconv.ParseInt(tok.GetPayload()["expiration"], 10, 64)
 	if err != nil {
-		return false, errors.New("auth: could not sign token data")
+		return errors.New("timestamp incorrect : " + tok.GetPayload()["expiration"])
 	}
-	log.Printf("\nlocalsig: %v\ntokenSig: %v", localSig, tokenSignature)
-	if localSig == tokenSignature {
-		return true, nil
+	if !time.Now().Before(time.Unix(unixTimeStamp, 0)) {
+		return errors.New("auth: token has expired")
 	}
-	return false, errors.New("auth: token not recognized")
+	key, err := os.Open("/home/arline/go/src/MODE/servers/backend/certs/ModeKey.key")
+	if err != nil {
+		return err
+	}
+	if _, err = os.Stat(key.Name()); err != nil {
+		return err
+	}
+	err = customtokens.ValidateToken(tok, key)
+	if err == nil {
+		fmt.Printf("Token is valid for: %v\t", time.Unix(unixTimeStamp, 0).Sub(time.Now()))
+	}
+	return err
 }
 
 //AuthorizePassword compares the user/pass combo against the ones in the database
-func AuthorizePassword(username, password string) (bool, error) {
+func authorizePassword(username, password string) error {
 	//If username or password are missing, return false && unauthenticated error
 	if username == "" || password == "" {
-		return false, errors.New("auth: missing username &| password")
+		errors.New("auth: missing username &| password")
 	}
 	//Make call to database to compare
 	//If the creds match, return true and nil error
-	return true, nil
+	return nil
 }

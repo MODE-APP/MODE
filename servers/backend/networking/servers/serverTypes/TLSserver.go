@@ -2,13 +2,13 @@ package servers
 
 import (
 	"MODE/servers/backend/networking/proto/generated/protos"
-	customtokens "MODE/servers/backend/networking/security/customtokens"
+	"MODE/servers/backend/networking/security/customtokens"
 	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"errors"
-	"io/ioutil"
 	"net"
 	"os"
+	"strconv"
 	"time"
 
 	"google.golang.org/grpc"
@@ -53,31 +53,35 @@ func (serv *TLSserver) Serve() error {
 }
 
 //RequestToken creates a token that can be used to verify identity
-func (serv *TLSserver) RequestToken(ctx context.Context, creds *protos.Credentials) (*protos.SignedToken, error) {
-	head := &protos.SignedToken_Header{
-		EncAlg:  "HS256",
-		TimeAlg: "Unix",
-		Type:    "MODE-TOKEN"}
-	headData := head.EncAlg + head.TimeAlg + head.Type
-
-	pay := &protos.SignedToken_Payload{
-		Username:       creds.Username,
-		ExpirationDate: time.Now().AddDate(0, 0, 7).Unix()}
-	payData := pay.Username + string(pay.ExpirationDate)
-
-	sec, err := ioutil.ReadFile(serv.privateKey.Name())
+func (serv *TLSserver) RequestAccessToken(ctx context.Context, refreshToken *protos.SignedToken) (*protos.SignedToken, error) {
+	refreshToken.Header["type"] = "mode-access-token"
+	refreshToken.Payload["expiration"] = strconv.FormatInt(time.Now().Add(time.Minute*30).Unix(), 10)
+	sig, err := customtokens.GenerateSignature(refreshToken, serv.privateKey)
 	if err != nil {
-		return nil, errors.New("internal error: signature secret")
+		return &protos.SignedToken{}, err
 	}
+	refreshToken.Signature = sig
+	return refreshToken, nil
+}
 
-	sig, err := customtokens.GenerateSignature([]byte(headData+payData), sec)
+func (serv *TLSserver) RequestRefreshToken(ctx context.Context, creds *protos.Credentials) (*protos.SignedToken, error) {
+	//check database for credentials, return error if not found
+	//continue if found
+	tok := &protos.SignedToken{
+		Header: map[string]string{
+			"encalg":  "hs256",
+			"timealg": "unix",
+			"type":    "mode-refresh-token",
+		},
+		Payload: map[string]string{
+			"username":   creds.GetUsername(),
+			"expiration": strconv.FormatInt(time.Now().AddDate(0, 0, 1).Unix(), 10),
+		},
+	}
+	sig, err := customtokens.GenerateSignature(tok, serv.privateKey)
 	if err != nil {
-		return nil, errors.New("internal error: generating signature")
+		return &protos.SignedToken{}, err
 	}
-
-	signature := &protos.SignedToken_Signature{
-		Signature: sig}
-	return &protos.SignedToken{
-		Header: head, Payload: pay, Signature: signature}, nil
-
+	tok.Signature = sig
+	return tok, nil
 }

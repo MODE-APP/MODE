@@ -13,7 +13,8 @@ service Essential {
 *Token Security RPC
 */
 service TokenSecurity{
-	rpc RequestToken(Credentials) returns (SignedToken){}
+	rpc RequestRefreshToken(Credentials) returns (SignedToken){}
+	rpc RequestAccessToken(SignedToken) returns (SignedToken){}
 }
 
 message Credentials{
@@ -21,22 +22,12 @@ message Credentials{
 	string password = 2;
 }
 
+message RefreshToken{}
+
 message SignedToken{
-	message Header {
-		string encAlg = 1;
-		string timeAlg = 2;
-		string type = 3;
-	}
-	Header header = 1;
-	message Payload {
-		string username = 1;
-		int64 expirationDate = 2;
-	}
-	Payload payload = 2;
-	message Signature {
-		string signature = 1;
-	}
-	Signature signature = 3;
+	map<string, string> header = 1;
+	map<string, string> payload = 2;
+	string signature = 3;
 }
 
 /**
