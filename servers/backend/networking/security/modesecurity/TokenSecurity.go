@@ -39,9 +39,7 @@ func ValidateToken(token *protos.SignedToken, key *os.File) error {
 	if sig == token.Signature {
 		return nil
 	}
-
 	return errors.New("signature invalid")
-
 }
 
 /*GenerateSignature returns a signature based off of the data inside the token and the secret given

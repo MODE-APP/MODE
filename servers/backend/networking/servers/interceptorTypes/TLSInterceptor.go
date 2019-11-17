@@ -21,8 +21,7 @@ func TLSInterceptor(ctx context.Context,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	// Skip authorize when fetching certificate/refreshtoken
 	fmt.Printf("Request -- Time: %v\t  Method: %s\t", time.Now().Format("2006-01-02 3:04:05PM"), info.FullMethod)
-	if info.FullMethod != "/protos.Essential/FetchCertificate" &&
-		info.FullMethod != "/protos.TokenSecurity/RequestRefreshToken" {
+	if info.FullMethod != "/protos.Essential/FetchCertificate" {
 		if err := authorize(ctx, info.FullMethod); err != nil {
 			fmt.Printf("Authorized: %v", false)
 			fmt.Println()
@@ -65,17 +64,9 @@ func authorize(ctx context.Context, method string) error {
 
 //AuthorizeToken generates the hash and compares the result against the token data given
 func authorizeToken(md metadata.MD) error {
-	tok := &protos.SignedToken{
-		Header: map[string]string{
-			"encalg":  md["encalg"][0],
-			"timealg": md["timealg"][0],
-			"type":    md["type"][0],
-		},
-		Payload: map[string]string{
-			"username":   md["username"][0],
-			"expiration": md["expiration"][0],
-		},
-		Signature: md["signature"][0],
+	tok, err := CreateTokenFromMD(md)
+	if err != nil {
+		return err
 	}
 	unixTimeStamp, err := strconv.ParseInt(tok.GetPayload()["expiration"], 10, 64)
 	if err != nil {
@@ -108,4 +99,23 @@ func authorizePassword(username, password string) error {
 	//Make call to database to compare
 	//If the creds match, return true and nil error
 	return nil
+}
+
+//CreateTokenFromMD returns a SignedToken created from the given metadata
+func CreateTokenFromMD(md metadata.MD) (*protos.SignedToken, error) {
+	if md["signature"] == nil {
+		return &protos.SignedToken{}, errors.New("token is not signed")
+	}
+	return &protos.SignedToken{
+		Header: map[string]string{
+			"encalg":  md["encalg"][0],
+			"timealg": md["timealg"][0],
+			"type":    md["type"][0],
+		},
+		Payload: map[string]string{
+			"username":   md["username"][0],
+			"expiration": md["expiration"][0],
+		},
+		Signature: md["signature"][0],
+	}, nil
 }
