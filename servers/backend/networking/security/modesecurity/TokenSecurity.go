@@ -1,4 +1,4 @@
-package customtokens
+package modesecurity
 
 import (
 	"MODE/servers/backend/networking/proto/generated/protos"
@@ -21,7 +21,7 @@ type Token struct {
 //BasicToken is used for testing purposes before the mapping of things inside of the token are done
 
 //GenerateSignature returns a HS256 signature used for tokenization
-func generateSignature(data, secret []byte) (string, error) {
+func generateHS256(data, secret []byte) (string, error) {
 	h := hmac.New(sha256.New, secret)
 	_, err := h.Write(data)
 	if err != io.ErrClosedPipe && err != nil {
@@ -30,6 +30,7 @@ func generateSignature(data, secret []byte) (string, error) {
 	return hex.EncodeToString(h.Sum(nil)), nil
 }
 
+//ValidateToken validates the token's signature
 func ValidateToken(token *protos.SignedToken, key *os.File) error {
 	sig, err := GenerateSignature(token, key)
 	if err != nil {
@@ -43,6 +44,9 @@ func ValidateToken(token *protos.SignedToken, key *os.File) error {
 
 }
 
+/*GenerateSignature returns a signature based off of the data inside the token and the secret given
+*
+ */
 func GenerateSignature(token *protos.SignedToken, key *os.File) (string, error) {
 	var signData string
 	signData += token.Header["encalg"] +
@@ -56,6 +60,6 @@ func GenerateSignature(token *protos.SignedToken, key *os.File) (string, error) 
 		return "", err
 	}
 
-	sig, err := generateSignature([]byte(signData), sec)
+	sig, err := generateHS256([]byte(signData), sec)
 	return sig, err
 }

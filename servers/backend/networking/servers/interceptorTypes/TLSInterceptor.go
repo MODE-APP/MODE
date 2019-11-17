@@ -2,7 +2,7 @@ package interceptors
 
 import (
 	"MODE/servers/backend/networking/proto/generated/protos"
-	"MODE/servers/backend/networking/security/customtokens"
+	"MODE/servers/backend/networking/security/modesecurity"
 	"context"
 	"errors"
 	"fmt"
@@ -77,7 +77,6 @@ func authorizeToken(md metadata.MD) error {
 		},
 		Signature: md["signature"][0],
 	}
-
 	unixTimeStamp, err := strconv.ParseInt(tok.GetPayload()["expiration"], 10, 64)
 	if err != nil {
 		return errors.New("timestamp incorrect : " + tok.GetPayload()["expiration"])
@@ -92,7 +91,7 @@ func authorizeToken(md metadata.MD) error {
 	if _, err = os.Stat(key.Name()); err != nil {
 		return err
 	}
-	err = customtokens.ValidateToken(tok, key)
+	err = modesecurity.ValidateToken(tok, key)
 	if err == nil {
 		fmt.Printf("Token is valid for: %v\t", time.Unix(unixTimeStamp, 0).Sub(time.Now()))
 	}
@@ -101,9 +100,10 @@ func authorizeToken(md metadata.MD) error {
 
 //AuthorizePassword compares the user/pass combo against the ones in the database
 func authorizePassword(username, password string) error {
+
 	//If username or password are missing, return false && unauthenticated error
 	if username == "" || password == "" {
-		errors.New("auth: missing username &| password")
+		return errors.New("auth: missing username &| password")
 	}
 	//Make call to database to compare
 	//If the creds match, return true and nil error

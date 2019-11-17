@@ -22,6 +22,7 @@ func main() {
 	eCheck(err)
 	client.AccessToken = token
 	client.ApplyTokenToMetadata(client.AccessToken)
+	client.TestCall()
 	token, err = client.RequestAccessToken()
 	if err != nil {
 		panic(err)

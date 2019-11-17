@@ -58,13 +58,14 @@ func (client *TLSClient) RegisterClientTypes() {
 	client.TokenSecurityClient = proto.NewTokenSecurityClient(client.ClientConn)
 }
 
-//RequestToken asks the server a token and returns it
+//RequestRefreshToken asks the server for a refresh token and returns it
 func (client *TLSClient) RequestRefreshToken(username, password string) (*protos.SignedToken, error) {
 	return client.TokenSecurityClient.RequestRefreshToken(client.ctx, &protos.Credentials{
 		Username: username, Password: password})
 
 }
 
+//RequestAccessToken asks the server for an access token and returns it
 func (client *TLSClient) RequestAccessToken() (*protos.SignedToken, error) {
 	return client.TokenSecurityClient.RequestAccessToken(client.ctx, client.RefreshToken)
 

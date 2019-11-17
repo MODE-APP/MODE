@@ -2,7 +2,7 @@ package servers
 
 import (
 	"MODE/servers/backend/networking/proto/generated/protos"
-	"MODE/servers/backend/networking/security/customtokens"
+	"MODE/servers/backend/networking/security/modesecurity"
 	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"errors"
@@ -56,7 +56,7 @@ func (serv *TLSserver) Serve() error {
 func (serv *TLSserver) RequestAccessToken(ctx context.Context, refreshToken *protos.SignedToken) (*protos.SignedToken, error) {
 	refreshToken.Header["type"] = "mode-access-token"
 	refreshToken.Payload["expiration"] = strconv.FormatInt(time.Now().Add(time.Minute*30).Unix(), 10)
-	sig, err := customtokens.GenerateSignature(refreshToken, serv.privateKey)
+	sig, err := modesecurity.GenerateSignature(refreshToken, serv.privateKey)
 	if err != nil {
 		return &protos.SignedToken{}, err
 	}
@@ -78,7 +78,7 @@ func (serv *TLSserver) RequestRefreshToken(ctx context.Context, creds *protos.Cr
 			"expiration": strconv.FormatInt(time.Now().AddDate(0, 0, 1).Unix(), 10),
 		},
 	}
-	sig, err := customtokens.GenerateSignature(tok, serv.privateKey)
+	sig, err := modesecurity.GenerateSignature(tok, serv.privateKey)
 	if err != nil {
 		return &protos.SignedToken{}, err
 	}
