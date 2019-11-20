@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"path/filepath"
 	"strconv"
 	"time"
 
@@ -20,20 +21,20 @@ func TLSInterceptor(ctx context.Context,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	// Skip authorize when fetching certificate/refreshtoken
-	timestr := "Request -- Time: " + time.Now().Format("2006-01-02 3:04:05PM") + "\tMethod: " + info.FullMethod
-	now := time.Now()
-	if info.FullMethod != "/protos.Essential/FetchCertificate" {
+	//timestr := "Request -- Time: " + time.Now().Format("2006-01-02 3:04:05PM") + "\tMethod: " + info.FullMethod
+
+	if info.FullMethod != "/proto.generalservices.Essential/FetchCertificate" {
 		c := make(chan error)
 		go func(ch chan error) {
-			fmt.Println("checking auth")
 			ch <- authorize(ctx, info.FullMethod)
 		}(c)
 		auth := <-c
-		authstr := "\tAuthorized: "
+		//authstr := "\tAuthorized: "
 		if auth == nil {
-			fmt.Println(timestr + authstr + "true")
+			//fmt.Println(timestr + authstr + "true")
 		} else {
-			fmt.Println(timestr + authstr + "false")
+			//fmt.Println(timestr + authstr + "false")
+			return nil, auth
 		}
 	}
 	// Calls the handler
@@ -41,13 +42,11 @@ func TLSInterceptor(ctx context.Context,
 	errC := make(chan error)
 	go func(hC chan interface{}, errC chan error) {
 		h, err := handler(ctx, req)
-		fmt.Printf("\nintercept took %v\n", time.Since(now))
 		hC <- h
 		errC <- err
 	}(hC, errC)
 	h := <-hC
 	err := <-errC
-	fmt.Println("returning from interrupt")
 	return h, err
 }
 
@@ -63,14 +62,14 @@ func authorize(ctx context.Context, method string) error {
 		return errors.New("auth: metadata not found in context")
 	}
 	if md["type"] != nil && md["type"][0] == "mode-access-token" {
-		if method != "/protos.TokenSecurity/RequestRefreshToken" &&
-			method != "/protos.TokenSecurity/RequRequestAccessTokenestAccessToken" {
+		if method != "/proto.generalservices.TokenSecurity/RequestRefreshToken" &&
+			method != "/proto.generalservices.TokenSecurity/RequRequestAccessTokenestAccessToken" {
 			return authorizeToken(md)
 		}
 		fmt.Printf("Token is of wrong type\t")
 		return errors.New("auth: wrong token type for method call")
 	} else if md["type"] != nil && md["type"][0] == "mode-refresh-token" {
-		if method == "/protos.TokenSecurity/RequestAccessToken" {
+		if method == "/proto.generalservices.TokenSecurity/RequestAccessToken" {
 			return authorizeToken(md)
 		}
 		fmt.Printf("Token is of wrong type\t")
@@ -92,15 +91,16 @@ func authorizeToken(md metadata.MD) error {
 	if !time.Now().Before(time.Unix(unixTimeStamp, 0)) {
 		return errors.New("auth: token has expired")
 	}
-	keyLoc := "/home/arline/go/src/MODE/servers/backend/certs/ModeKey.key"
-	if _, err = os.Stat(keyLoc); err != nil {
+	wd, err := os.Getwd()
+	priv := filepath.Join(wd, "../../../", "certs/ModeKey.key")
+	if _, err = os.Stat(priv); err != nil {
 		return err
 	}
-	err = modesecurity.ValidateToken(tok, keyLoc)
+	err = modesecurity.ValidateToken(tok, priv)
 	if err != nil {
 		return err
 	}
-	fmt.Printf("Token is valid for: %v\t", time.Unix(unixTimeStamp, 0).Sub(time.Now()))
+	//fmt.Printf("Token is valid for: %v\t", time.Unix(unixTimeStamp, 0).Sub(time.Now()))
 	return nil
 }
 

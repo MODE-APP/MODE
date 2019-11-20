@@ -4,7 +4,6 @@ import (
 	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"context"
 	"errors"
-	"log"
 
 	"google.golang.org/grpc"
 	"google.golang.org/grpc/connectivity"
@@ -52,7 +51,6 @@ func (client *EssentialClient) FetchCertificate() (fileBuf []byte, filename stri
 		if err != nil {
 			return nil, "", err
 		}
-		log.Println("returning cert")
 		return file.FileBytes, file.FileName, nil
 	}
 	return nil, "", errors.New("connection not ready")

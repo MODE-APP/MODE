@@ -90,6 +90,9 @@ func (client *TLSClient) ApplyTokenToMetadata(token *generalservices.SignedToken
 }
 
 func (client *TLSClient) ApplyCredentialsToMetadata(creds *generalservices.Credentials) error {
-	client.ctx = metadata.AppendToOutgoingContext(client.ctx, "password", creds.GetPassword(), "username", creds.GetUsername())
+	md, _ := metadata.FromOutgoingContext(client.ctx)
+	if md["password"] == nil {
+		client.ctx = metadata.AppendToOutgoingContext(client.ctx, "password", creds.GetPassword(), "username", creds.GetUsername())
+	}
 	return nil
 }

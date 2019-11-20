@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"net"
+	"os"
+	"path/filepath"
 
 	"google.golang.org/grpc"
 )
@@ -43,7 +45,9 @@ func (*EssentialServer) TestCall(ctx context.Context, info *generalservices.Info
 
 //FetchCertificate returns a copy of the public key to the client requesting it
 func (*EssentialServer) FetchCertificate(ctx context.Context, info *generalservices.Info) (*generalservices.File, error) {
-	buf, err := ioutil.ReadFile("/home/arline/go/src/MODE/servers/backend/certs/ModeCertificate.crt")
+	wd, err := os.Getwd()
+	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.crt")
+	buf, err := ioutil.ReadFile(cert)
 	if err != nil {
 		log.Println("err wasnt nil")
 		return nil, err

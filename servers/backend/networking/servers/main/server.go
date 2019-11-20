@@ -1,15 +1,22 @@
 package main
 
 import (
+	_ "net/http/pprof"
+
 	servers "MODE/servers/backend/networking/servers/serverTypes"
 	"fmt"
 	"log"
+	"net/http"
 	"os"
 	"path/filepath"
 )
 
 func main() {
 	log.Println("Starting main")
+	go func() {
+		log.Println(http.ListenAndServe("localhost:6060", nil))
+	}()
+
 	wd, err := os.Getwd()
 	eCheck(err)
 	fmt.Println(wd)
