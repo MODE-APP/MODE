@@ -1,7 +1,7 @@
-syntax = "proto3";
-package protos;
+syntax="proto3";
+package proto.databaseservices;
 import "servers/backend/networking/proto/protos/services.proto";
 
-service Request{
-    rpc ValidateUser(Credentials) returns (GeneralStatus){}
+service ModeMongoDB{
+    rpc FetchPasswordHash(generalservices.User) returns (generalservices.Credentials){}
 }

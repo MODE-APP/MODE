@@ -1,14 +1,13 @@
 package modesecurity
 
 import (
-	"MODE/servers/backend/networking/proto/generated/protos"
+	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"crypto/hmac"
 	"crypto/sha256"
 	"encoding/hex"
 	"errors"
 	"io"
 	"io/ioutil"
-	"os"
 )
 
 //Token represents the parts inside of the custom tokens
@@ -31,7 +30,7 @@ func generateHS256(data, secret []byte) (string, error) {
 }
 
 //ValidateToken validates the token's signature
-func ValidateToken(token *protos.SignedToken, key *os.File) error {
+func ValidateToken(token *generalservices.SignedToken, key string) error {
 	sig, err := GenerateSignature(token, key)
 	if err != nil {
 		return err
@@ -45,7 +44,7 @@ func ValidateToken(token *protos.SignedToken, key *os.File) error {
 /*GenerateSignature returns a signature based off of the data inside the token and the secret given
 *
  */
-func GenerateSignature(token *protos.SignedToken, key *os.File) (string, error) {
+func GenerateSignature(token *generalservices.SignedToken, key string) (string, error) {
 	var signData string
 	signData += token.Header["encalg"] +
 		token.Header["timealg"] +
@@ -53,7 +52,7 @@ func GenerateSignature(token *protos.SignedToken, key *os.File) (string, error) 
 		token.Payload["username"] +
 		token.Payload["expiration"]
 	var sec []byte
-	sec, err := ioutil.ReadFile(key.Name())
+	sec, err := ioutil.ReadFile(key)
 	if err != nil {
 		return "", err
 	}

@@ -1,7 +1,7 @@
 package clients
 
 import (
-	proto "MODE/servers/backend/networking/proto/generated/protos"
+	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"context"
 	"errors"
 	"log"
@@ -14,7 +14,7 @@ import (
 type EssentialClient struct {
 	address string
 	port    string
-	proto.EssentialClient
+	generalservices.EssentialClient
 	*grpc.ClientConn
 	cancel context.CancelFunc
 	ctx    context.Context
@@ -40,7 +40,7 @@ func (client *EssentialClient) Connect() error {
 	if err != nil {
 		return err
 	}
-	client.EssentialClient = proto.NewEssentialClient(client.ClientConn)
+	client.EssentialClient = generalservices.NewEssentialClient(client.ClientConn)
 	client.ctx, client.cancel = context.WithCancel(context.Background())
 	return err
 }
@@ -48,7 +48,7 @@ func (client *EssentialClient) Connect() error {
 //FetchCertificate grabs public key from the server and is returned
 func (client *EssentialClient) FetchCertificate() (fileBuf []byte, filename string, err error) {
 	if client.ClientConn != nil && client.ctx != nil && client.EssentialClient != nil {
-		file, err := client.EssentialClient.FetchCertificate(client.ctx, &proto.Info{})
+		file, err := client.EssentialClient.FetchCertificate(client.ctx, &generalservices.Info{})
 		if err != nil {
 			return nil, "", err
 		}
@@ -59,11 +59,9 @@ func (client *EssentialClient) FetchCertificate() (fileBuf []byte, filename stri
 }
 
 func (client *EssentialClient) RegisterClientTypes() {
-	client.EssentialClient = proto.NewEssentialClient(client.ClientConn)
+	client.EssentialClient = generalservices.NewEssentialClient(client.ClientConn)
 }
 
 func (client *EssentialClient) TestCall() {
-	status, err := client.EssentialClient.TestCall(client.ctx, &proto.Info{})
-	log.Println(status)
-	log.Println(err)
+	client.EssentialClient.TestCall(client.ctx, &generalservices.Info{})
 }

@@ -2,5 +2,6 @@
 
 projectDir="/home/arline/go/src/MODE/"
 dir="/home/arline/go/src/MODE/servers/backend/networking/proto"
-protoc -I "$projectDir" -I "$dir" "$dir""/protos/services.proto" --go_out=plugins=grpc:"$dir"/generated
-protoc -I "$projectDir" -I "$dir" "$dir""/protos/database.proto" --go_out=plugins=grpc:"$dir"/generated
+pwd
+protoc -I "$projectDir" -I "$dir/protos" "services.proto" --go_out=plugins=grpc:"$dir"/generated/generalservices
+protoc -I "$projectDir" -I "$dir/protos" "database.proto" --go_out=plugins=grpc:"$dir"/generated/databaseservices

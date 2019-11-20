@@ -1,7 +1,7 @@
 package servers
 
 import (
-	proto "MODE/servers/backend/networking/proto/generated/protos"
+	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"io/ioutil"
@@ -14,7 +14,7 @@ import (
 //EssentialServer replies to the essential unauthenticated RPC calls
 type EssentialServer struct {
 	*grpc.Server
-	proto.EssentialServer
+	generalservices.EssentialServer
 	address string
 	port    string
 }
@@ -31,24 +31,24 @@ func (serv *EssentialServer) Serve() error {
 		return err
 	}
 	serv.Server = grpc.NewServer(grpc.UnaryInterceptor(interceptors.EssentialInterceptor))
-	proto.RegisterEssentialServer(serv.Server, serv)
+	generalservices.RegisterEssentialServer(serv.Server, serv)
 	err = serv.Server.Serve(lis)
 	return err
 }
 
-func (*EssentialServer) TestCall(ctx context.Context, info *proto.Info) (*proto.GeneralStatus, error) {
-	return &proto.GeneralStatus{
-		Status: proto.GeneralStatus_OK}, nil
+func (*EssentialServer) TestCall(ctx context.Context, info *generalservices.Info) (*generalservices.GeneralStatus, error) {
+	return &generalservices.GeneralStatus{
+		Status: generalservices.GeneralStatus_OK}, nil
 }
 
 //FetchCertificate returns a copy of the public key to the client requesting it
-func (*EssentialServer) FetchCertificate(ctx context.Context, info *proto.Info) (*proto.File, error) {
+func (*EssentialServer) FetchCertificate(ctx context.Context, info *generalservices.Info) (*generalservices.File, error) {
 	buf, err := ioutil.ReadFile("/home/arline/go/src/MODE/servers/backend/certs/ModeCertificate.crt")
 	if err != nil {
 		log.Println("err wasnt nil")
 		return nil, err
 	}
 	log.Println("found cert successfully")
-	return &proto.File{
+	return &generalservices.File{
 		FileBytes: buf, FileName: "MODE_CERT.crt", Checksum: 0}, nil
 }

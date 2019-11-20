@@ -1,11 +1,9 @@
 package clients
 
 import (
-	"MODE/servers/backend/networking/proto/generated/protos"
-	proto "MODE/servers/backend/networking/proto/generated/protos"
+	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"context"
 	"errors"
-	"log"
 	"os"
 
 	"google.golang.org/grpc"
@@ -16,15 +14,15 @@ import (
 //TLSClient connects to a server using a TLS certificate
 type TLSClient struct {
 	EssentialClient
-	proto.TokenSecurityClient
-	cert         *os.File
-	AccessToken  *protos.SignedToken
-	RefreshToken *protos.SignedToken
+	generalservices.TokenSecurityClient
+	cert         string
+	AccessToken  *generalservices.SignedToken
+	RefreshToken *generalservices.SignedToken
 }
 
 //NewTLSClient returns a TLS struct with the specified params
-func NewTLSClient(address, port string, certFile *os.File) (TLSClient, error) {
-	if _, err := os.Stat(certFile.Name()); err != nil {
+func NewTLSClient(address, port, certFile string) (TLSClient, error) {
+	if _, err := os.Stat(certFile); err != nil {
 		return TLSClient{}, err
 	}
 	tls := TLSClient{cert: certFile}
@@ -35,17 +33,13 @@ func NewTLSClient(address, port string, certFile *os.File) (TLSClient, error) {
 
 //Connect to the specified address defined in the EssentialClient struct
 func (client *TLSClient) Connect() error {
-	if client.cert == nil {
-		return errors.New("Cert was nil")
-	}
-	log.Printf("Cert name: %v", client.cert.Name())
-	credentials, err := credentials.NewClientTLSFromFile(client.cert.Name(), "")
+	credentials, err := credentials.NewClientTLSFromFile(client.cert, "")
 	if err != nil {
-		return err
+		panic(err)
 	}
 	client.ClientConn, err = grpc.Dial(client.address+":"+client.port, grpc.WithTransportCredentials(credentials))
 	if err != nil {
-		return err
+		panic(err)
 	}
 	client.RegisterClientTypes()
 	client.ctx, client.cancel = context.WithCancel(context.Background())
@@ -55,24 +49,26 @@ func (client *TLSClient) Connect() error {
 //RegisterClientTypes registers the types of clients used by the TLS client
 func (client *TLSClient) RegisterClientTypes() {
 	client.EssentialClient.RegisterClientTypes()
-	client.TokenSecurityClient = proto.NewTokenSecurityClient(client.ClientConn)
+	client.TokenSecurityClient = generalservices.NewTokenSecurityClient(client.ClientConn)
 }
 
 //RequestRefreshToken asks the server for a refresh token and returns it
-func (client *TLSClient) RequestRefreshToken(username, password string) (*protos.SignedToken, error) {
-	return client.TokenSecurityClient.RequestRefreshToken(client.ctx, &protos.Credentials{
-		Username: username, Password: password})
+func (client *TLSClient) RequestRefreshToken(username, password string) (*generalservices.SignedToken, error) {
+	creds := &generalservices.Credentials{
+		Username: username, Password: password}
+	client.ApplyCredentialsToMetadata(creds)
+	return client.TokenSecurityClient.RequestRefreshToken(client.ctx, creds)
 
 }
 
 //RequestAccessToken asks the server for an access token and returns it
-func (client *TLSClient) RequestAccessToken() (*protos.SignedToken, error) {
+func (client *TLSClient) RequestAccessToken() (*generalservices.SignedToken, error) {
 	return client.TokenSecurityClient.RequestAccessToken(client.ctx, client.RefreshToken)
 
 }
 
 //ApplyTokenToMetadata applies the client's token to the client's metadata
-func (client *TLSClient) ApplyTokenToMetadata(token *protos.SignedToken) error {
+func (client *TLSClient) ApplyTokenToMetadata(token *generalservices.SignedToken) error {
 	if token.Signature == "" {
 		return errors.New("auth: missing signature on token")
 	}
@@ -90,5 +86,10 @@ func (client *TLSClient) ApplyTokenToMetadata(token *protos.SignedToken) error {
 	tokMap["signature"] = token.Signature
 	md := metadata.New(tokMap)
 	client.ctx = metadata.NewOutgoingContext(client.ctx, md)
+	return nil
+}
+
+func (client *TLSClient) ApplyCredentialsToMetadata(creds *generalservices.Credentials) error {
+	client.ctx = metadata.AppendToOutgoingContext(client.ctx, "password", creds.GetPassword(), "username", creds.GetUsername())
 	return nil
 }
