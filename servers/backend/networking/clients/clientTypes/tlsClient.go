@@ -37,9 +37,9 @@ func (client *TLSClient) Connect() error {
 	if err != nil {
 		return err
 	}
-	client.ctx, client.cancel = context.WithCancel(context.Background())
-	client.RegisterClientTypes()
 	client.ClientConn, err = grpc.Dial(client.address+":"+client.port, grpc.WithTransportCredentials(credentials))
+	client.RegisterClientTypes()
+	client.ctx, client.cancel = context.WithCancel(context.Background())
 	return err
 }
 
@@ -55,7 +55,6 @@ func (client *TLSClient) RequestRefreshToken(username, password string) (*genera
 		Username: username, Password: password}
 	client.ApplyCredentialsToMetadata(creds)
 	return client.TokenSecurityClient.RequestRefreshToken(client.ctx, creds)
-
 }
 
 //RequestAccessToken asks the server for an access token and returns it

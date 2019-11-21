@@ -79,6 +79,7 @@ func (serv *TLSserver) RequestRefreshToken(ctx context.Context, creds *generalse
 	}
 	sig, err := modesecurity.GenerateSignature(tok, serv.privateKey)
 	if err != nil {
+		fmt.Printf("err: %v", err)
 		return &generalservices.SignedToken{}, err
 	}
 	tok.Signature = sig

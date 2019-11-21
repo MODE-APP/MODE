@@ -61,7 +61,6 @@ func GenerateSignature(token *generalservices.SignedToken, key string) (string, 
 	if err != nil || read < 32 {
 		return "", err
 	}
-
 	sig, err := generateHS256([]byte(signData), sec)
 	return sig, err
 }

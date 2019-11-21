@@ -3,6 +3,7 @@ package clienttests
 import (
 	clients "MODE/servers/backend/networking/clients/clientTypes"
 	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
+	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -14,6 +15,9 @@ import (
 func SendManyRequestsConcurrently(client clients.TLSClient, reqs int) (time.Duration, error) {
 	c := make(chan int)
 	now := time.Now()
+	if !client.IsConnected() {
+		return 0, errors.New("client not connected")
+	}
 	for i := 0; i < reqs; i++ {
 		go func(c chan int) {
 			client.RequestRefreshToken("chase", "mypassword")
@@ -57,6 +61,7 @@ func ManyClientsManyRequests(clientsNum, reqs int, port string) (time.Duration, 
 		}(c, i, mClients[i])
 	}
 	for i := 0; i < clientsNum; i++ {
+		fmt.Printf("Clients finished: %v\n", i)
 		c <- i
 	}
 	return makeTime, time.Since(now), nil
@@ -87,12 +92,7 @@ func CreateManyTLSClients(numOf int, port string) ([]clients.TLSClient, time.Dur
 				if err != nil {
 					fmt.Println("error was not nil")
 				}
-				count := 0
 				for !client.IsConnected() {
-					if count == 10 {
-						client.Close()
-						client.Connect()
-					}
 					time.Sleep(time.Millisecond * 5)
 				}
 				intC <- i
@@ -119,7 +119,7 @@ func printMemUsage() {
 	fmt.Printf("\tNumGC = %v\n", m.NumGC)
 }
 
-func CreateManyTLSClientsNonC(numOf int) ([]clients.TLSClient, time.Duration, error) {
+func CreateManyTLSClientsNonC(numOf int, port string) ([]clients.TLSClient, time.Duration, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, 0, err
@@ -128,7 +128,7 @@ func CreateManyTLSClientsNonC(numOf int) ([]clients.TLSClient, time.Duration, er
 	mClients := make([]clients.TLSClient, numOf)
 	now := time.Now()
 	for i := 0; i < numOf; i++ {
-		client, err := clients.NewTLSClient("localhost", "3218", cert)
+		client, err := clients.NewTLSClient("localhost", port, cert)
 		if err != nil {
 			panic(err)
 		}

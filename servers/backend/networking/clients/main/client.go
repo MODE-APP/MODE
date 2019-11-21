@@ -34,7 +34,8 @@ func main() {
 	port, _ := reader.ReadString('\n')
 	port = strings.TrimSuffix(port, "\n")
 	time.Sleep(2 * time.Second)
-	clienttests.CreateManyTLSClientsNonC(30000)
+	make, finish, _ := clienttests.ManyClientsManyRequests(1000, 100, port)
+	fmt.Printf("%v\t%v", make, finish)
 	printMemUsage()
 
 }
