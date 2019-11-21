@@ -3,8 +3,10 @@ package servers
 import (
 	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"MODE/servers/backend/networking/security/modesecurity"
+	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"errors"
+	"fmt"
 	"net"
 	"os"
 	"strconv"
@@ -29,6 +31,7 @@ func NewTLSserver(address, port string, publicKey, privateKey string) TLSserver 
 
 //Serve attaches to the specified address and port with the credentials given
 func (serv *TLSserver) Serve() error {
+	fmt.Printf("%v:%v", serv.address, serv.port)
 	lis, err := net.Listen("tcp", serv.address+":"+serv.port)
 	if err != nil {
 		return err
@@ -37,7 +40,10 @@ func (serv *TLSserver) Serve() error {
 	if err != nil {
 		return err
 	}
-	serv.Server = grpc.NewServer(grpc.Creds(creds)) //grpc.UnaryInterceptor(interceptors.TLSInterceptor))
+	serv.Server = grpc.NewServer(grpc.Creds(creds),
+		grpc.UnaryInterceptor(interceptors.TLSInterceptor),
+		grpc.ConnectionTimeout(5*time.Second),
+		grpc.MaxConcurrentStreams(150000))
 	generalservices.RegisterEssentialServer(serv.EssentialServer.Server, serv)
 	generalservices.RegisterTokenSecurityServer(serv.Server, serv)
 	err = serv.Server.Serve(lis)
@@ -58,32 +64,25 @@ func (serv *TLSserver) RequestAccessToken(ctx context.Context, refreshToken *gen
 
 //RequestRefreshToken creates a refresh token that can be used to obtain access tokens
 func (serv *TLSserver) RequestRefreshToken(ctx context.Context, creds *generalservices.Credentials) (*generalservices.SignedToken, error) {
-	tokChan := make(chan *generalservices.SignedToken)
-	errChan := make(chan error)
 	//check database for credentials, return error if not found
 	//continue if found
-	go func(tokChan chan *generalservices.SignedToken, errChan chan error) {
-		tok := &generalservices.SignedToken{
-			Header: map[string]string{
-				"encalg":  "hs256",
-				"timealg": "unix",
-				"type":    "mode-refresh-token",
-			},
-			Payload: map[string]string{
-				"username":   creds.GetUsername(),
-				"expiration": strconv.FormatInt(time.Now().AddDate(0, 0, 1).Unix(), 10),
-			},
-		}
-		sig, err := modesecurity.GenerateSignature(tok, serv.privateKey)
-		if err != nil {
-			tokChan <- &generalservices.SignedToken{}
-			errChan <- err
-		}
-		tok.Signature = sig
-		tokChan <- tok
-		errChan <- nil
-	}(tokChan, errChan)
-	return <-tokChan, <-errChan
+	tok := &generalservices.SignedToken{
+		Header: map[string]string{
+			"encalg":  "hs256",
+			"timealg": "unix",
+			"type":    "mode-refresh-token",
+		},
+		Payload: map[string]string{
+			"username":   creds.GetUsername(),
+			"expiration": strconv.FormatInt(time.Now().AddDate(0, 0, 1).Unix(), 10),
+		},
+	}
+	sig, err := modesecurity.GenerateSignature(tok, serv.privateKey)
+	if err != nil {
+		return &generalservices.SignedToken{}, err
+	}
+	tok.Signature = sig
+	return tok, nil
 }
 
 func (serv *TLSserver) getCreds(publicKey, privateKey string) (credentials.TransportCredentials, error) {

@@ -53,6 +53,7 @@ func GenerateSignature(token *generalservices.SignedToken, key string) (string, 
 		token.Payload["expiration"]
 	sec := make([]byte, 32, 32)
 	f, err := os.Open(key)
+	defer f.Close()
 	if err != nil {
 		return "", err
 	}

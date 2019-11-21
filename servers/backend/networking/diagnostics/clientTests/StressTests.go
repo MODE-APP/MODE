@@ -38,8 +38,8 @@ func SendManyRequestsNonConcurrently(client clients.TLSClient, reqs int) (time.D
 }
 
 //ManyClientManyRequests runs reqs number of requests on clientsNum of clients concurrently and returns time taken for making clients and making the calls
-func ManyClientsManyRequests(clientsNum, reqs int) (time.Duration, time.Duration, error) {
-	mClients, makeTime, err := CreateManyTLSClients(clientsNum)
+func ManyClientsManyRequests(clientsNum, reqs int, port string) (time.Duration, time.Duration, error) {
+	mClients, makeTime, err := CreateManyTLSClients(clientsNum, port)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -52,6 +52,7 @@ func ManyClientsManyRequests(clientsNum, reqs int) (time.Duration, time.Duration
 			if err != nil {
 				panic(err)
 			}
+			client.Close()
 			i = <-c
 		}(c, i, mClients[i])
 	}
@@ -62,7 +63,7 @@ func ManyClientsManyRequests(clientsNum, reqs int) (time.Duration, time.Duration
 
 }
 
-func CreateManyTLSClients(numOf int) ([]clients.TLSClient, time.Duration, error) {
+func CreateManyTLSClients(numOf int, port string) ([]clients.TLSClient, time.Duration, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, 0, err
@@ -78,15 +79,20 @@ func CreateManyTLSClients(numOf int) ([]clients.TLSClient, time.Duration, error)
 		for i := 0; i < numOf; i++ {
 			go func(clientC chan clients.TLSClient, intC chan int, durC chan time.Duration, i int) {
 				now := time.Now()
-				client, err := clients.NewTLSClient("localhost", "3218", cert)
+				client, err := clients.NewTLSClient("localhost", port, cert)
 				if err != nil {
 					panic(err)
 				}
 				err = client.Connect()
 				if err != nil {
-					panic(err)
+					fmt.Println("error was not nil")
 				}
+				count := 0
 				for !client.IsConnected() {
+					if count == 10 {
+						client.Close()
+						client.Connect()
+					}
 					time.Sleep(time.Millisecond * 5)
 				}
 				intC <- i
@@ -133,6 +139,7 @@ func CreateManyTLSClientsNonC(numOf int) ([]clients.TLSClient, time.Duration, er
 		for !client.IsConnected() {
 			time.Sleep(1 * time.Millisecond)
 		}
+		fmt.Println(i)
 		mClients[i] = client
 	}
 

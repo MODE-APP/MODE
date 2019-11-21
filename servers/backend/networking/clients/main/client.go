@@ -2,11 +2,14 @@ package main
 
 import (
 	clienttests "MODE/servers/backend/networking/diagnostics/clientTests"
+	"bufio"
 	"fmt"
 	"log"
 	"net/http"
 	_ "net/http/pprof"
+	"os"
 	"runtime"
+	"strings"
 	"time"
 )
 
@@ -14,7 +17,7 @@ func main() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6061", nil))
 	}()
-
+	fmt.Println("starting main:")
 	/**
 	printMemUsage()
 	make, finish, err := clienttests.ManyClientsManyRequests(1000, 100)
@@ -26,14 +29,13 @@ func main() {
 	printMemUsage()
 	fmt.Printf("1000 req: %v\n", time)
 	*/
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Enter port")
+	port, _ := reader.ReadString('\n')
+	port = strings.TrimSuffix(port, "\n")
 	time.Sleep(2 * time.Second)
-	clienttests.CreateManyTLSClients(2000)
-	makeTime, finishTime, err := clienttests.ManyClientsManyRequests(1000, 300)
-	if err != nil {
-		panic(err)
-	}
+	clienttests.CreateManyTLSClientsNonC(30000)
 	printMemUsage()
-	fmt.Printf("MakeTime: %v\tFinishTime: %v\n", makeTime, finishTime)
 
 }
 

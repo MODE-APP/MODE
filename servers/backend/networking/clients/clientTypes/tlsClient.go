@@ -35,15 +35,12 @@ func NewTLSClient(address, port, certFile string) (TLSClient, error) {
 func (client *TLSClient) Connect() error {
 	credentials, err := credentials.NewClientTLSFromFile(client.cert, "")
 	if err != nil {
-		panic(err)
+		return err
 	}
-	client.ClientConn, err = grpc.Dial(client.address+":"+client.port, grpc.WithTransportCredentials(credentials))
-	if err != nil {
-		panic(err)
-	}
-	client.RegisterClientTypes()
 	client.ctx, client.cancel = context.WithCancel(context.Background())
-	return nil
+	client.RegisterClientTypes()
+	client.ClientConn, err = grpc.Dial(client.address+":"+client.port, grpc.WithTransportCredentials(credentials))
+	return err
 }
 
 //RegisterClientTypes registers the types of clients used by the TLS client

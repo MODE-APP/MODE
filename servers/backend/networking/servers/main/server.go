@@ -1,7 +1,9 @@
 package main
 
 import (
+	"bufio"
 	_ "net/http/pprof"
+	"strings"
 
 	servers "MODE/servers/backend/networking/servers/serverTypes"
 	"fmt"
@@ -16,16 +18,21 @@ func main() {
 	go func() {
 		log.Println(http.ListenAndServe("localhost:6060", nil))
 	}()
-
 	wd, err := os.Getwd()
 	eCheck(err)
 	fmt.Println(wd)
 	pub := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
 	priv := filepath.Join(wd, "../../../", "certs/ModeKey.pem")
 	log.Println(pub)
-	serv := servers.NewTLSserver("localhost", "3218", pub, priv)
+	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Enter port")
+	port, _ := reader.ReadString('\n')
+	port = strings.TrimSuffix(port, "\n")
+	fmt.Println(port)
+	serv := servers.NewTLSserver("localhost", port, pub, priv)
 	log.Println("serve")
 	err = serv.Serve()
+
 	log.Fatalf("%v", err)
 }
 
