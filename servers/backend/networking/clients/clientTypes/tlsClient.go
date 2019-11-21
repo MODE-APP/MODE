@@ -48,7 +48,7 @@ func (client *TLSClient) Connect() error {
 
 //RegisterClientTypes registers the types of clients used by the TLS client
 func (client *TLSClient) RegisterClientTypes() {
-	client.EssentialClient.RegisterClientTypes()
+	client.EssentialClient.EssentialClient = generalservices.NewEssentialClient(client.ClientConn)
 	client.TokenSecurityClient = generalservices.NewTokenSecurityClient(client.ClientConn)
 }
 

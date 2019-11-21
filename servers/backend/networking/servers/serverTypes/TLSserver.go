@@ -3,7 +3,6 @@ package servers
 import (
 	generalservices "MODE/servers/backend/networking/proto/generated/generalservices"
 	"MODE/servers/backend/networking/security/modesecurity"
-	interceptors "MODE/servers/backend/networking/servers/interceptorTypes"
 	"context"
 	"errors"
 	"net"
@@ -38,8 +37,8 @@ func (serv *TLSserver) Serve() error {
 	if err != nil {
 		return err
 	}
-	serv.Server = grpc.NewServer(grpc.Creds(creds), grpc.UnaryInterceptor(interceptors.TLSInterceptor))
-	generalservices.RegisterEssentialServer(serv.Server, serv)
+	serv.Server = grpc.NewServer(grpc.Creds(creds)) //grpc.UnaryInterceptor(interceptors.TLSInterceptor))
+	generalservices.RegisterEssentialServer(serv.EssentialServer.Server, serv)
 	generalservices.RegisterTokenSecurityServer(serv.Server, serv)
 	err = serv.Server.Serve(lis)
 	return err

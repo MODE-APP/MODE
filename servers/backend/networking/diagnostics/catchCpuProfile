@@ -1,0 +1,2 @@
+#!/bin/bash
+go tool pprof -png http://localhost:$1/debug/pprof/profile?seconds=$2 > $(pwd)/$3

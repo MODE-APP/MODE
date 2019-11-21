@@ -7,7 +7,7 @@ import (
 	"encoding/hex"
 	"errors"
 	"io"
-	"io/ioutil"
+	"os"
 )
 
 //Token represents the parts inside of the custom tokens
@@ -51,9 +51,13 @@ func GenerateSignature(token *generalservices.SignedToken, key string) (string, 
 		token.Header["type"] +
 		token.Payload["username"] +
 		token.Payload["expiration"]
-	var sec []byte
-	sec, err := ioutil.ReadFile(key)
+	sec := make([]byte, 32, 32)
+	f, err := os.Open(key)
 	if err != nil {
+		return "", err
+	}
+	read, err := io.ReadFull(f, sec)
+	if err != nil || read < 32 {
 		return "", err
 	}
 

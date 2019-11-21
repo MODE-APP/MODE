@@ -1,0 +1,2 @@
+#!/bin/bash
+./catchCpuProfile 6061 10 clientCpu.png

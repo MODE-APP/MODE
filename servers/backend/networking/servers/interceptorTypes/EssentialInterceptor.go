@@ -2,8 +2,6 @@ package interceptors
 
 import (
 	"context"
-	"log"
-	"time"
 
 	"google.golang.org/grpc"
 )
@@ -14,7 +12,6 @@ func EssentialInterceptor(ctx context.Context,
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	//Prints out request at the specified time
-	log.Printf("Request - Method: %s\tTime: %s", info.FullMethod, time.Now())
 	// Calls the handler
 	h, err := handler(ctx, req)
 	return h, err

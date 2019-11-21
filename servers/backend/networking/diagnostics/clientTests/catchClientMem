@@ -1,0 +1,2 @@
+#!/bin/bash
+./catchMemoryProfile 6061 clientMem.png
