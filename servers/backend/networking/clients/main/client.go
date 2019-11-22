@@ -10,7 +10,6 @@ import (
 	"os"
 	"runtime"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -30,11 +29,15 @@ func main() {
 	fmt.Printf("1000 req: %v\n", time)
 	*/
 	reader := bufio.NewReader(os.Stdin)
+	fmt.Println("Enter address")
+	address, _ := reader.ReadString('\n')
+	address = strings.TrimSuffix(address, "\n")
 	fmt.Println("Enter port")
 	port, _ := reader.ReadString('\n')
 	port = strings.TrimSuffix(port, "\n")
-	time.Sleep(2 * time.Second)
-	make, finish, _ := clienttests.ManyClientsManyRequests(1000, 100, port)
+	fmt.Printf("starting client")
+
+	make, finish, _ := clienttests.ManyClientsManyRequests(1000, 100, port, address)
 	fmt.Printf("%v\t%v", make, finish)
 	printMemUsage()
 

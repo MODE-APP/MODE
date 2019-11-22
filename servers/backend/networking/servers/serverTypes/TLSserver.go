@@ -95,7 +95,7 @@ func (serv *TLSserver) getCreds(publicKey, privateKey string) (credentials.Trans
 	}
 	creds, err := credentials.NewServerTLSFromFile(publicKey, privateKey)
 	if err != nil {
-		return nil, errors.New("invalid credential creation")
+		return nil, err
 	}
 	return creds, nil
 }

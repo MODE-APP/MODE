@@ -33,11 +33,14 @@ func NewTLSClient(address, port, certFile string) (TLSClient, error) {
 
 //Connect to the specified address defined in the EssentialClient struct
 func (client *TLSClient) Connect() error {
-	credentials, err := credentials.NewClientTLSFromFile(client.cert, "")
+	credentials, err := credentials.NewClientTLSFromFile(client.cert, "192.168.1.9")
 	if err != nil {
 		return err
 	}
 	client.ClientConn, err = grpc.Dial(client.address+":"+client.port, grpc.WithTransportCredentials(credentials))
+	if err != nil {
+		return err
+	}
 	client.RegisterClientTypes()
 	client.ctx, client.cancel = context.WithCancel(context.Background())
 	return err

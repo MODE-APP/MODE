@@ -42,8 +42,8 @@ func SendManyRequestsNonConcurrently(client clients.TLSClient, reqs int) (time.D
 }
 
 //ManyClientManyRequests runs reqs number of requests on clientsNum of clients concurrently and returns time taken for making clients and making the calls
-func ManyClientsManyRequests(clientsNum, reqs int, port string) (time.Duration, time.Duration, error) {
-	mClients, makeTime, err := CreateManyTLSClients(clientsNum, port)
+func ManyClientsManyRequests(clientsNum, reqs int, port, addr string) (time.Duration, time.Duration, error) {
+	mClients, makeTime, err := CreateManyTLSClients(clientsNum, port, addr)
 	if err != nil {
 		return 0, 0, err
 	}
@@ -68,13 +68,13 @@ func ManyClientsManyRequests(clientsNum, reqs int, port string) (time.Duration, 
 
 }
 
-func CreateManyTLSClients(numOf int, port string) ([]clients.TLSClient, time.Duration, error) {
+func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, time.Duration, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, 0, err
 	}
 	clientDurs := map[int]time.Duration{}
-	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
+	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
 	mClients := make([]clients.TLSClient, numOf)
 	clientC := make(chan clients.TLSClient)
 	intC := make(chan int)
@@ -84,7 +84,7 @@ func CreateManyTLSClients(numOf int, port string) ([]clients.TLSClient, time.Dur
 		for i := 0; i < numOf; i++ {
 			go func(clientC chan clients.TLSClient, intC chan int, durC chan time.Duration, i int) {
 				now := time.Now()
-				client, err := clients.NewTLSClient("localhost", port, cert)
+				client, err := clients.NewTLSClient(addr, port, cert)
 				if err != nil {
 					panic(err)
 				}
@@ -119,16 +119,16 @@ func printMemUsage() {
 	fmt.Printf("\tNumGC = %v\n", m.NumGC)
 }
 
-func CreateManyTLSClientsNonC(numOf int, port string) ([]clients.TLSClient, time.Duration, error) {
+func CreateManyTLSClientsNonC(numOf int, port, addr string) ([]clients.TLSClient, time.Duration, error) {
 	wd, err := os.Getwd()
 	if err != nil {
 		return nil, 0, err
 	}
-	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
+	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
 	mClients := make([]clients.TLSClient, numOf)
 	now := time.Now()
 	for i := 0; i < numOf; i++ {
-		client, err := clients.NewTLSClient("localhost", port, cert)
+		client, err := clients.NewTLSClient(addr, port, cert)
 		if err != nil {
 			panic(err)
 		}
