@@ -1,6 +1,7 @@
 package main
 
 import (
+	clients "MODE/servers/backend/networking/clients/clientTypes"
 	clienttests "MODE/servers/backend/networking/diagnostics/clientTests"
 	"bufio"
 	"fmt"
@@ -8,6 +9,7 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
+	"path/filepath"
 	"runtime"
 	"strings"
 )
@@ -36,8 +38,24 @@ func main() {
 	port, _ := reader.ReadString('\n')
 	port = strings.TrimSuffix(port, "\n")
 	fmt.Printf("starting client")
-
-	make, finish, _ := clienttests.ManyClientsManyRequests(1000, 100, port, address)
+	wd, err := os.Getwd()
+	if err != nil {
+		panic(err)
+	}
+	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
+	client, err := clients.NewTLSClient(address, port, cert)
+	if err != nil {
+		panic(err)
+	}
+	err = client.Connect()
+	if err != nil {
+		panic(err)
+	}
+	_, _, err = client.FetchCertificate()
+	if err != nil {
+		panic(err)
+	}
+	make, finish, _ := clienttests.ManyClientsManyRequests(100000, 10, port, address)
 	fmt.Printf("%v\t%v", make, finish)
 	printMemUsage()
 

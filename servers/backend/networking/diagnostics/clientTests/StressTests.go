@@ -105,6 +105,7 @@ func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, ti
 		x := <-intC
 		mClients[x] = <-clientC
 		clientDurs[i] = <-durC
+		fmt.Printf("client made: %v\n", x)
 	}
 	return mClients, time.Since(now), nil
 }
