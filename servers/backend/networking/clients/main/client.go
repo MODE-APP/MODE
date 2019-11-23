@@ -55,7 +55,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	make, finish, err := clienttests.ManyClientsManyRequests(10000, 75, port, address)
+	make, finish, err := clienttests.ManyClientsManyRequests(50000, 1, port, address)
 	fmt.Printf("made: %v\tfinish: %v", make, finish)
 }
 

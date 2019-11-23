@@ -64,7 +64,6 @@ func ManyClientsManyRequests(clientsNum, reqs int, port, addr string) (time.Dura
 	}
 	fmt.Printf("time to start requests: %v\n", time.Since(now))
 	for i := 0; i < clientsNum; i++ {
-		fmt.Printf("Clients finished: %v\n", i)
 		c <- i
 	}
 	for _, client := range mClients {
@@ -117,7 +116,6 @@ func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, ti
 		x := <-intC
 		mClients[x] = <-clientC
 		clientDurs[i] = <-durC
-		fmt.Printf("client made: %v\n", i)
 	}
 	return mClients, time.Since(now), nil
 }
