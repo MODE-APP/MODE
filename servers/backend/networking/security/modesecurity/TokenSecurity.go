@@ -57,7 +57,7 @@ func GenerateSignature(token *generalservices.SignedToken, key string) (string, 
 	if err != nil {
 		return "", err
 	}
-	read, err := io.ReadFull(f, sec)
+	read, err := f.Read(sec)
 	if err != nil || read < 32 {
 		return "", err
 	}

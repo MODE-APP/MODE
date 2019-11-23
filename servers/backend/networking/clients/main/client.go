@@ -11,9 +11,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
-	"runtime/debug"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -57,13 +55,8 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	make, finish, _ := clienttests.ManyClientsManyRequests(50000, 10, port, address)
-	fmt.Printf("%v\t%v", make, finish)
-	printMemUsage()
-	time.Sleep(time.Second * 5)
-	debug.FreeOSMemory()
-	time.Sleep(time.Second * 10)
-
+	make, finish, err := clienttests.ManyClientsManyRequests(10000, 75, port, address)
+	fmt.Printf("made: %v\tfinish: %v", make, finish)
 }
 
 func printMemUsage() {

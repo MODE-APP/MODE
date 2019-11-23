@@ -5,7 +5,6 @@ import (
 	"MODE/servers/backend/networking/security/modesecurity"
 	"context"
 	"errors"
-	"fmt"
 	"os"
 	"path/filepath"
 	"strconv"
@@ -22,7 +21,6 @@ func TLSInterceptor(ctx context.Context,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	// Skip authorize when fetching certificate/refreshtoken
 	//timestr := "Request -- Time: " + time.Now().Format("2006-01-02 3:04:05PM") + "\tMethod: " + info.FullMethod
-	fmt.Printf("Request: %v", info.FullMethod)
 	if info.FullMethod != "/proto.generalservices.Essential/FetchCertificate" {
 		c := make(chan error)
 		go func(ch chan error) {
@@ -53,7 +51,6 @@ func TLSInterceptor(ctx context.Context,
 //Unimplemented authorize function for token-based auth
 func authorize(ctx context.Context, method string) error {
 	md, ok := metadata.FromIncomingContext(ctx)
-	fmt.Printf("mdlen: %v\n", md.Len())
 	if md["password"] != nil {
 		if md["password"][0] == "mypassword" {
 			return nil
@@ -67,13 +64,11 @@ func authorize(ctx context.Context, method string) error {
 			method != "/proto.generalservices.TokenSecurity/RequRequestAccessTokenestAccessToken" {
 			return authorizeToken(md)
 		}
-		fmt.Printf("Token is of wrong type\t")
 		return errors.New("auth: wrong token type for method call")
 	} else if md["type"] != nil && md["type"][0] == "mode-refresh-token" {
 		if method == "/proto.generalservices.TokenSecurity/RequestAccessToken" {
 			return authorizeToken(md)
 		}
-		fmt.Printf("Token is of wrong type\t")
 		return errors.New("auth: wrong token type for method call")
 	}
 	return errors.New("auth: credentials missing")
