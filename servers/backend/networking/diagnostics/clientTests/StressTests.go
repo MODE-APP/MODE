@@ -9,6 +9,8 @@ import (
 	"path/filepath"
 	"runtime"
 	"time"
+
+	"google.golang.org/grpc/connectivity"
 )
 
 //SingleClientManyRequests runs a request on a single client for reqs number of times and returns how long it takes
@@ -64,6 +66,13 @@ func ManyClientsManyRequests(clientsNum, reqs int, port, addr string) (time.Dura
 		fmt.Printf("Clients finished: %v\n", i)
 		c <- i
 	}
+	for _, client := range mClients {
+
+		if client.GetState() != connectivity.Shutdown {
+			client.Close()
+			fmt.Println("shutting down client")
+		}
+	}
 	return makeTime, time.Since(now), nil
 
 }
@@ -93,7 +102,10 @@ func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, ti
 					fmt.Println("error was not nil")
 				}
 				for !client.IsConnected() {
-					time.Sleep(time.Millisecond * 5)
+					time.Sleep(time.Millisecond * 200)
+				}
+				if !client.IsConnected() {
+					fmt.Println("returning unconnected")
 				}
 				intC <- i
 				clientC <- client
@@ -105,7 +117,7 @@ func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, ti
 		x := <-intC
 		mClients[x] = <-clientC
 		clientDurs[i] = <-durC
-		fmt.Printf("client made: %v\n", x)
+		fmt.Printf("client made: %v\n", i)
 	}
 	return mClients, time.Since(now), nil
 }
