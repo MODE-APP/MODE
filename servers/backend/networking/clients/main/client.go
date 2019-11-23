@@ -11,7 +11,9 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"runtime/debug"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -55,9 +57,12 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	make, finish, _ := clienttests.ManyClientsManyRequests(100000, 10, port, address)
+	make, finish, _ := clienttests.ManyClientsManyRequests(50000, 10, port, address)
 	fmt.Printf("%v\t%v", make, finish)
 	printMemUsage()
+	time.Sleep(time.Second * 5)
+	debug.FreeOSMemory()
+	time.Sleep(time.Second * 10)
 
 }
 
