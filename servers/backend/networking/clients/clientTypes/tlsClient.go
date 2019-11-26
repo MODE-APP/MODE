@@ -42,7 +42,7 @@ func (client *TLSClient) Connect() error {
 		return err
 	}
 	client.RegisterClientTypes()
-	client.ctx, client.cancel = context.WithCancel(context.Background())
+	client.ctx, client.Cancel = context.WithCancel(context.Background())
 	return err
 }
 

@@ -15,7 +15,7 @@ type EssentialClient struct {
 	port    string
 	generalservices.EssentialClient
 	*grpc.ClientConn
-	cancel context.CancelFunc
+	Cancel context.CancelFunc
 	ctx    context.Context
 }
 
@@ -40,7 +40,7 @@ func (client *EssentialClient) Connect() error {
 		return err
 	}
 	client.EssentialClient = generalservices.NewEssentialClient(client.ClientConn)
-	client.ctx, client.cancel = context.WithCancel(context.Background())
+	client.ctx, client.Cancel = context.WithCancel(context.Background())
 	return err
 }
 

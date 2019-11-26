@@ -42,6 +42,7 @@ func (serv *TLSserver) Serve() error {
 	}
 	serv.Server = grpc.NewServer(grpc.Creds(creds),
 		grpc.UnaryInterceptor(interceptors.TLSInterceptor),
+		grpc.UnaryInterceptor(interceptors.EssentialInterceptor),
 		grpc.ConnectionTimeout(5*time.Second),
 		grpc.MaxConcurrentStreams(150000))
 	generalservices.RegisterEssentialServer(serv.EssentialServer.Server, serv)

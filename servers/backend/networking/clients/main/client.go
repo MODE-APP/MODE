@@ -12,6 +12,7 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
+	"time"
 )
 
 func main() {
@@ -55,8 +56,17 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	make, finish, err := clienttests.ManyClientsManyRequests(10000, 1, port, address)
-	fmt.Printf("made: %v\tfinish: %v", make, finish)
+	clients, make, err := clienttests.CreateManyTLSClients(50000, port, address)
+	printMemUsage()
+	for _, client := range clients {
+		client.Cancel()
+		client.Close()
+	}
+	printMemUsage()
+	fmt.Printf("Make: %v\nerr: %v", make, err)
+	clients = nil
+	time.Sleep(time.Second * 10)
+	printMemUsage()
 }
 
 func printMemUsage() {
