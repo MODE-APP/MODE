@@ -18,9 +18,6 @@ DerivedData/
 xcuserdata/
 *.DS_Store
 
-##Certificates
-*pem
-
 ## Other
 *.moved-aside
 *.xccheckout
