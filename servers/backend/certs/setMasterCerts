@@ -1,0 +1,2 @@
+cp branch-crt.pem ModeCertificate.pem
+cp branch-key.pem ModeKey.pem

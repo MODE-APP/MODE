@@ -18,6 +18,10 @@ DerivedData/
 xcuserdata/
 *.DS_Store
 
+## Off-host certs
+servers/backend/certs/branch-crt.pem
+servers/backend/certs/branch-key.pem
+
 ## Other
 *.moved-aside
 *.xccheckout
