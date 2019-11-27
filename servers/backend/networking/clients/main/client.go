@@ -43,7 +43,7 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
+	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
 	client, err := clients.NewTLSClient(address, port, cert)
 	if err != nil {
 		panic(err)

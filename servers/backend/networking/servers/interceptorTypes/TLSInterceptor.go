@@ -88,7 +88,7 @@ func authorizeToken(md metadata.MD) error {
 		return errors.New("auth: token has expired")
 	}
 	wd, err := os.Getwd()
-	priv := filepath.Join(wd, "../../../", "certs/off-host.pem")
+	priv := filepath.Join(wd, "../../../", "certs/ModeKey.pem")
 	if _, err = os.Stat(priv); err != nil {
 		return err
 	}
