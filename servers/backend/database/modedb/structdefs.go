@@ -21,11 +21,12 @@ type User struct {
 type Post struct {
 	id,
 	media primitive.ObjectID
-	timeStamp int
+	mediaType,
 	captionText,
 	captionType string
-	location interface{} //implement later
-	comments []Comment
+	timeStamp int
+	location  interface{} //implement later
+	comments  []Comment
 }
 
 type Comment struct {

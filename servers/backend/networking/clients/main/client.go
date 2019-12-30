@@ -56,15 +56,9 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	clients, make, err := clienttests.CreateManyTLSClients(50000, port, address)
+	s, f, err := clienttests.ManyClientsManyRequests(5000, 10, port, address)
 	printMemUsage()
-	for _, client := range clients {
-		client.Cancel()
-		client.Close()
-	}
-	printMemUsage()
-	fmt.Printf("Make: %v\nerr: %v", make, err)
-	clients = nil
+	fmt.Printf("Clients: %v\tFinished: %v\n", s, f)
 	time.Sleep(time.Second * 10)
 	printMemUsage()
 }

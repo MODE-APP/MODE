@@ -1,7 +1,0 @@
-syntax="proto3";
-package proto.databaseservices;
-import "servers/backend/networking/proto/protos/services.proto";
-
-service ModeMongoDB{
-    rpc FetchPasswordHash(generalservices.User) returns (generalservices.Credentials){}
-}
