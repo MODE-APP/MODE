@@ -60,6 +60,7 @@ func (client *EssentialClient) RegisterClientTypes() {
 	client.EssentialClient = generalservices.NewEssentialClient(client.ClientConn)
 }
 
-func (client *EssentialClient) TestCall() {
-	client.EssentialClient.TestCall(client.ctx, &generalservices.Info{})
+func (client *EssentialClient) TestCall() error {
+	_, err := client.EssentialClient.TestCall(client.ctx, &generalservices.Info{}, grpc.WaitForReady(true))
+	return err
 }

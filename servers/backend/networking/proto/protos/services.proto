@@ -6,7 +6,6 @@ package proto.generalservices;
 
 service Essential {
 	rpc FetchCertificate(Info) returns (File){}
-	rpc TestCall(Info) returns (GeneralStatus){}
 }
 
 /**
@@ -22,8 +21,6 @@ message Credentials{
 	string password = 2;
 }
 
-message RefreshToken{}
-
 message SignedToken{
 	map<string, string> header = 1;
 	map<string, string> payload = 2;
@@ -34,10 +31,16 @@ message SignedToken{
 *Messaging RPC
 */
 service Messaging {
-	rpc FetchMessages(Info) returns (stream Message){}
+	rpc FetchMessages(Conversation) returns (stream Message){}
 	rpc SendMessage(Message) returns (MessageStatus){}
-	rpc GetMessageStatus(stream Message) returns (stream MessageStatus){}
-	
+}
+
+message ObjectID {
+	bytes ID = 1;
+}
+
+message Conversation {
+	ObjectID id = 1;
 }
 
 message Message {
@@ -47,8 +50,7 @@ message Message {
 		Groupchat groupchat =3;
 	}
 	MessageStatus status = 4;
-	int64 identification = 6;
-
+	ObjectID id = 5;
 }
 
 message MessageStatus {
@@ -58,9 +60,9 @@ message MessageStatus {
 		READ = 2;
 		FAILED = 3;
 	}
+	StatusCode code=1;
+	string message=2;
 }
-
-
 
 /*
 *Commenting RPC
@@ -73,7 +75,7 @@ service Commenting {
 
 message Comment {
 	string text = 1;
-	int64 identification = 2;
+	ObjectID id = 2;
 	User user = 3;
 	FeedContent picture = 4;
 }
@@ -105,9 +107,9 @@ message FeedContent{
 */
 message Profile {
 	User user = 1;
-	Picture profilePicture = 2;
-	repeated FeedContent content = 3;
-	string bio = 4;
+	Picture profilePicture = 3;
+	repeated FeedContent content = 4;
+	string bio = 5;
 }
 
 
@@ -122,9 +124,6 @@ service Posting {
 */
 service Updating {
 	rpc UpdateNotifications(stream Notification) returns (stream Notification){}
-	rpc UpdateComments(stream Notification) returns (stream Comment){}
-	rpc UpdateMessages(stream Notification) returns (stream Message){}
-	rpc BackgroundNotifications(stream Info) returns (stream Notification){}
 }
 
 
@@ -133,89 +132,80 @@ service Updating {
 */
 
 /**
-*Used as a signal in bi-directional streaming to indicate the server sending the next element
+*Used as a signal in bi-directional streaming to indicate to the server that the client is ready for X number of next elements
 */
 message GetNext{
+	int64 elements = 1;
 }
 
 /**
 *Represents a follow from one user to another
 */
-message Follow {
-	User user = 1;
-}
 
-/**
-*Represents a like directed at a picture or comment
-*/
-message Like{
-	oneof likedContent{
-		Picture picture = 1;
+message NotifiableContent{
+	oneof Notifiable{
+		FeedContent content = 1;
 		Comment comment = 2;
+		Message message = 3;
+	}
+	enum NotifyType {
+		LIKE=0;
+		TAG=1;
+		COMMENT=2;
+		FOLLOW=3;
+		MESSAGE=5;
 	}
 }
 
 /**
 *Represents a tag done by a user to a separate user
 */
-message Tag{
-	oneof TagLocation{
-		Picture picture = 1;
-		Comment comment = 2;
-	}
-	User user = 3;
-}
 
 /**
 *Notification represents the kind of notifications given to users
 */
 message Notification{
-	oneof type {
-		Like like = 1;
-		Message message = 2;
-		Tag tag = 3;
-		Comment comment = 4;
-		string custom = 5;
-	}
+	NotifiableContent notifiable = 1;
+	UnixTimeStamp TimeStamp = 2;
+}
+
+message UnixTimeStamp{
+	int64 time=1;
 }
 
 /**
 *Picture represents a picture file, its identifiers, and its comments attached
 */
-message Picture {
-	File contentFile = 1;
-	int64 identification = 2;
-	repeated Comment comments = 3;
+message StreamingPicture {
+	oneof PictureContent{
+		File contentFile = 1;
+		ObjectID id = 2;
+		Comment comments = 3;
+		UnixTimeStamp time = 4;
+	}
 }
 
 /**
 *Video represents a video file, its identifiers, the thumbnail, and its comments attached
 */
 message Video {
-	File contentFile = 1;
-	int64 identifcation = 2;
-	Picture thumbnail = 3;
-	repeated Comment comments = 4;
-}
-
-
-/**
-*Identifiers represents the common identifiers used by database and client
-*/
-message Identifiers{
-	oneof identifiers{
-		User user = 1;
-		Groupchat groupchat = 2;
-		int64 identificationHash = 3;
+	oneof VideoContent{
+		File contentFile = 1;
+		StreamingPicture thumbnail = 2;
+		Comment comments = 3;
+		ObjectID id=4;
+		UnixTimeStamp time = 5;
 	}
 }
 
 message User {
-	string username = 1;
+	string username=1;
+	ObjectID id=2;
 }
 
 message Groupchat {
 	repeated User users=1;
+	ObjectID id=2;
 }
 
 message GeneralStatus {
@@ -232,17 +222,18 @@ message GeneralStatus {
 	StatusCode status = 1;
 }
 
-message Info {
-
-}
-
 message File{
 	bytes fileBytes = 1;
 	string fileName = 2;
 	int64 checksum = 3;
 }
 
-message StreamedFileChunk{
+message StreamableFile{
+	FileChunk content = 1;
+	string Filename = 2;
+}
+
+message FileChunk{
 	oneof ChunkContent{
 		bytes fileBytes = 1;
 		string fileName = 2;

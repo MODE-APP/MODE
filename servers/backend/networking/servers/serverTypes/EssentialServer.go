@@ -46,7 +46,7 @@ func (*EssentialServer) TestCall(ctx context.Context, info *generalservices.Info
 //FetchCertificate returns a copy of the public key to the client requesting it
 func (*EssentialServer) FetchCertificate(ctx context.Context, info *generalservices.Info) (*generalservices.File, error) {
 	wd, err := os.Getwd()
-	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
+	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
 	buf, err := ioutil.ReadFile(cert)
 	if err != nil {
 		log.Println("err wasnt nil")

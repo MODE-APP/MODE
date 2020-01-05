@@ -83,7 +83,7 @@ func CreateManyTLSClients(numOf int, port, addr string) ([]clients.TLSClient, ti
 		return nil, 0, err
 	}
 	clientDurs := map[int]time.Duration{}
-	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
+	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
 	mClients := make([]clients.TLSClient, numOf)
 	clientC := make(chan clients.TLSClient)
 	intC := make(chan int)
@@ -135,7 +135,7 @@ func CreateManyTLSClientsNonC(numOf int, port, addr string) ([]clients.TLSClient
 	if err != nil {
 		return nil, 0, err
 	}
-	cert := filepath.Join(wd, "../../../", "certs/off-host-crt.pem")
+	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
 	mClients := make([]clients.TLSClient, numOf)
 	now := time.Now()
 	for i := 0; i < numOf; i++ {

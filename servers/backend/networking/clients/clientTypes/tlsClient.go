@@ -33,7 +33,7 @@ func NewTLSClient(address, port, certFile string) (TLSClient, error) {
 
 //Connect to the specified address defined in the EssentialClient struct
 func (client *TLSClient) Connect() error {
-	credentials, err := credentials.NewClientTLSFromFile(client.cert, "192.168.1.9")
+	credentials, err := credentials.NewClientTLSFromFile(client.cert, client.address)
 	if err != nil {
 		return err
 	}

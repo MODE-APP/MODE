@@ -14,24 +14,21 @@ import (
 	"google.golang.org/grpc/metadata"
 )
 
+// need to add in a mongodb api client pool as const global variable for use in interceptor (password verification)
+
 //TLSInterceptor checks the given username/password username/token combination against the ones in the database
 func TLSInterceptor(ctx context.Context,
 	req interface{},
 	info *grpc.UnaryServerInfo,
 	handler grpc.UnaryHandler) (interface{}, error) {
-	// Skip authorize when fetching certificate/refreshtoken
-	//timestr := "Request -- Time: " + time.Now().Format("2006-01-02 3:04:05PM") + "\tMethod: " + info.FullMethod
 	if info.FullMethod != "/proto.generalservices.Essential/FetchCertificate" {
 		c := make(chan error)
 		go func(ch chan error) {
 			ch <- authorize(ctx, info.FullMethod)
 		}(c)
 		auth := <-c
-		//authstr := "\tAuthorized: "
 		if auth == nil {
-			//fmt.Println(timestr + authstr + "true")
 		} else {
-			//fmt.Println(timestr + authstr + "false")
 			return nil, auth
 		}
 	}
@@ -96,7 +93,6 @@ func authorizeToken(md metadata.MD) error {
 	if err != nil {
 		return err
 	}
-	//fmt.Printf("Token is valid for: %v\t", time.Unix(unixTimeStamp, 0).Sub(time.Now()))
 	return nil
 }
 

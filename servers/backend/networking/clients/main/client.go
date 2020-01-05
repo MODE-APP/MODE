@@ -2,7 +2,6 @@ package main
 
 import (
 	clients "MODE/servers/backend/networking/clients/clientTypes"
-	clienttests "MODE/servers/backend/networking/diagnostics/clientTests"
 	"bufio"
 	"fmt"
 	"log"
@@ -12,7 +11,6 @@ import (
 	"path/filepath"
 	"runtime"
 	"strings"
-	"time"
 )
 
 func main() {
@@ -20,17 +18,6 @@ func main() {
 		log.Println(http.ListenAndServe("localhost:6061", nil))
 	}()
 	fmt.Println("starting main:")
-	/**
-	printMemUsage()
-	make, finish, err := clienttests.ManyClientsManyRequests(1000, 100)
-	printMemUsage()
-	fmt.Printf("MakeClients: %v\tFinishReqs: %v\terr: %v\n", make, finish, err)
-	clients, time, err := clienttests.CreateManyTLSClientsNonC(1000)
-	fmt.Printf("1000 connects: %v\n", time)
-	time, err = clienttests.SendManyRequestsConcurrently(clients[0], 100000)
-	printMemUsage()
-	fmt.Printf("1000 req: %v\n", time)
-	*/
 	reader := bufio.NewReader(os.Stdin)
 	fmt.Println("Enter address")
 	address, _ := reader.ReadString('\n')
@@ -44,29 +31,34 @@ func main() {
 		panic(err)
 	}
 	cert := filepath.Join(wd, "../../../", "certs/ModeCertificate.pem")
-	client, err := clients.NewTLSClient(address, port, cert)
+	fmt.Println(cert)
+	tls, err := clients.NewTLSClient(address, port, cert)
 	if err != nil {
 		panic(err)
 	}
-	err = client.Connect()
+	err = tls.Connect()
 	if err != nil {
 		panic(err)
 	}
-	_, _, err = client.FetchCertificate()
+	_, err = tls.RequestRefreshToken("chasearline", "mypassword")
 	if err != nil {
 		panic(err)
 	}
-	s, f, err := clienttests.ManyClientsManyRequests(5000, 10, port, address)
-	printMemUsage()
-	fmt.Printf("Clients: %v\tFinished: %v\n", s, f)
-	time.Sleep(time.Second * 10)
-	printMemUsage()
+	ess := clients.NewEssentialClient(address, port)
+	err = ess.Connect()
+	if err != nil {
+		panic(err)
+	}
+	err = ess.TestCall()
+	if err != nil {
+		panic(err)
+	}
+
 }
 
 func printMemUsage() {
 	var m runtime.MemStats
 	runtime.ReadMemStats(&m)
-	// For info on each, see: https://golang.org/pkg/runtime/#MemStats
 	fmt.Printf("Alloc = %v MB", m.Alloc/1000000)
 	fmt.Printf("\tTotalAlloc = %v MB", m.TotalAlloc/1000000)
 	fmt.Printf("\tSys = %v MB", m.Sys/1000000)
